@@ -299,14 +299,19 @@
             updateCartUI();
         });
 
-        function renderProducts(items) {
+                function renderProducts(items) {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = items.map(p => `
                 <div class="bg-gray-900 rounded-2xl p-4 neon-box flex flex-col items-center justify-between text-center h-full relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                    <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center mb-3 border border-gray-700 group-hover:border-neonBlue transition shadow-lg relative z-10">
-                        <i class="fas ${p.icon} ${p.color} text-2xl group-hover:scale-110 transition"></i>
+                    
+                    <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center mb-3 border border-gray-700 group-hover:border-neonBlue transition shadow-lg relative z-10 overflow-hidden">
+                        ${p.img ? 
+                            `<img src="${p.img}" class="w-full h-full object-cover hover:scale-110 transition duration-500" alt="${p.name}">` : 
+                            `<i class="fas ${p.icon} ${p.color} text-2xl group-hover:scale-110 transition"></i>`
+                        }
                     </div>
+
                     <div class="relative z-10 w-full">
                         <h3 class="font-bold text-gray-100 text-sm mb-1 line-clamp-1">${p.name}</h3>
                         <span class="text-[10px] text-gray-500 font-bold bg-black/50 px-2 py-0.5 rounded-full inline-block mb-3">${p.desc}</span>
@@ -320,6 +325,7 @@
                 </div>
             `).join('');
         }
+
 
         function filterProducts(cat) {
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
