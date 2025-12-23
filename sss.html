@@ -1,0 +1,552 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أقربلوكو | Akrabloko Store</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonBlue: '#00f3ff',
+                        neonPink: '#bc13fe',
+                        neonGreen: '#39ff14',
+                        darkBg: '#050505',
+                        cardBg: '#111111'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #050505;
+            color: #fff;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Neon Text Effect */
+        .neon-text-blue { text-shadow: 0 0 8px #00f3ff; }
+        .neon-text-pink { text-shadow: 0 0 8px #bc13fe; }
+        
+        /* Neon Box Effect */
+        .neon-box {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neon-box:hover {
+            border-color: #bc13fe;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.3);
+            transform: translateY(-4px);
+        }
+
+        /* Animations */
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-slide { animation: slideUp 0.3s ease-out forwards; }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #bc13fe; border-radius: 4px; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #bc13fe, #6a00ff);
+            color: white;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
+            border: none;
+        }
+
+        /* Input Styles */
+        .custom-input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .custom-input:focus {
+            outline: none;
+            border-color: #00f3ff;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="pb-32 relative">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-xl border-b border-white/10 shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="text-2xl font-black tracking-tighter leading-none flex items-center gap-1">
+                    <span class="text-white">أقرب</span><span class="text-neonPink neon-text-pink">لوكو</span>
+                    <i class="fas fa-rocket text-neonBlue text-xl animate-pulse ml-1 transform -rotate-45"></i>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-full px-3 py-1">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span class="text-[10px] font-bold text-gray-300">مفتوح 24H</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="relative mt-20 mb-6 px-4 text-center">
+        <div class="bg-gradient-to-b from-gray-900 to-black rounded-3xl p-6 border border-gray-800 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-neonPink blur-[80px] opacity-10"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-neonBlue blur-[80px] opacity-10"></div>
+            <h1 class="text-2xl md:text-3xl font-black mb-2 text-white">
+                أقرب ماركت <span class="text-neonBlue">لدماغك</span> 🧠
+            </h1>
+            <p class="text-gray-400 text-xs md:text-sm max-w-md mx-auto">
+                من الإبرة للصاروخ.. مزاجك وطلبات بيتك توصلك في ثواني.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="container mx-auto px-3 md:px-4 mb-12">
+        <!-- Search -->
+        <div class="relative mb-6 group">
+            <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="عايز بن، إندومي، سجاير؟" 
+                class="w-full bg-gray-900/80 border border-gray-700 text-white rounded-2xl py-3.5 px-11 focus:outline-none focus:border-neonBlue focus:ring-1 focus:ring-neonBlue transition duration-300">
+            <i class="fas fa-search absolute right-4 top-4 text-gray-500 group-focus-within:text-neonBlue transition-colors"></i>
+        </div>
+
+        <!-- Categories -->
+        <div class="sticky top-[60px] z-40 bg-[#050505]/95 backdrop-blur-sm py-2 mb-2 -mx-4 px-4 border-b border-white/5">
+            <div class="flex overflow-x-auto gap-2 no-scrollbar pb-1">
+                <button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all">الكل</button>
+                <button onclick="filterProducts('grocery')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all"><i class="fas fa-shopping-basket mr-1"></i> البقالة</button>
+                <button onclick="filterProducts('snacks')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all"><i class="fas fa-cookie-bite mr-1"></i> نقنقة</button>
+                <button onclick="filterProducts('drinks')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all"><i class="fas fa-wine-bottle mr-1"></i> مشروبات</button>
+                <button onclick="filterProducts('mood')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all"><i class="fas fa-smoking mr-1"></i> المزاج</button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
+            <!-- JS populated -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-800 py-8 mt-auto relative z-10 text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-black text-white mb-2">أقرب<span class="text-neonPink">لوكو</span></h2>
+            <p class="text-gray-500 text-sm mb-4">خدمة توصيل 24 ساعة - أسرع دليفري في مصر</p>
+            <div class="border-t border-gray-800 pt-6">
+                <p class="text-neonBlue font-bold text-lg mb-1"><i class="fas fa-phone-alt mr-2"></i> 01000000000</p>
+                <p class="text-gray-600 text-xs">© 2025 جميع الحقوق محفوظة لـ أقربلوكو</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Cart Button -->
+    <div class="fixed bottom-5 left-4 right-4 z-40 max-w-lg mx-auto">
+        <button onclick="toggleCart()" class="w-full bg-gray-900 border border-neonPink/50 text-white rounded-2xl shadow-[0_4px_20px_rgba(188,19,254,0.3)] overflow-hidden group">
+            <div class="bg-gradient-to-r from-neonPink/10 to-purple-900/20 backdrop-blur-md py-3 px-5 flex justify-between items-center h-full">
+                <div class="flex items-center gap-3">
+                    <div class="bg-neonPink text-white font-black w-8 h-8 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform" id="cart-counter">0</div>
+                    <div class="flex flex-col items-start">
+                        <span class="font-bold text-sm">عربية الطلبات</span>
+                        <span class="text-[10px] text-gray-400">دوس عشان تطلب</span>
+                    </div>
+                </div>
+                <span class="font-black text-lg text-neonBlue" id="cart-total">0 ج.م</span>
+            </div>
+        </button>
+    </div>
+
+    <!-- Variant Modal -->
+    <div id="variant-modal" class="fixed inset-0 z-[70] hidden flex items-end md:items-center justify-center sm:p-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeVariantModal()"></div>
+        <div class="bg-[#1a1a1a] w-full max-w-sm rounded-t-3xl md:rounded-3xl border-t md:border border-gray-700 relative animate-slide overflow-hidden flex flex-col max-h-[80vh]">
+            <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-1 md:hidden"></div>
+            <div class="p-5 text-center flex-shrink-0">
+                <div class="w-16 h-16 bg-gray-800 rounded-full mx-auto flex items-center justify-center mb-3 border border-gray-700">
+                    <i id="modal-icon" class="fas fa-star text-3xl text-neonPink"></i>
+                </div>
+                <h3 id="modal-product-name" class="text-xl font-bold text-white mb-1">اسم المنتج</h3>
+                <p class="text-gray-400 text-xs">اختار الطعم أو النوع المفضل ليك</p>
+            </div>
+            <div id="variant-options" class="grid grid-cols-2 gap-2 p-4 pt-0 overflow-y-auto custom-scrollbar"></div>
+            <div class="p-4 border-t border-gray-800 bg-gray-900">
+                <button onclick="closeVariantModal()" class="w-full bg-gray-800 text-white py-3 rounded-xl text-sm font-bold hover:bg-gray-700 transition">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal (NEW) -->
+    <div id="checkout-modal" class="fixed inset-0 z-[80] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeCheckoutModal()"></div>
+        <div class="bg-[#151515] w-full max-w-md rounded-2xl border border-gray-700 relative animate-slide overflow-hidden shadow-2xl">
+            <div class="p-6">
+                <h2 class="text-2xl font-black text-white mb-2 text-center">بيانات التوصيل 🛵</h2>
+                <p class="text-gray-400 text-xs text-center mb-6">اكتب بياناتك مرة واحدة بس عشان نوصلك لحد الباب.</p>
+                
+                <form id="checkout-form" onsubmit="event.preventDefault(); submitOrder();">
+                    <div class="mb-4">
+                        <label class="block text-gray-400 text-xs font-bold mb-2">الاسم بالكامل</label>
+                        <input type="text" id="customer-name" class="custom-input" placeholder="اكتب اسمك هنا.." required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-400 text-xs font-bold mb-2">رقم الموبايل (واتساب)</label>
+                        <input type="tel" id="customer-phone" class="custom-input" placeholder="01xxxxxxxxx" maxlength="11" required>
+                        <p class="text-red-500 text-xs hidden" id="phone-error">رقم الموبايل لازم يكون 11 رقم ويبدأ بـ 01</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-400 text-xs font-bold mb-2">العنوان بالتفصيل</label>
+                        <textarea id="customer-address" class="custom-input h-24 resize-none" placeholder="اسم الشارع، رقم العمارة، الدور، علامة مميزة.." required></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-neonPink to-purple-800 hover:from-purple-700 hover:to-neonPink text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2">
+                        <span>تأكيد وإرسال الطلب</span> <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+            <button onclick="closeCheckoutModal()" class="absolute top-4 left-4 text-gray-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" onclick="toggleCart()"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-[#0f0f0f] rounded-t-3xl border-t border-gray-800 shadow-2xl transform transition-transform duration-300 max-h-[90vh] flex flex-col">
+            <div class="w-full flex justify-center pt-3 pb-1" onclick="toggleCart()"><div class="w-12 h-1.5 bg-gray-700 rounded-full"></div></div>
+            <div class="px-6 py-4 flex justify-between items-center border-b border-gray-800">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fas fa-receipt text-neonBlue"></i> مراجعة الطلب</h2>
+                <button type="button" onclick="clearCart()" class="text-red-400 text-xs px-3 py-1.5 bg-red-900/20 rounded-full hover:bg-red-900/40 transition border border-red-900/30 flex items-center gap-1">
+                    <i class="fas fa-trash-alt"></i> حذف الكل
+                </button>
+            </div>
+            <div id="cart-items" class="p-4 overflow-y-auto flex-1 space-y-3 custom-scrollbar"></div>
+            <div class="p-5 bg-black/60 border-t border-gray-800 pb-8">
+                <div class="flex justify-between items-center mb-4 text-lg font-bold">
+                    <span>الإجمالي:</span>
+                    <span class="text-neonBlue text-xl" id="modal-total-price">0 ج.م</span>
+                </div>
+                <button onclick="openCheckoutModal()" class="w-full bg-[#25D366] hover:bg-[#1caa53] text-white font-bold py-3.5 rounded-xl flex justify-center items-center gap-2 shadow-lg transition transform active:scale-95">
+                    <i class="fab fa-whatsapp text-2xl"></i> <span>إتمام الطلب</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- PRODCUT DATABASE V9 ---
+        const products = [
+            // --- INSTANT COFFEE & CAPPUCCINO ---
+            { id: 310, name: "نسكافيه بلاك", price: 5, category: "grocery", icon: "fa-mug-hot", color: "text-amber-700", desc: "كلاسيك", variants: ["كيس صغير (5ج)", "برطمان 50جم", "برطمان 100جم", "برطمان 200جم"] },
+            { id: 311, name: "نسكافيه 3×1", price: 6, category: "grocery", icon: "fa-mug-hot", color: "text-amber-400", desc: "أكياس", variants: ["أوريجينال (سادة)", "بندق", "كراميل", "شوكولاتة", "فانيليا", "رغوة عالية"] },
+            { id: 312, name: "كوفي بريك (Coffee Break)", price: 5, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-500", desc: "ميكس", variants: ["سادة", "بندق", "كراميل", "لاتيه"] },
+            { id: 313, name: "كابتشينو (توروبيكا)", price: 8, category: "grocery", icon: "fa-mug-saucer", color: "text-orange-300", desc: "كيس", variants: ["سادة (رغوة)", "بندق", "شوكولاتة", "موكا"] },
+            { id: 314, name: "بونجورنو كوفي ميكس", price: 5, category: "grocery", icon: "fa-mug-hot", color: "text-blue-400", desc: "ميكس", variants: ["سادة", "خمسينة (زيادة)", "بندق"] },
+            { id: 315, name: "نسكافيه جولد", price: 15, category: "grocery", icon: "fa-crown", color: "text-yellow-300", desc: "بريميم", variants: ["كيس صغير", "برطمان 50جم", "برطمان 100جم"] },
+
+            // --- GROCERY (COFFEE & TEA) ---
+            { id: 301, name: "بن عبد المعبود", price: 45, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-600", desc: "قهوة", variants: ["فاتح سادة", "فاتح محوج", "وسط سادة", "وسط محوج", "غامق"] },
+            { id: 302, name: "بن أحمد الشيخ", price: 40, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-800", desc: "قهوة", variants: ["فاتح", "وسط", "محوج", "سادة"] },
+            { id: 63, name: "شاي العروسة", price: 55, category: "grocery", icon: "fa-mug-hot", color: "text-red-700", desc: "شاي", variants: ["40 جرام", "100 جرام", "250 جرام"] },
+            { id: 303, name: "شاي ليبتون", price: 15, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-400", desc: "شاي", variants: ["خرز 40جم", "ناعم 40جم", "ناعم 100جم", "25 فتلة"] },
+            { id: 304, name: "شاي الجوهرة", price: 12, category: "grocery", icon: "fa-gem", color: "text-blue-400", desc: "شاي", variants: ["40 جرام", "100 جرام", "250 جرام"] },
+
+            // --- SNACKS & NOODLES ---
+            { id: 200, name: "إندومي (Indomie)", price: 12, category: "snacks", icon: "fa-bowl-food", color: "text-yellow-300", desc: "نودلز", variants: ["خضار", "فراخ", "فراخ كاري", "سجق", "لحمة", "جمبري", "خضار جامبو (كبير)"] },
+            { id: 201, name: "نودلز كلوجز", price: 12, category: "snacks", icon: "fa-bowl-food", color: "text-red-500", desc: "نودلز", variants: ["فراخ", "شطة", "خضار"] },
+            { id: 43, name: "ويندوز (Windows)", price: 8, category: "snacks", icon: "fa-table-cells", color: "text-green-400", desc: "سناكس", variants: ["طماطم", "جبنة", "شطة"] },
+            { id: 42, name: "فوكس (Fox)", price: 8, category: "snacks", icon: "fa-cat", color: "text-red-500", desc: "سناكس", variants: ["جبنة", "فلفل حلو", "شطة وليمون", "كاتشب"] },
+            { id: 44, name: "بريك (Break)", price: 8, category: "snacks", icon: "fa-cookie", color: "text-purple-400", desc: "سناكس", variants: ["شطة وليمون", "جبنة", "كاتشب"] },
+            
+            // --- EDITA ---
+            { id: 101, name: "مولتو (Molto)", price: 15, category: "snacks", icon: "fa-bread-slice", color: "text-red-600", desc: "كرواسون", variants: ["ماكس شوكولاتة", "ماكس فراولة", "ماكس جبنة", "ميني ماكس", "ماجنيوم شوكولاتة", "ساندوتش"] },
+            { id: 102, name: "هوهوز (Hohos)", price: 10, category: "snacks", icon: "fa-candy-cane", color: "text-red-500", desc: "كيك", variants: ["شوكولاتة (أصلي)", "فراولة", "كريمة إضافية", "اكستريم"] },
+            { id: 103, name: "توينكيز (Twinkies)", price: 10, category: "snacks", icon: "fa-cheese", color: "text-yellow-400", desc: "كيك", variants: ["كريمة (أصلي)", "شوكولاتة", "فراولة", "ايسينج"] },
+            { id: 104, name: "تودو (Todo)", price: 10, category: "snacks", icon: "fa-cookie", color: "text-blue-500", desc: "كيك", variants: ["براونيز", "بومب", "فانيليا", "ماكس رول", "شوكولاتة"] },
+            { id: 105, name: "بيك رولز (Bake)", price: 10, category: "snacks", icon: "fa-circle-notch", color: "text-orange-500", desc: "سناكس", variants: ["ملح", "بيتزا", "كاتشب", "شطة وليمون", "جبنة متبلة", "زيتون"] },
+
+            // --- CHIPSY ---
+            { id: 40, name: "شيبسي (Chipsy)", price: 10, category: "snacks", icon: "fa-circle-notch", color: "text-yellow-500", desc: "شيبس", variants: ["ملح", "طماطم", "شطة وليمون", "جبنة متبلة", "كباب", "فلفل حلو"] },
+            { id: 41, name: "شيبسي تايجر", price: 10, category: "snacks", icon: "fa-paw", color: "text-orange-600", desc: "كرانشي", variants: ["شطة وليمون", "جبنة", "فلفل حلو", "جمبري", "سجق شرقي"] },
+            
+            // --- GROCERY (STAPLES) ---
+            { id: 305, name: "مكرونة (أكياس)", price: 15, category: "grocery", icon: "fa-utensils", color: "text-white", desc: "نشويات", variants: ["الملكة خواتم", "الملكة قلم", "حواء شعرية", "لسان عصفور"] },
+            { id: 306, name: "زيت طعام", price: 85, category: "grocery", icon: "fa-bottle-droplet", color: "text-yellow-300", desc: "زيت", variants: ["كريستال عباد", "كريستال ذرة", "سلايت", "عافية"] },
+            { id: 307, name: "سمنة", price: 90, category: "grocery", icon: "fa-jar", color: "text-yellow-200", desc: "طبخ", variants: ["روابي (700جم)", "جنة (700جم)", "كريستال"] },
+            { id: 308, name: "تونا صن شاين", price: 65, category: "grocery", icon: "fa-fish", color: "text-pink-300", desc: "معلبات", variants: ["قطع", "مفتتة", "شرائح"] },
+            { id: 309, name: "صلصة طماطم", price: 15, category: "grocery", icon: "fa-jar", color: "text-red-600", desc: "برطمان", variants: ["هارفست", "جاردينيو"] },
+            { id: 60, name: "رز الساعة", price: 35, category: "grocery", icon: "fa-bowl-rice", color: "text-white", desc: "1 كيلو", variants: ["كيلو"] },
+            { id: 61, name: "لبن (حليب)", price: 45, category: "grocery", icon: "fa-cow", color: "text-blue-500", desc: "1 لتر/نص", variants: ["جهينة كامل", "جهينة خالي", "بخيره (نص كيلو - 22ج)"] },
+
+            // --- MOOD (CIGARETTES) ---
+            { id: 1, name: "LM", price: 75, category: "mood", icon: "fa-smoking", color: "text-blue-400", desc: "سجائر", variants: ["أحمر", "أزرق", "فضي", "Forward"] },
+            { id: 2, name: "تارجت (Target)", price: 32, category: "mood", icon: "fa-crosshairs", color: "text-red-600", desc: "سجائر", variants: ["أحمر", "أزرق"] },
+            { id: 3, name: "مارلبورو", price: 105, category: "mood", icon: "fa-crown", color: "text-yellow-500", desc: "سجائر", variants: ["أحمر", "جولد", "Purple Mix", "White"] },
+            { id: 4, name: "ميريت", price: 110, category: "mood", icon: "fa-star", color: "text-yellow-400", desc: "سجائر", variants: ["أصفر", "أزرق"] },
+            { id: 5, name: "كليوباترا", price: 35, category: "mood", icon: "fa-box-open", color: "text-green-600", desc: "سجائر", variants: ["بوكس أبيض", "بوكس ألوان", "سوفت كوين", "سوبر"] },
+            { id: 6, name: "وينستون", price: 65, category: "mood", icon: "fa-w", color: "text-blue-600", desc: "سجائر", variants: ["أحمر", "أزرق", "توت (Berry)", "سيلفر"] },
+            
+            // --- DRINKS ---
+            { id: 21, name: "توب كولا", price: 10, category: "drinks", icon: "fa-bottle-droplet", color: "text-red-600", desc: "غازية", variants: ["كولا", "برتقال", "تفاح", "ليمون"] },
+            { id: 22, name: "بيبسي كانز", price: 15, category: "drinks", icon: "fa-glass-water", color: "text-blue-600", desc: "مشبرة", variants: ["بيبسي عادي", "بيبسي دايت", "سفن أب", "ميرندا برتقال", "ميرندا تفاح", "ماونتن ديو"] },
+            { id: 23, name: "عصير جهينة", price: 12, category: "drinks", icon: "fa-apple-whole", color: "text-green-400", desc: "بيور", variants: ["مانجو", "جوافة", "ميكس", "تفاح", "أناناس", "طماطم"] },
+            { id: 24, name: "ستينج (Sting)", price: 15, category: "drinks", icon: "fa-bolt", color: "text-yellow-400", desc: "طاقة", variants: ["جولد", "توت أحمر"] },
+            { id: 25, name: "سبيرو سباتس", price: 15, category: "drinks", icon: "fa-bottle-water", color: "text-purple-500", desc: "مصري", variants: ["عنب", "ليمون ونعناع", "يوسفي", "تفاح", "خوخ"] },
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('akrabloko_cart')) || [];
+        let currentSelectedProduct = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts(products);
+            updateCartUI();
+            
+            // Load saved user data
+            const savedData = JSON.parse(localStorage.getItem('akrabloko_user'));
+            if(savedData) {
+                document.getElementById('customer-name').value = savedData.name || '';
+                document.getElementById('customer-phone').value = savedData.phone || '';
+                document.getElementById('customer-address').value = savedData.address || '';
+            }
+        });
+
+        // ... [Product Rendering Functions - SAME AS BEFORE] ...
+        function renderProducts(items) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = items.map(p => `
+                <div class="bg-gray-900 rounded-2xl p-4 neon-box flex flex-col items-center justify-between text-center h-full relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                    <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center mb-3 border border-gray-700 group-hover:border-neonBlue transition shadow-lg relative z-10">
+                        <i class="fas ${p.icon} ${p.color} text-2xl group-hover:scale-110 transition"></i>
+                    </div>
+                    <div class="relative z-10 w-full">
+                        <h3 class="font-bold text-gray-100 text-sm mb-1 line-clamp-1">${p.name}</h3>
+                        <span class="text-[10px] text-gray-500 font-bold bg-black/50 px-2 py-0.5 rounded-full inline-block mb-3">${p.desc}</span>
+                        <div class="flex items-center justify-between w-full bg-black/30 rounded-xl p-1 pr-3 border border-gray-800">
+                            <span class="text-neonBlue font-black text-sm">${p.price} <span class="text-[9px] text-gray-400">ج.م</span></span>
+                            <button onclick="prepareAddToCart(${p.id})" class="w-7 h-7 rounded-lg bg-neonPink text-white flex items-center justify-center hover:bg-purple-500 transition shadow-lg active:scale-90">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts(cat) {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            if(cat === 'all') renderProducts(products);
+            else renderProducts(products.filter(p => p.category === cat));
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            renderProducts(products.filter(p => p.name.toLowerCase().includes(query)));
+        }
+
+        function prepareAddToCart(id) {
+            const product = products.find(p => p.id === id);
+            if (product.variants && product.variants.length > 0) {
+                openVariantModal(product);
+            } else {
+                addToCart(product, null);
+            }
+        }
+
+        function openVariantModal(product) {
+            currentSelectedProduct = product;
+            document.getElementById('modal-product-name').innerText = product.name;
+            document.getElementById('modal-icon').className = `fas ${product.icon} text-3xl ${product.color}`;
+            const container = document.getElementById('variant-options');
+            container.innerHTML = product.variants.map(variant => `
+                <button onclick="selectVariant('${variant}')" class="bg-gray-800 hover:bg-neonBlue hover:text-black hover:font-black text-gray-200 py-3 px-2 rounded-xl text-xs font-bold transition border border-gray-700 hover:border-neonBlue flex items-center justify-center text-center h-14">
+                    ${variant}
+                </button>
+            `).join('');
+            document.getElementById('variant-modal').classList.remove('hidden');
+        }
+
+        function closeVariantModal() {
+            document.getElementById('variant-modal').classList.add('hidden');
+            currentSelectedProduct = null;
+        }
+
+        function selectVariant(variantName) {
+            if (currentSelectedProduct) {
+                addToCart(currentSelectedProduct, variantName);
+                closeVariantModal();
+            }
+        }
+
+        function addToCart(product, variant) {
+            const cartItemId = variant ? `${product.id}-${variant}` : `${product.id}`;
+            const displayName = variant ? `${product.name} (${variant})` : product.name;
+            const exists = cart.find(i => i.cartItemId === cartItemId);
+            
+            if(exists) exists.qty++;
+            else cart.push({
+                cartItemId: cartItemId,
+                id: product.id,
+                name: displayName,
+                price: product.price,
+                qty: 1
+            });
+            saveCart();
+            updateCartUI();
+            if(navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function removeFromCart(cartItemId) {
+            cart = cart.filter(i => i.cartItemId !== cartItemId);
+            saveCart();
+            updateCartUI();
+            if(cart.length === 0) toggleCart();
+        }
+
+        function changeQty(cartItemId, delta) {
+            const item = cart.find(i => i.cartItemId === cartItemId);
+            if(item) {
+                item.qty += delta;
+                if(item.qty <= 0) removeFromCart(cartItemId);
+                else {
+                    saveCart();
+                    updateCartUI();
+                }
+            }
+        }
+
+        function clearCart() {
+            cart = [];
+            saveCart();
+            updateCartUI();
+        }
+
+        function saveCart() {
+            localStorage.setItem('akrabloko_cart', JSON.stringify(cart));
+        }
+
+        function updateCartUI() {
+            const count = cart.reduce((a, b) => a + b.qty, 0);
+            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            document.getElementById('cart-counter').innerText = count;
+            document.getElementById('cart-total').innerText = total + ' ج.م';
+            document.getElementById('modal-total-price').innerText = total + ' ج.م';
+            const itemsContainer = document.getElementById('cart-items');
+            if(cart.length === 0) {
+                itemsContainer.innerHTML = `<div class="text-center text-gray-500 py-10 flex flex-col items-center"><i class="fas fa-shopping-basket text-4xl mb-3 opacity-20"></i>السلة فارغة</div>`;
+            } else {
+                itemsContainer.innerHTML = cart.map(item => `
+                    <div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl border border-gray-800">
+                        <div class="flex flex-col">
+                            <h4 class="font-bold text-white text-xs mb-1">${item.name}</h4>
+                            <span class="text-[10px] text-neonBlue font-bold">${item.price} ج.م</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-black rounded-lg px-2 py-1">
+                            <button onclick="changeQty('${item.cartItemId}', -1)" class="text-gray-400 hover:text-white px-1 font-bold">-</button>
+                            <span class="font-bold text-xs w-4 text-center text-white">${item.qty}</span>
+                            <button onclick="changeQty('${item.cartItemId}', 1)" class="text-green-400 hover:text-white px-1 font-bold">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-modal').classList.toggle('hidden');
+        }
+
+        // --- NEW CHECKOUT & VALIDATION LOGIC ---
+
+        function openCheckoutModal() {
+            if(cart.length === 0) return alert('السلة فارغة!');
+            toggleCart(); // Close cart modal
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function submitOrder() {
+            // Get values
+            const name = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const address = document.getElementById('customer-address').value.trim();
+            const phoneError = document.getElementById('phone-error');
+
+            // Reset error
+            phoneError.classList.add('hidden');
+
+            // Basic Validation
+            if (!name || !phone || !address) {
+                alert("من فضلك اكتب كل البيانات عشان نقدر نوصلك");
+                return;
+            }
+
+            // Phone Validation (Must be 11 digits and start with 01)
+            const phoneRegex = /^01[0125][0-9]{8}$/;
+            if (!phoneRegex.test(phone)) {
+                phoneError.classList.remove('hidden');
+                return; // Stop here
+            }
+
+            // Save user data for next time
+            localStorage.setItem('akrabloko_user', JSON.stringify({ name, phone, address }));
+
+            // Phone Number to send TO (Store Owner)
+            const storePhone = "201000000000"; 
+
+            // Construct Message
+            let msg = `*طلب جديد من تطبيق أقربلوكو* 🚀\n\n`;
+            msg += `👤 *الاسم:* ${name}\n`;
+            msg += `📱 *رقم العميل:* ${phone}\n`;
+            msg += `📍 *العنوان:* ${address}\n`;
+            msg += `----------------------------\n`;
+            msg += `*الطلبات:* \n`;
+            
+            cart.forEach(item => { 
+                msg += `▪️ ${item.name} (عدد ${item.qty}) = ${item.price * item.qty}ج\n`; 
+            });
+
+            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            msg += `----------------------------\n`;
+            msg += `💰 *الإجمالي المطلوب:* ${total} جنيه`;
+
+            // Open WhatsApp
+            window.open(`https://wa.me/${storePhone}?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            // Close modal and clear cart (optional)
+            closeCheckoutModal();
+            cart = [];
+            saveCart();
+            updateCartUI();
+        }
+    </script>
+</body>
+</html>
