@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-
-  
-   <link rel="icon" href="images/logo.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="images/logo.png" type="image/png">
 
     <meta property="og:image" content="https://akrabloko.vercel.app/images/banner.jpg">
-<meta property="og:title" content="أقربلوكو - ماركت السعادة">
-<meta property="og:description" content="أطلب قهوتك، شيبسي، وكل طلباتك اونلاين وتوصلك لحد عندك!">
+    <meta property="og:title" content="أقربلوكو - ماركت السعادة">
+    <meta property="og:description" content="أطلب قهوتك، شيبسي، وكل طلباتك اونلاين وتوصلك لحد عندك!">
  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أقربلوكو | Akrabloko Store</title>
-    <!-- Tailwind CSS -->
+  
+    <meta name="description" content="أقربلوكو هو أسرع سوبر ماركت أونلاين في مصر. اطلب نسكافيه، شيبسي، سجائر، وطلبات البيت وتوصلك دليفري 24 ساعة لحد باب البيت.">
+    <meta name="keywords" content="سوبر ماركت, دليفري 24 ساعة, توصيل طلبات, نسكافيه, سجائر, شيبسي, بقالة أونلاين, أقربلوكو, Akrabloko, طلبات اونلاين">
+    <meta name="author" content="Akrabloko Team">
+    <meta name="robots" content="index, follow"> 
+    <meta name="theme-color" content="#bc13fe"> 
+  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Cairo) -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
     
     <script>
@@ -102,7 +110,6 @@
 </head>
 <body class="pb-32 relative">
 
-    <!-- Navbar -->
     <nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-xl border-b border-white/10 shadow-lg">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -121,7 +128,6 @@
         </div>
     </nav>
 
-    <!-- Header Section -->
     <header class="relative mt-20 mb-6 px-4 text-center">
         <div class="bg-gradient-to-b from-gray-900 to-black rounded-3xl p-6 border border-gray-800 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-40 h-40 bg-neonPink blur-[80px] opacity-10"></div>
@@ -132,7 +138,7 @@
             <p class="text-gray-400 text-xs md:text-sm max-w-md mx-auto">
                 من الإبرة للصاروخ.. مزاجك وطلبات بيتك توصلك في ثواني.
             </p>
-          <div class="mt-5 flex justify-center">
+          <div id="download-section" style="display: none;" class="mt-5 flex justify-center">
     <a href="Akrabloko.apk" download="Akrabloko.apk" class="bg-neonGreen/20 hover:bg-neonGreen/40 text-neonGreen font-bold px-6 py-3 rounded-2xl border border-neonGreen/50 shadow-[0_0_15px_rgba(57,255,20,0.2)] flex items-center gap-3 transition-all transform active:scale-95 group">
         <i class="fab fa-android text-2xl group-hover:scale-110 transition"></i>
         <div class="text-right">
@@ -145,16 +151,13 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <section class="container mx-auto px-3 md:px-4 mb-12">
-        <!-- Search -->
         <div class="relative mb-6 group">
             <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="عايز بن، إندومي، سجاير؟" 
                 class="w-full bg-gray-900/80 border border-gray-700 text-white rounded-2xl py-3.5 px-11 focus:outline-none focus:border-neonBlue focus:ring-1 focus:ring-neonBlue transition duration-300">
             <i class="fas fa-search absolute right-4 top-4 text-gray-500 group-focus-within:text-neonBlue transition-colors"></i>
         </div>
 
-        <!-- Categories -->
         <div class="sticky top-[60px] z-40 bg-[#050505]/95 backdrop-blur-sm py-2 mb-2 -mx-4 px-4 border-b border-white/5">
             <div class="flex overflow-x-auto gap-2 no-scrollbar pb-1">
                 <button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all">الكل</button>
@@ -165,13 +168,10 @@
             </div>
         </div>
 
-        <!-- Products Grid -->
         <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
-            <!-- JS populated -->
-        </div>
+            </div>
     </section>
 
-    <!-- Footer -->
     <footer class="bg-black border-t border-gray-800 py-8 mt-auto relative z-10 text-center">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl font-black text-white mb-2">أقرب<span class="text-neonPink">لوكو</span></h2>
@@ -183,7 +183,6 @@
         </div>
     </footer>
 
-    <!-- Floating Cart Button -->
     <div class="fixed bottom-5 left-4 right-4 z-40 max-w-lg mx-auto">
         <button onclick="toggleCart()" class="w-full bg-gray-900 border border-neonPink/50 text-white rounded-2xl shadow-[0_4px_20px_rgba(188,19,254,0.3)] overflow-hidden group">
             <div class="bg-gradient-to-r from-neonPink/10 to-purple-900/20 backdrop-blur-md py-3 px-5 flex justify-between items-center h-full">
@@ -199,7 +198,6 @@
         </button>
     </div>
 
-    <!-- Variant Modal -->
     <div id="variant-modal" class="fixed inset-0 z-[70] hidden flex items-end md:items-center justify-center sm:p-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeVariantModal()"></div>
         <div class="bg-[#1a1a1a] w-full max-w-sm rounded-t-3xl md:rounded-3xl border-t md:border border-gray-700 relative animate-slide overflow-hidden flex flex-col max-h-[80vh]">
@@ -218,7 +216,6 @@
         </div>
     </div>
 
-    <!-- Checkout Modal (NEW) -->
     <div id="checkout-modal" class="fixed inset-0 z-[80] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeCheckoutModal()"></div>
         <div class="bg-[#151515] w-full max-w-md rounded-2xl border border-gray-700 relative animate-slide overflow-hidden shadow-2xl">
@@ -252,7 +249,6 @@
         </div>
     </div>
 
-    <!-- Cart Modal -->
     <div id="cart-modal" class="fixed inset-0 z-[60] hidden">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" onclick="toggleCart()"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-[#0f0f0f] rounded-t-3xl border-t border-gray-800 shadow-2xl transform transition-transform duration-300 max-h-[90vh] flex flex-col">
@@ -270,7 +266,7 @@
                     <span class="text-neonBlue text-xl" id="modal-total-price">0 ج.م</span>
                 </div>
                 <button onclick="openCheckoutModal()" class="w-full bg-[#25D366] hover:bg-[#1caa53] text-white font-bold py-3.5 rounded-xl flex justify-center items-center gap-2 shadow-lg transition transform active:scale-95">
-                    <i class="fab fa-whatsapp text-2xl"></i> <span>إتمام الطلب</span>
+                    <i class="fas fa-check-circle text-2xl"></i> <span>إتمام الطلب</span>
                 </button>
             </div>
         </div>
@@ -352,7 +348,7 @@
             }
         });
 
-        // ... [Product Rendering Functions - SAME AS BEFORE] ...
+        // ... [Product Rendering Functions] ...
         function renderProducts(items) {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = items.map(p => `
@@ -502,7 +498,7 @@
 
         function openCheckoutModal() {
             if(cart.length === 0) return alert('السلة فارغة!');
-            toggleCart(); // Close cart modal
+            toggleCart(); 
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
 
@@ -510,60 +506,111 @@
             document.getElementById('checkout-modal').classList.add('hidden');
         }
 
-        function submitOrder() {
-            // Get values
-            const name = document.getElementById('customer-name').value.trim();
-            const phone = document.getElementById('customer-phone').value.trim();
-            const address = document.getElementById('customer-address').value.trim();
-            const phoneError = document.getElementById('phone-error');
+        // ملاحظة: تم إزالة دالة submitOrder القديمة من هنا،
+        // وتم إضافتها في السكربت الجديد في الأسفل لربطها بـ Firebase
 
-            // Reset error
-            phoneError.classList.add('hidden');
-
-            // Basic Validation
-            if (!name || !phone || !address) {
-                alert("من فضلك اكتب كل البيانات عشان نقدر نوصلك");
-                return;
+        function checkAppContext() {
+            const downloadSection = document.getElementById('download-section');
+            if (!navigator.userAgent.includes("AkrablokoApp")) {
+                if (downloadSection) {
+                    downloadSection.style.display = 'flex'; 
+                }
             }
+        }
+        document.addEventListener('DOMContentLoaded', checkAppContext);
+    </script>
 
-            // Phone Validation (Must be 11 digits and start with 01)
-            const phoneRegex = /^01[0125][0-9]{8}$/;
-            if (!phoneRegex.test(phone)) {
-                phoneError.classList.remove('hidden');
-                return; // Stop here
-            }
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-            // Save user data for next time
-            localStorage.setItem('akrabloko_user', JSON.stringify({ name, phone, address }));
+      // إعدادات Firebase الخاصة بك
+      const firebaseConfig = {
+          apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
+          authDomain: "akrabloko.firebaseapp.com",
+          projectId: "akrabloko",
+          storageBucket: "akrabloko.firebasestorage.app",
+          messagingSenderId: "846428093028",
+          appId: "1:846428093028:web:29f31599b90125c2673d71",
+          measurementId: "G-31SP9TP2N1"
+      };
 
-            // Phone Number to send TO (Store Owner)
-            const storePhone = "201000000000"; 
+      // تشغيل Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
 
-            // Construct Message
-            let msg = `*طلب جديد من تطبيق أقربلوكو* 🚀\n\n`;
-            msg += `👤 *الاسم:* ${name}\n`;
-            msg += `📱 *رقم العميل:* ${phone}\n`;
-            msg += `📍 *العنوان:* ${address}\n`;
-            msg += `----------------------------\n`;
-            msg += `*الطلبات:* \n`;
-            
-            cart.forEach(item => { 
-                msg += `▪️ ${item.name} (عدد ${item.qty}) = ${item.price * item.qty}ج\n`; 
+      // تعريف دالة الإرسال وجعلها متاحة للموقع بالكامل
+      window.submitOrder = async function() {
+          const name = document.getElementById('customer-name').value.trim();
+          const phone = document.getElementById('customer-phone').value.trim();
+          const address = document.getElementById('customer-address').value.trim();
+          const phoneError = document.getElementById('phone-error');
+          
+          phoneError.classList.add('hidden');
+
+          // تحقق من البيانات
+          if (!name || !phone || !address) {
+              alert("من فضلك أكمل البيانات عشان نقدر نوصلك");
+              return;
+          }
+
+          // تحقق من رقم الهاتف
+          const phoneRegex = /^01[0125][0-9]{8}$/;
+          if (!phoneRegex.test(phone)) {
+              phoneError.classList.remove('hidden');
+              return;
+          }
+
+          // حفظ البيانات للمرة القادمة
+          localStorage.setItem('akrabloko_user', JSON.stringify({ name, phone, address }));
+
+          // تغيير شكل الزر ليعرف الزبون أن الطلب جاري الإرسال
+          const btn = document.querySelector('#checkout-form button');
+          const originalText = btn.innerHTML;
+          btn.innerHTML = 'جاري الإرسال... <i class="fas fa-spinner fa-spin"></i>';
+          btn.disabled = true;
+
+          try {
+              // 🚀 إرسال الطلب لقاعدة البيانات
+              await addDoc(collection(db, "orders"), {
+                  customer: { name, phone, address },
+                  items: cart, 
+                  total: cart.reduce((a, b) => a + (b.price * b.qty), 0),
+                  status: "new", 
+                  timestamp: serverTimestamp(),
+                  date: new Date().toLocaleString('ar-EG')
+              });
+
+              // نجاح!
+              alert("✅ تم استلام طلبك بنجاح! سيتصل بك المندوب قريباً.");
+              
+              // تنظيف السلة
+              cart = [];
+              saveCart();
+              updateCartUI();
+              closeCheckoutModal();
+
+          } catch (error) {
+              console.error("Error adding document: ", error);
+              alert("حدث خطأ أثناء الإرسال، تأكد من الإنترنت وحاول تاني.");
+          } finally {
+              // إرجاع الزر كما كان
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+          }
+      }
+    </script>
+
+    <script>
+        // تسجيل موظف الأرشيف (Service Worker)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker: تم التسجيل بنجاح والوضع أوفلاين جاهز!', reg))
+                    .catch(err => console.log('Service Worker: فشل التسجيل (تأكد أن الملف بجوار index.html)', err));
             });
-
-            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-            msg += `----------------------------\n`;
-            msg += `💰 *الإجمالي المطلوب:* ${total} جنيه`;
-
-            // Open WhatsApp
-            window.open(`https://wa.me/${storePhone}?text=${encodeURIComponent(msg)}`, '_blank');
-            
-            // Close modal and clear cart (optional)
-            closeCheckoutModal();
-            cart = [];
-            saveCart();
-            updateCartUI();
         }
     </script>
 </body>
 </html>
+
