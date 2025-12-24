@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة القيادة - أقربلوكو 🚀</title>
+    <title>لوحة القيادة V2 - أقربلوكو</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -28,47 +28,63 @@
     </script>
     <style>
         body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
-        .neon-border { border: 1px solid rgba(188, 19, 254, 0.3); box-shadow: 0 0 10px rgba(188, 19, 254, 0.1); }
+        .tab-btn { transition: all 0.3s; border-bottom: 2px solid transparent; opacity: 0.6; }
+        .tab-btn.active { opacity: 1; border-color: #00f3ff; color: #00f3ff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.4); }
         .order-card { transition: all 0.3s ease; }
-        .order-card:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0, 243, 255, 0.15); }
+        .order-card:hover { transform: translateY(-2px); }
         .badge-new { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-20 min-h-screen flex flex-col">
 
-    <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800 p-4 mb-6 shadow-2xl">
+    <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800 p-4 shadow-2xl">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-xl font-black text-white flex items-center gap-2">
                 <i class="fas fa-user-astronaut text-neonPink"></i>
-                أدمن <span class="text-neonBlue">أقربلوكو</span>
+                <span class="hidden sm:inline">أدمن</span> <span class="text-neonBlue">أقربلوكو</span>
             </h1>
             <div class="flex items-center gap-3">
-                <span id="order-count" class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full hidden">0</span>
+                <span id="order-count" class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full hidden animate-bounce">0</span>
                 <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                <span class="text-xs text-gray-400 font-bold">متصل</span>
             </div>
         </div>
     </nav>
 
-    <div class="container mx-auto px-4 max-w-3xl">
-        <h2 class="text-gray-400 text-sm font-bold mb-4 border-r-4 border-neonBlue pr-3">الطلبات الحالية (Live)</h2>
-        
+    <div class="container mx-auto px-4 mt-6 mb-4">
+        <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 max-w-md mx-auto">
+            <button onclick="setFilter('new')" id="tab-new" class="tab-btn active flex-1 py-2 font-bold text-sm rounded-lg hover:bg-white/5">
+                🔥 جديدة
+            </button>
+            <button onclick="setFilter('done')" id="tab-done" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg hover:bg-white/5">
+                ✅ مكتملة
+            </button>
+            <button onclick="setFilter('all')" id="tab-all" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg hover:bg-white/5">
+                📂 الكل
+            </button>
+        </div>
+    </div>
+
+    <div id="delete-section" class="container mx-auto px-4 mb-4 text-center hidden">
+        <button onclick="deleteCompletedOrders()" class="text-red-500 hover:text-red-400 text-xs font-bold border border-red-900/50 bg-red-900/10 px-4 py-2 rounded-full transition flex items-center gap-2 mx-auto">
+            <i class="fas fa-trash-alt"></i> مسح سجل الطلبات المنتهية
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 max-w-3xl flex-1">
         <div id="orders-list" class="space-y-4">
-            <div class="text-center py-10 text-gray-600 animate-pulse">
-                <i class="fas fa-satellite-dish text-4xl mb-3 opacity-20"></i>
-                <p>جاري الاتصال بالقمر الصناعي...</p>
+            <div class="text-center py-20 text-gray-600">
+                <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-neonPink"></i>
+                <p>جاري تحميل البيانات...</p>
             </div>
         </div>
     </div>
 
-    <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 🔴 إعدادات مشروعك
+        // 🔴 مفاتيحك الخاصة (كما هي)
         const firebaseConfig = {
             apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
             authDomain: "akrabloko.firebaseapp.com",
@@ -81,122 +97,178 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const notifSound = document.getElementById('notif-sound');
 
-        // استدعاء الطلبات وترتيبها من الأحدث للأقدم
+        let allOrders = []; // لتخزين كل الطلبات محلياً
+        let currentFilter = 'new'; // الفلتر الافتراضي
+
+        // جلب البيانات لحظياً
         const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
-
+        
         onSnapshot(q, (snapshot) => {
+            allOrders = [];
+            let newCount = 0;
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                data.id = doc.id; // إضافة الـ ID للبيانات
+                allOrders.push(data);
+                if(data.status === 'new') newCount++;
+            });
+
+            // تحديث العداد في النافبار
+            const badge = document.getElementById('order-count');
+            if(newCount > 0) {
+                badge.innerText = newCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            renderOrders(); // إعادة رسم الصفحة
+        });
+
+        // دالة عرض الطلبات حسب الفلتر
+        window.renderOrders = () => {
             const list = document.getElementById('orders-list');
-            const countBadge = document.getElementById('order-count');
+            const deleteSection = document.getElementById('delete-section');
             
-            // تحديث العداد
-            let newOrdersCount = 0;
-            
-            if (snapshot.empty) {
+            // تصفية الطلبات
+            let filteredOrders = allOrders;
+            if (currentFilter === 'new') filteredOrders = allOrders.filter(o => o.status === 'new');
+            if (currentFilter === 'done') filteredOrders = allOrders.filter(o => o.status === 'done');
+
+            // إظهار زر الحذف فقط في تاب "مكتمل" أو "الكل"
+            if (currentFilter === 'done' && filteredOrders.length > 0) {
+                deleteSection.classList.remove('hidden');
+            } else {
+                deleteSection.classList.add('hidden');
+            }
+
+            if (filteredOrders.length === 0) {
                 list.innerHTML = `
-                    <div class="text-center py-12 bg-gray-900/50 rounded-2xl border border-gray-800 border-dashed">
-                        <i class="fas fa-mug-hot text-4xl mb-3 text-gray-700"></i>
-                        <p class="text-gray-500 font-bold">مفيش طلبات حالياً، اشرب قهوة وروق ☕</p>
+                    <div class="text-center py-12 opacity-50">
+                        <i class="fas fa-box-open text-4xl mb-3 text-gray-700"></i>
+                        <p class="text-gray-500 font-bold">لا توجد طلبات في هذه القائمة</p>
                     </div>`;
                 return;
             }
 
-            let html = '';
-            snapshot.forEach((docSnap) => {
-                const order = docSnap.data();
-                const id = docSnap.id;
-                
-                // تحديد التصميم حسب حالة الطلب
+            // رسم الكروت
+            list.innerHTML = filteredOrders.map(order => {
                 const isNew = order.status === 'new';
-                if(isNew) newOrdersCount++;
-
                 const statusClass = isNew 
-                    ? 'border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.15)]' 
-                    : 'border-gray-800 opacity-60 grayscale-[0.8]';
+                    ? 'border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.15)] bg-[#111]' 
+                    : 'border-gray-800 opacity-70 bg-black grayscale-[0.5]';
                 
-                const badge = isNew 
-                    ? '<span class="bg-neonPink text-white text-[10px] font-black px-2 py-1 rounded badge-new">جديد 🔥</span>' 
-                    : '<span class="bg-green-800 text-green-100 text-[10px] font-bold px-2 py-1 rounded"><i class="fas fa-check"></i> تم التوصيل</span>';
-
-                // حساب الوقت
+                // تنسيق الوقت
                 let timeString = 'منذ قليل';
                 if(order.timestamp) {
-                    const date = order.timestamp.toDate();
-                    timeString = date.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
+                    timeString = order.timestamp.toDate().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
                 }
 
-                html += `
-                <div class="bg-[#111] rounded-2xl p-5 border ${statusClass} order-card relative overflow-hidden">
-                    
-                    <div class="flex justify-between items-start mb-4 border-b border-gray-800 pb-3">
-                        <div class="flex gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-neonBlue font-bold text-lg">
-                                ${order.customer.name.charAt(0)}
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-white text-lg leading-none mb-1">${order.customer.name}</h3>
-                                <a href="tel:${order.customer.phone}" class="text-neonBlue font-bold text-sm hover:underline flex items-center gap-1">
-                                    <i class="fas fa-phone-alt text-xs"></i> ${order.customer.phone}
-                                </a>
-                            </div>
+                return `
+                <div class="rounded-2xl p-5 border ${statusClass} order-card relative overflow-hidden mb-4">
+                    <div class="flex justify-between items-start mb-3 pb-3 border-b border-gray-800">
+                        <div>
+                            <h3 class="font-bold text-white text-lg">${order.customer.name}</h3>
+                            <a href="tel:${order.customer.phone}" class="text-neonBlue text-sm font-bold hover:underline">
+                                📞 ${order.customer.phone}
+                            </a>
                         </div>
-                        <div class="text-left flex flex-col items-end gap-1">
-                            ${badge}
-                            <span class="text-[10px] text-gray-500 font-mono">${timeString}</span>
+                        <div class="text-left">
+                            ${isNew 
+                                ? '<span class="bg-neonPink text-white text-[10px] font-black px-2 py-1 rounded badge-new">جديد</span>' 
+                                : '<span class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-1 rounded">مكتمل</span>'}
+                            <div class="text-[10px] text-gray-500 mt-1 font-mono">${timeString}</div>
                         </div>
                     </div>
 
-                    <div class="bg-gray-900/50 p-3 rounded-xl mb-4 flex gap-2 items-start">
-                        <i class="fas fa-map-marker-alt text-red-500 mt-1"></i>
-                        <p class="text-gray-300 text-sm font-bold leading-relaxed">${order.customer.address}</p>
+                    <div class="bg-gray-900/30 p-2 rounded mb-3 text-sm text-gray-300">
+                        <i class="fas fa-map-marker-alt text-red-500 ml-1"></i> ${order.customer.address}
                     </div>
 
-                    <div class="space-y-2 mb-4">
-                        ${order.items.map(item => `
-                            <div class="flex justify-between text-sm text-gray-400 border-b border-gray-800/50 pb-1 last:border-0">
-                                <span>▫️ ${item.name} <span class="text-white font-bold">x${item.qty}</span></span>
-                                <span>${item.price * item.qty}ج</span>
+                    <div class="space-y-1 mb-4 text-sm text-gray-400">
+                        ${order.items.map(i => `
+                            <div class="flex justify-between border-b border-gray-800/50 pb-1 last:border-0">
+                                <span>${i.name} <span class="text-white font-bold">x${i.qty}</span></span>
+                                <span>${i.price * i.qty}</span>
                             </div>
                         `).join('')}
                     </div>
 
-                    <div class="flex justify-between items-center pt-3 border-t border-gray-800">
-                        <div class="text-xl font-black text-white">
-                            ${order.total} <span class="text-xs text-neonPink">جنيه</span>
-                        </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-lg font-black text-white">${order.total} <span class="text-xs text-neonPink">ج.م</span></span>
                         
                         ${isNew ? `
-                        <button onclick="markDone('${id}')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg transition flex items-center gap-2">
-                            <span>تم التوصيل</span> <i class="fas fa-check-circle"></i>
+                        <button onclick="updateStatus('${order.id}', 'done')" class="bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg transition">
+                            تسليم ✅
                         </button>
                         ` : `
-                        <button class="text-gray-600 text-sm font-bold cursor-not-allowed">
-                            مؤرشف
+                        <button onclick="updateStatus('${order.id}', 'new')" class="text-gray-500 hover:text-white text-xs font-bold underline">
+                            إعادة للجديد ↺
                         </button>
                         `}
                     </div>
                 </div>
                 `;
-            });
+            }).join('');
+        };
 
-            list.innerHTML = html;
+        // دالة تغيير الفلتر (Tabs)
+        window.setFilter = (filterType) => {
+            currentFilter = filterType;
+            // تحديث شكل التابات
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${filterType}`).classList.add('active');
+            renderOrders();
+        };
 
-            // تشغيل صوت لو فيه طلب جديد والصفحة مفتوحة
-            if(newOrdersCount > 0 && document.visibilityState === 'visible') {
-                countBadge.innerText = newOrdersCount;
-                countBadge.classList.remove('hidden');
-                // notifSound.play().catch(e => console.log('Sound blocked')); 
-            }
-        });
-
-        // دالة تغيير الحالة
-        window.markDone = async (id) => {
-            if(confirm('هل تم توصيل الطلب واستلام المبلغ؟ 💰')) {
+        // دالة تحديث حالة الطلب
+        window.updateStatus = async (id, status) => {
+            if(status === 'done' && !confirm('هل تم توصيل الطلب واستلام الفلوس؟ 💰')) return;
+            try {
                 const orderRef = doc(db, "orders", id);
-                await updateDoc(orderRef, { status: "done" });
+                await updateDoc(orderRef, { status: status });
+            } catch (error) {
+                console.error("Error updating: ", error);
+                alert("حدث خطأ، حاول مرة أخرى");
             }
         };
+
+        // 🔴 دالة مسح الطلبات المنتهية دفعة واحدة 🔴
+        window.deleteCompletedOrders = async () => {
+            if (!confirm("⚠️ تحذير هام!\nهل أنت متأكد من مسح كل الطلبات المكتملة (الأرشيف)؟\nلا يمكن التراجع عن هذه الخطوة.")) return;
+            
+            const btn = document.querySelector('#delete-section button');
+            btn.innerHTML = 'جاري المسح...';
+            btn.disabled = true;
+
+            try {
+                // 1. تحديد الطلبات المنتهية
+                const q = query(collection(db, "orders"), where("status", "==", "done"));
+                const querySnapshot = await getDocs(q);
+
+                // 2. تجهيز عملية المسح الجماعي
+                const batch = writeBatch(db);
+                querySnapshot.forEach((doc) => {
+                    batch.delete(doc.ref);
+                });
+
+                // 3. تنفيذ المسح
+                await batch.commit();
+                alert("تم تنظيف الأرشيف بنجاح! 🧹✨");
+                
+            } catch (error) {
+                console.error("Error deleting: ", error);
+                alert("حدث خطأ أثناء المسح");
+            } finally {
+                btn.innerHTML = '<i class="fas fa-trash-alt"></i> مسح سجل الطلبات المنتهية';
+                btn.disabled = false;
+            }
+        };
+
+        // تشغيل الفلتر الافتراضي عند البدء
+        setFilter('new');
     </script>
 </body>
 </html>
