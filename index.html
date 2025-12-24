@@ -588,5 +588,18 @@ document.addEventListener('DOMContentLoaded', checkAppContext);
 
 
     </script>
+
+<script>
+    // تسجيل موظف الأرشيف (Service Worker)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker: مسجل وجاهز للشغل!', reg))
+                .catch(err => console.log('Service Worker: فشل التسجيل', err));
+        });
+    }
+</script>
+
+  
 </body>
 </html>
