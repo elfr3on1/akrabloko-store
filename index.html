@@ -575,19 +575,17 @@
             saveCart();
             updateCartUI();
         }
-      // وظيفة لإخفاء زر التحميل إذا كان المستخدم داخل التطبيق (WebView)
-function checkAppContext() {
-    // نبحث عن كلمة "AkrablokoApp" التي أضفناها في سكتشوير
-    if (navigator.userAgent.includes("AkrablokoApp")) {
-        const downloadSection = document.getElementById('download-section');
+      function checkAppContext() {
+    const downloadSection = document.getElementById('download-section');
+    // إذا لم يجد كلمة التطبيق، فهذا يعني أنه متصفح عادي، لذا نظهر الزر
+    if (!navigator.userAgent.includes("AkrablokoApp")) {
         if (downloadSection) {
-            downloadSection.style.display = 'none'; // إخفاء الزر تماماً
+            downloadSection.style.display = 'flex'; 
         }
     }
 }
-
-// تشغيل الوظيفة بمجرد تحميل الصفحة
 document.addEventListener('DOMContentLoaded', checkAppContext);
+
 
     </script>
 </body>
