@@ -143,7 +143,7 @@
             <p class="text-gray-400 text-xs md:text-sm max-w-md mx-auto">
                 من الإبرة للصاروخ.. مزاجك وطلبات بيتك توصلك في ثواني.
             </p>
-          <div class="mt-5 flex justify-center">
+          <div id="download-section" class="mt-5 flex justify-center">
     <a href="Akrabloko.apk" download="Akrabloko.apk" class="bg-neonGreen/20 hover:bg-neonGreen/40 text-neonGreen font-bold px-6 py-3 rounded-2xl border border-neonGreen/50 shadow-[0_0_15px_rgba(57,255,20,0.2)] flex items-center gap-3 transition-all transform active:scale-95 group">
         <i class="fab fa-android text-2xl group-hover:scale-110 transition"></i>
         <div class="text-right">
@@ -575,6 +575,20 @@
             saveCart();
             updateCartUI();
         }
+      // وظيفة لإخفاء زر التحميل إذا كان المستخدم داخل التطبيق (WebView)
+function checkAppContext() {
+    // نبحث عن كلمة "AkrablokoApp" التي أضفناها في سكتشوير
+    if (navigator.userAgent.includes("AkrablokoApp")) {
+        const downloadSection = document.getElementById('download-section');
+        if (downloadSection) {
+            downloadSection.style.display = 'none'; // إخفاء الزر تماماً
+        }
+    }
+}
+
+// تشغيل الوظيفة بمجرد تحميل الصفحة
+document.addEventListener('DOMContentLoaded', checkAppContext);
+
     </script>
 </body>
 </html>
