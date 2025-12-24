@@ -27,17 +27,15 @@
     <style>
         body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
         
-        /* تنسيق شاشة القفل لتكون فوق كل شيء */
+        /* شاشة القفل */
         .login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000;
-            z-index: 9999; /* رقم عالي جداً عشان يغطي أي حاجة */
+            z-index: 9999;
             display: flex; align-items: center; justify-content: center;
         }
         
         .tab-btn.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
-        
-        /* كلاس للإخفاء */
         .hidden-force { display: none !important; }
     </style>
 </head>
@@ -88,11 +86,18 @@
             </div>
         </nav>
 
-        <div class="container mx-auto px-4 mt-6">
+        <div class="container mx-auto px-4 mt-6 mb-4">
             <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 max-w-md mx-auto">
                 <button onclick="setFilter('new')" id="tab-new" class="tab-btn active flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">🔥 جديدة</button>
                 <button onclick="setFilter('done')" id="tab-done" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">✅ مكتملة</button>
+                <button onclick="setFilter('all')" id="tab-all" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">📂 الكل</button>
             </div>
+        </div>
+
+        <div id="delete-section" class="container mx-auto px-4 mb-4 text-center hidden">
+            <button onclick="deleteCompletedOrders()" class="text-red-500 hover:text-red-400 text-xs font-bold border border-red-900/50 bg-red-900/10 px-4 py-2 rounded-full transition flex items-center gap-2 mx-auto">
+                <i class="fas fa-trash-alt"></i> مسح سجل الطلبات المنتهية
+            </button>
         </div>
 
         <div class="container mx-auto px-4 mt-4 max-w-3xl flex-1 pb-20">
@@ -103,9 +108,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 🔴🔴 هام: استبدل هذا الجزء بمفاتيح مشروعك من Firebase Console 🔴🔴
+        // 🔴🔴 استبدل هذا الجزء بمفاتيح مشروعك من Firebase Console 🔴🔴
         const firebaseConfig = {
             apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
             authDomain: "akrabloko.firebaseapp.com",
@@ -120,7 +125,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let currentFilter = 'new';
-        let unsubscribeOrders = null; // لإيقاف الاستماع عند الخروج
+        let unsubscribeOrders = null;
 
         // 1. مراقب البوابة (الحارس)
         onAuthStateChanged(auth, (user) => {
@@ -128,17 +133,13 @@
             const dashboardScreen = document.getElementById('dashboard-screen');
 
             if (user) {
-                // ✅ المستخدم مسجل: افتح البوابة
-                console.log("User logged in:", user.email);
                 loginScreen.classList.add('hidden-force');
                 dashboardScreen.classList.remove('hidden-force');
-                startListening(); // ابدأ تحميل الطلبات
+                startListening(); 
             } else {
-                // ⛔ المستخدم غير مسجل: اغلق البوابة فوراً
-                console.log("User logged out");
                 loginScreen.classList.remove('hidden-force');
                 dashboardScreen.classList.add('hidden-force');
-                if(unsubscribeOrders) unsubscribeOrders(); // وقف تحميل البيانات
+                if(unsubscribeOrders) unsubscribeOrders(); 
             }
         });
 
@@ -149,16 +150,12 @@
             const btn = document.getElementById('login-btn');
             const err = document.getElementById('login-error');
 
-            // تأثير التحميل
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
             btn.disabled = true;
             err.classList.add('hidden');
 
             signInWithEmailAndPassword(auth, email, pass)
-                .then(() => {
-                    // النجاح هيتم التعامل معاه تلقائياً في onAuthStateChanged
-                    btn.innerHTML = 'تم الدخول بنجاح!';
-                })
+                .then(() => { btn.innerHTML = 'تم الدخول بنجاح!'; })
                 .catch((error) => {
                     console.error("Login failed", error);
                     err.classList.remove('hidden');
@@ -167,32 +164,42 @@
                 });
         };
 
-        // 3. دالة الخروج
         window.logout = () => {
-            if(confirm("هل تريد تسجيل الخروج؟")) {
-                signOut(auth);
-            }
+            if(confirm("هل تريد تسجيل الخروج؟")) signOut(auth);
         };
 
-        // 4. تحميل الطلبات (تشتغل فقط بعد الدخول)
+        // 3. تحميل الطلبات
         function startListening() {
             const list = document.getElementById('orders-list');
+            const deleteSection = document.getElementById('delete-section');
+
             list.innerHTML = '<div class="text-center py-10"><i class="fas fa-circle-notch fa-spin text-neonPink text-2xl"></i><br>جاري جلب البيانات...</div>';
 
             const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
             
-            // حفظ دالة إلغاء الاشتراك في متغير
             unsubscribeOrders = onSnapshot(q, (snapshot) => {
                 let html = '';
                 let hasData = false;
+                let hasCompletedOrders = false;
+
+                // إظهار زر الحذف فقط عند اختيار "مكتملة"
+                if (currentFilter === 'done') {
+                    deleteSection.classList.remove('hidden');
+                } else {
+                    deleteSection.classList.add('hidden');
+                }
 
                 snapshot.forEach((doc) => {
                     const order = doc.data();
                     const id = doc.id;
                     
-                    // منطق الفلترة (جديد / مكتمل)
-                    if(currentFilter === 'new' && order.status !== 'new') return;
-                    if(currentFilter === 'done' && order.status !== 'done') return;
+                    if(order.status === 'done') hasCompletedOrders = true;
+
+                    // منطق الفلترة (جديد / مكتمل / الكل)
+                    if(currentFilter !== 'all') {
+                        if(currentFilter === 'new' && order.status !== 'new') return;
+                        if(currentFilter === 'done' && order.status !== 'done') return;
+                    }
                     
                     hasData = true;
                     const isNew = order.status === 'new';
@@ -229,7 +236,7 @@
                             
                             ${isNew ? 
                                 `<button onclick="setStatus('${id}', 'done')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg transition">✅ توصيل</button>` : 
-                                `<span class="text-gray-600 text-xs font-bold border border-gray-800 px-3 py-1 rounded-full">تم التسليم</span>`
+                                `<button onclick="setStatus('${id}', 'new')" class="text-gray-500 hover:text-white text-xs underline">إعادة للجديد ↺</button>`
                             }
                         </div>
                     </div>`;
@@ -239,22 +246,49 @@
                     list.innerHTML = `
                         <div class="text-center py-12 opacity-50">
                             <i class="fas fa-box-open text-4xl mb-3 text-gray-700"></i>
-                            <p class="text-gray-500 font-bold">لا توجد طلبات في هذه القائمة</p>
+                            <p class="text-gray-500 font-bold">لا توجد طلبات هنا</p>
                         </div>`;
                 } else {
                     list.innerHTML = html;
                 }
             }, (error) => {
-                console.error("Error fetching data:", error);
-                // لو حصل خطأ (مثلا بسبب الصلاحيات) نطلعله رسالة
                 list.innerHTML = '<div class="text-red-500 text-center p-4">لا تملك صلاحية لعرض البيانات (تأكد من تسجيل الدخول)</div>';
             });
         }
 
-        // 5. وظائف مساعدة (تغيير الحالة والفلتر)
+        // 4. وظائف مساعدة
         window.setStatus = async (id, status) => {
-            if(confirm('هل استلمت المبلغ وتم التوصيل؟ 💰')) {
-                await updateDoc(doc(db, "orders", id), { status: status });
+            // لو هنحولها لـ Done لازم نأكد، لو هنرجعها New مش لازم
+            if(status === 'done' && !confirm('هل استلمت المبلغ وتم التوصيل؟ 💰')) return;
+            await updateDoc(doc(db, "orders", id), { status: status });
+        };
+
+        // دالة مسح الأرشيف
+        window.deleteCompletedOrders = async () => {
+            if (!confirm("⚠️ تحذير هام!\nهل أنت متأكد من مسح كل الطلبات المكتملة (الأرشيف)؟\nلا يمكن التراجع عن هذه الخطوة.")) return;
+            
+            const btn = document.querySelector('#delete-section button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'جاري المسح...';
+            btn.disabled = true;
+
+            try {
+                const q = query(collection(db, "orders"), where("status", "==", "done"));
+                const querySnapshot = await getDocs(q);
+
+                const batch = writeBatch(db);
+                querySnapshot.forEach((doc) => {
+                    batch.delete(doc.ref);
+                });
+
+                await batch.commit();
+                alert("تم تنظيف الأرشيف بنجاح! 🧹✨");
+            } catch (error) {
+                console.error("Error deleting: ", error);
+                alert("حدث خطأ أثناء المسح");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         };
 
@@ -262,7 +296,7 @@
             currentFilter = f;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('tab-'+f).classList.add('active');
-            startListening(); // إعادة الرسم
+            startListening(); 
         };
     </script>
 </body>
