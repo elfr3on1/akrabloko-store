@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة القيادة - أقربلوكو 🚀</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonBlue: '#00f3ff',
+                        neonPink: '#bc13fe',
+                        darkBg: '#050505',
+                        cardBg: '#111111'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
+        .neon-border { border: 1px solid rgba(188, 19, 254, 0.3); box-shadow: 0 0 10px rgba(188, 19, 254, 0.1); }
+        .order-card { transition: all 0.3s ease; }
+        .order-card:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0, 243, 255, 0.15); }
+        .badge-new { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body class="pb-20">
+
+    <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800 p-4 mb-6 shadow-2xl">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-black text-white flex items-center gap-2">
+                <i class="fas fa-user-astronaut text-neonPink"></i>
+                أدمن <span class="text-neonBlue">أقربلوكو</span>
+            </h1>
+            <div class="flex items-center gap-3">
+                <span id="order-count" class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full hidden">0</span>
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span class="text-xs text-gray-400 font-bold">متصل</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 max-w-3xl">
+        <h2 class="text-gray-400 text-sm font-bold mb-4 border-r-4 border-neonBlue pr-3">الطلبات الحالية (Live)</h2>
+        
+        <div id="orders-list" class="space-y-4">
+            <div class="text-center py-10 text-gray-600 animate-pulse">
+                <i class="fas fa-satellite-dish text-4xl mb-3 opacity-20"></i>
+                <p>جاري الاتصال بالقمر الصناعي...</p>
+            </div>
+        </div>
+    </div>
+
+    <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 🔴 إعدادات مشروعك
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
+            authDomain: "akrabloko.firebaseapp.com",
+            projectId: "akrabloko",
+            storageBucket: "akrabloko.firebasestorage.app",
+            messagingSenderId: "846428093028",
+            appId: "1:846428093028:web:29f31599b90125c2673d71",
+            measurementId: "G-31SP9TP2N1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const notifSound = document.getElementById('notif-sound');
+
+        // استدعاء الطلبات وترتيبها من الأحدث للأقدم
+        const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            const list = document.getElementById('orders-list');
+            const countBadge = document.getElementById('order-count');
+            
+            // تحديث العداد
+            let newOrdersCount = 0;
+            
+            if (snapshot.empty) {
+                list.innerHTML = `
+                    <div class="text-center py-12 bg-gray-900/50 rounded-2xl border border-gray-800 border-dashed">
+                        <i class="fas fa-mug-hot text-4xl mb-3 text-gray-700"></i>
+                        <p class="text-gray-500 font-bold">مفيش طلبات حالياً، اشرب قهوة وروق ☕</p>
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach((docSnap) => {
+                const order = docSnap.data();
+                const id = docSnap.id;
+                
+                // تحديد التصميم حسب حالة الطلب
+                const isNew = order.status === 'new';
+                if(isNew) newOrdersCount++;
+
+                const statusClass = isNew 
+                    ? 'border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.15)]' 
+                    : 'border-gray-800 opacity-60 grayscale-[0.8]';
+                
+                const badge = isNew 
+                    ? '<span class="bg-neonPink text-white text-[10px] font-black px-2 py-1 rounded badge-new">جديد 🔥</span>' 
+                    : '<span class="bg-green-800 text-green-100 text-[10px] font-bold px-2 py-1 rounded"><i class="fas fa-check"></i> تم التوصيل</span>';
+
+                // حساب الوقت
+                let timeString = 'منذ قليل';
+                if(order.timestamp) {
+                    const date = order.timestamp.toDate();
+                    timeString = date.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
+                }
+
+                html += `
+                <div class="bg-[#111] rounded-2xl p-5 border ${statusClass} order-card relative overflow-hidden">
+                    
+                    <div class="flex justify-between items-start mb-4 border-b border-gray-800 pb-3">
+                        <div class="flex gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-neonBlue font-bold text-lg">
+                                ${order.customer.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-lg leading-none mb-1">${order.customer.name}</h3>
+                                <a href="tel:${order.customer.phone}" class="text-neonBlue font-bold text-sm hover:underline flex items-center gap-1">
+                                    <i class="fas fa-phone-alt text-xs"></i> ${order.customer.phone}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="text-left flex flex-col items-end gap-1">
+                            ${badge}
+                            <span class="text-[10px] text-gray-500 font-mono">${timeString}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-900/50 p-3 rounded-xl mb-4 flex gap-2 items-start">
+                        <i class="fas fa-map-marker-alt text-red-500 mt-1"></i>
+                        <p class="text-gray-300 text-sm font-bold leading-relaxed">${order.customer.address}</p>
+                    </div>
+
+                    <div class="space-y-2 mb-4">
+                        ${order.items.map(item => `
+                            <div class="flex justify-between text-sm text-gray-400 border-b border-gray-800/50 pb-1 last:border-0">
+                                <span>▫️ ${item.name} <span class="text-white font-bold">x${item.qty}</span></span>
+                                <span>${item.price * item.qty}ج</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="flex justify-between items-center pt-3 border-t border-gray-800">
+                        <div class="text-xl font-black text-white">
+                            ${order.total} <span class="text-xs text-neonPink">جنيه</span>
+                        </div>
+                        
+                        ${isNew ? `
+                        <button onclick="markDone('${id}')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl font-bold shadow-lg transition flex items-center gap-2">
+                            <span>تم التوصيل</span> <i class="fas fa-check-circle"></i>
+                        </button>
+                        ` : `
+                        <button class="text-gray-600 text-sm font-bold cursor-not-allowed">
+                            مؤرشف
+                        </button>
+                        `}
+                    </div>
+                </div>
+                `;
+            });
+
+            list.innerHTML = html;
+
+            // تشغيل صوت لو فيه طلب جديد والصفحة مفتوحة
+            if(newOrdersCount > 0 && document.visibilityState === 'visible') {
+                countBadge.innerText = newOrdersCount;
+                countBadge.classList.remove('hidden');
+                // notifSound.play().catch(e => console.log('Sound blocked')); 
+            }
+        });
+
+        // دالة تغيير الحالة
+        window.markDone = async (id) => {
+            if(confirm('هل تم توصيل الطلب واستلام المبلغ؟ 💰')) {
+                const orderRef = doc(db, "orders", id);
+                await updateDoc(orderRef, { status: "done" });
+            }
+        };
+    </script>
+</body>
+</html>
