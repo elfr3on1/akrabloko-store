@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة القيادة V2 - أقربلوكو</title>
+    <title>بوابة المدير الآمنة 🔒</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,72 +19,93 @@
                         darkBg: '#050505',
                         cardBg: '#111111'
                     },
-                    fontFamily: {
-                        cairo: ['Cairo', 'sans-serif'],
-                    }
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
                 }
             }
         }
     </script>
     <style>
         body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
-        .tab-btn { transition: all 0.3s; border-bottom: 2px solid transparent; opacity: 0.6; }
-        .tab-btn.active { opacity: 1; border-color: #00f3ff; color: #00f3ff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.4); }
-        .order-card { transition: all 0.3s ease; }
-        .order-card:hover { transform: translateY(-2px); }
-        .badge-new { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        /* تنسيق شاشة القفل لتكون فوق كل شيء */
+        .login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            z-index: 9999; /* رقم عالي جداً عشان يغطي أي حاجة */
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .tab-btn.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
+        
+        /* كلاس للإخفاء */
+        .hidden-force { display: none !important; }
     </style>
 </head>
-<body class="pb-20 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
-    <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800 p-4 shadow-2xl">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-black text-white flex items-center gap-2">
-                <i class="fas fa-user-astronaut text-neonPink"></i>
-                <span class="hidden sm:inline">أدمن</span> <span class="text-neonBlue">أقربلوكو</span>
-            </h1>
-            <div class="flex items-center gap-3">
-                <span id="order-count" class="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full hidden animate-bounce">0</span>
-                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+    <div id="login-screen" class="login-overlay">
+        <div class="bg-[#111] p-8 rounded-3xl border border-gray-800 shadow-[0_0_50px_rgba(188,19,254,0.1)] w-full max-w-sm text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonBlue to-neonPink"></div>
+            
+            <div class="w-20 h-20 bg-gray-900 rounded-full mx-auto flex items-center justify-center mb-6 border-2 border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.3)]">
+                <i class="fas fa-fingerprint text-4xl text-neonPink"></i>
             </div>
-        </div>
-    </nav>
+            
+            <h2 class="text-2xl font-black text-white mb-2">منطقة الإدارة</h2>
+            <p class="text-gray-500 text-xs mb-6">يجب تسجيل الدخول للمتابعة</p>
+            
+            <form onsubmit="event.preventDefault(); login();">
+                <div class="mb-4 relative">
+                    <i class="fas fa-envelope absolute top-4 right-4 text-gray-500"></i>
+                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition text-sm">
+                </div>
+                
+                <div class="mb-6 relative">
+                    <i class="fas fa-lock absolute top-4 right-4 text-gray-500"></i>
+                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition text-sm">
+                </div>
 
-    <div class="container mx-auto px-4 mt-6 mb-4">
-        <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 max-w-md mx-auto">
-            <button onclick="setFilter('new')" id="tab-new" class="tab-btn active flex-1 py-2 font-bold text-sm rounded-lg hover:bg-white/5">
-                🔥 جديدة
-            </button>
-            <button onclick="setFilter('done')" id="tab-done" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg hover:bg-white/5">
-                ✅ مكتملة
-            </button>
-            <button onclick="setFilter('all')" id="tab-all" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg hover:bg-white/5">
-                📂 الكل
-            </button>
+                <button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-neonPink to-purple-900 hover:from-purple-800 hover:to-neonPink text-white font-bold py-3.5 rounded-xl shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2">
+                    <span>فتح السيستم</span> <i class="fas fa-unlock"></i>
+                </button>
+            </form>
+            
+            <p id="login-error" class="text-red-500 text-xs mt-4 font-bold bg-red-900/10 py-2 rounded border border-red-900/30 hidden">
+                <i class="fas fa-exclamation-circle"></i> بيانات الدخول غير صحيحة
+            </p>
         </div>
     </div>
 
-    <div id="delete-section" class="container mx-auto px-4 mb-4 text-center hidden">
-        <button onclick="deleteCompletedOrders()" class="text-red-500 hover:text-red-400 text-xs font-bold border border-red-900/50 bg-red-900/10 px-4 py-2 rounded-full transition flex items-center gap-2 mx-auto">
-            <i class="fas fa-trash-alt"></i> مسح سجل الطلبات المنتهية
-        </button>
-    </div>
-
-    <div class="container mx-auto px-4 max-w-3xl flex-1">
-        <div id="orders-list" class="space-y-4">
-            <div class="text-center py-20 text-gray-600">
-                <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-neonPink"></i>
-                <p>جاري تحميل البيانات...</p>
+    <div id="dashboard-screen" class="hidden-force flex-1 flex flex-col">
+        <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800 p-4 shadow-2xl">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-black text-white flex items-center gap-2">
+                    <i class="fas fa-user-astronaut text-neonPink"></i> لوحة التحكم
+                </h1>
+                <button onclick="logout()" class="text-red-500 text-xs font-bold border border-red-900 bg-red-900/10 px-4 py-2 rounded-lg hover:bg-red-900/30 transition flex items-center gap-2">
+                    خروج <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
+        </nav>
+
+        <div class="container mx-auto px-4 mt-6">
+            <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 max-w-md mx-auto">
+                <button onclick="setFilter('new')" id="tab-new" class="tab-btn active flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">🔥 جديدة</button>
+                <button onclick="setFilter('done')" id="tab-done" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">✅ مكتملة</button>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 mt-4 max-w-3xl flex-1 pb-20">
+            <div id="orders-list" class="space-y-4"></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 🔴 مفاتيحك الخاصة (كما هي)
+        // 🔴🔴 هام: استبدل هذا الجزء بمفاتيح مشروعك من Firebase Console 🔴🔴
         const firebaseConfig = {
             apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
             authDomain: "akrabloko.firebaseapp.com",
@@ -96,179 +117,153 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
+        let currentFilter = 'new';
+        let unsubscribeOrders = null; // لإيقاف الاستماع عند الخروج
 
-        let allOrders = []; // لتخزين كل الطلبات محلياً
-        let currentFilter = 'new'; // الفلتر الافتراضي
+        // 1. مراقب البوابة (الحارس)
+        onAuthStateChanged(auth, (user) => {
+            const loginScreen = document.getElementById('login-screen');
+            const dashboardScreen = document.getElementById('dashboard-screen');
 
-        // جلب البيانات لحظياً
-        const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
-        
-        onSnapshot(q, (snapshot) => {
-            allOrders = [];
-            let newCount = 0;
-
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                data.id = doc.id; // إضافة الـ ID للبيانات
-                allOrders.push(data);
-                if(data.status === 'new') newCount++;
-            });
-
-            // تحديث العداد في النافبار
-            const badge = document.getElementById('order-count');
-            if(newCount > 0) {
-                badge.innerText = newCount;
-                badge.classList.remove('hidden');
+            if (user) {
+                // ✅ المستخدم مسجل: افتح البوابة
+                console.log("User logged in:", user.email);
+                loginScreen.classList.add('hidden-force');
+                dashboardScreen.classList.remove('hidden-force');
+                startListening(); // ابدأ تحميل الطلبات
             } else {
-                badge.classList.add('hidden');
+                // ⛔ المستخدم غير مسجل: اغلق البوابة فوراً
+                console.log("User logged out");
+                loginScreen.classList.remove('hidden-force');
+                dashboardScreen.classList.add('hidden-force');
+                if(unsubscribeOrders) unsubscribeOrders(); // وقف تحميل البيانات
             }
-
-            renderOrders(); // إعادة رسم الصفحة
         });
 
-        // دالة عرض الطلبات حسب الفلتر
-        window.renderOrders = () => {
-            const list = document.getElementById('orders-list');
-            const deleteSection = document.getElementById('delete-section');
-            
-            // تصفية الطلبات
-            let filteredOrders = allOrders;
-            if (currentFilter === 'new') filteredOrders = allOrders.filter(o => o.status === 'new');
-            if (currentFilter === 'done') filteredOrders = allOrders.filter(o => o.status === 'done');
+        // 2. دالة تسجيل الدخول
+        window.login = () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('login-btn');
+            const err = document.getElementById('login-error');
 
-            // إظهار زر الحذف فقط في تاب "مكتمل" أو "الكل"
-            if (currentFilter === 'done' && filteredOrders.length > 0) {
-                deleteSection.classList.remove('hidden');
-            } else {
-                deleteSection.classList.add('hidden');
-            }
-
-            if (filteredOrders.length === 0) {
-                list.innerHTML = `
-                    <div class="text-center py-12 opacity-50">
-                        <i class="fas fa-box-open text-4xl mb-3 text-gray-700"></i>
-                        <p class="text-gray-500 font-bold">لا توجد طلبات في هذه القائمة</p>
-                    </div>`;
-                return;
-            }
-
-            // رسم الكروت
-            list.innerHTML = filteredOrders.map(order => {
-                const isNew = order.status === 'new';
-                const statusClass = isNew 
-                    ? 'border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.15)] bg-[#111]' 
-                    : 'border-gray-800 opacity-70 bg-black grayscale-[0.5]';
-                
-                // تنسيق الوقت
-                let timeString = 'منذ قليل';
-                if(order.timestamp) {
-                    timeString = order.timestamp.toDate().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
-                }
-
-                return `
-                <div class="rounded-2xl p-5 border ${statusClass} order-card relative overflow-hidden mb-4">
-                    <div class="flex justify-between items-start mb-3 pb-3 border-b border-gray-800">
-                        <div>
-                            <h3 class="font-bold text-white text-lg">${order.customer.name}</h3>
-                            <a href="tel:${order.customer.phone}" class="text-neonBlue text-sm font-bold hover:underline">
-                                📞 ${order.customer.phone}
-                            </a>
-                        </div>
-                        <div class="text-left">
-                            ${isNew 
-                                ? '<span class="bg-neonPink text-white text-[10px] font-black px-2 py-1 rounded badge-new">جديد</span>' 
-                                : '<span class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-1 rounded">مكتمل</span>'}
-                            <div class="text-[10px] text-gray-500 mt-1 font-mono">${timeString}</div>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-900/30 p-2 rounded mb-3 text-sm text-gray-300">
-                        <i class="fas fa-map-marker-alt text-red-500 ml-1"></i> ${order.customer.address}
-                    </div>
-
-                    <div class="space-y-1 mb-4 text-sm text-gray-400">
-                        ${order.items.map(i => `
-                            <div class="flex justify-between border-b border-gray-800/50 pb-1 last:border-0">
-                                <span>${i.name} <span class="text-white font-bold">x${i.qty}</span></span>
-                                <span>${i.price * i.qty}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-
-                    <div class="flex justify-between items-center pt-2">
-                        <span class="text-lg font-black text-white">${order.total} <span class="text-xs text-neonPink">ج.م</span></span>
-                        
-                        ${isNew ? `
-                        <button onclick="updateStatus('${order.id}', 'done')" class="bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg transition">
-                            تسليم ✅
-                        </button>
-                        ` : `
-                        <button onclick="updateStatus('${order.id}', 'new')" class="text-gray-500 hover:text-white text-xs font-bold underline">
-                            إعادة للجديد ↺
-                        </button>
-                        `}
-                    </div>
-                </div>
-                `;
-            }).join('');
-        };
-
-        // دالة تغيير الفلتر (Tabs)
-        window.setFilter = (filterType) => {
-            currentFilter = filterType;
-            // تحديث شكل التابات
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${filterType}`).classList.add('active');
-            renderOrders();
-        };
-
-        // دالة تحديث حالة الطلب
-        window.updateStatus = async (id, status) => {
-            if(status === 'done' && !confirm('هل تم توصيل الطلب واستلام الفلوس؟ 💰')) return;
-            try {
-                const orderRef = doc(db, "orders", id);
-                await updateDoc(orderRef, { status: status });
-            } catch (error) {
-                console.error("Error updating: ", error);
-                alert("حدث خطأ، حاول مرة أخرى");
-            }
-        };
-
-        // 🔴 دالة مسح الطلبات المنتهية دفعة واحدة 🔴
-        window.deleteCompletedOrders = async () => {
-            if (!confirm("⚠️ تحذير هام!\nهل أنت متأكد من مسح كل الطلبات المكتملة (الأرشيف)؟\nلا يمكن التراجع عن هذه الخطوة.")) return;
-            
-            const btn = document.querySelector('#delete-section button');
-            btn.innerHTML = 'جاري المسح...';
+            // تأثير التحميل
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
             btn.disabled = true;
+            err.classList.add('hidden');
 
-            try {
-                // 1. تحديد الطلبات المنتهية
-                const q = query(collection(db, "orders"), where("status", "==", "done"));
-                const querySnapshot = await getDocs(q);
+            signInWithEmailAndPassword(auth, email, pass)
+                .then(() => {
+                    // النجاح هيتم التعامل معاه تلقائياً في onAuthStateChanged
+                    btn.innerHTML = 'تم الدخول بنجاح!';
+                })
+                .catch((error) => {
+                    console.error("Login failed", error);
+                    err.classList.remove('hidden');
+                    btn.innerHTML = '<span>فتح السيستم</span> <i class="fas fa-unlock"></i>';
+                    btn.disabled = false;
+                });
+        };
 
-                // 2. تجهيز عملية المسح الجماعي
-                const batch = writeBatch(db);
-                querySnapshot.forEach((doc) => {
-                    batch.delete(doc.ref);
+        // 3. دالة الخروج
+        window.logout = () => {
+            if(confirm("هل تريد تسجيل الخروج؟")) {
+                signOut(auth);
+            }
+        };
+
+        // 4. تحميل الطلبات (تشتغل فقط بعد الدخول)
+        function startListening() {
+            const list = document.getElementById('orders-list');
+            list.innerHTML = '<div class="text-center py-10"><i class="fas fa-circle-notch fa-spin text-neonPink text-2xl"></i><br>جاري جلب البيانات...</div>';
+
+            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+            
+            // حفظ دالة إلغاء الاشتراك في متغير
+            unsubscribeOrders = onSnapshot(q, (snapshot) => {
+                let html = '';
+                let hasData = false;
+
+                snapshot.forEach((doc) => {
+                    const order = doc.data();
+                    const id = doc.id;
+                    
+                    // منطق الفلترة (جديد / مكتمل)
+                    if(currentFilter === 'new' && order.status !== 'new') return;
+                    if(currentFilter === 'done' && order.status !== 'done') return;
+                    
+                    hasData = true;
+                    const isNew = order.status === 'new';
+                    const borderClass = isNew ? 'border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.1)]' : 'border-gray-800 opacity-60 grayscale';
+
+                    html += `
+                    <div class="bg-[#111] border ${borderClass} p-5 rounded-2xl mb-4 relative transition hover:-translate-y-1">
+                        ${isNew ? '<span class="absolute top-4 left-4 bg-neonPink text-white text-[10px] px-2 py-0.5 rounded font-bold animate-pulse">جديد</span>' : ''}
+                        
+                        <div class="flex justify-between items-start mb-3 border-b border-gray-800 pb-2">
+                            <div>
+                                <h3 class="font-bold text-white text-lg">${order.customer.name}</h3>
+                                <a href="tel:${order.customer.phone}" class="text-neonBlue text-sm font-bold flex items-center gap-1 hover:underline">
+                                    <i class="fas fa-phone"></i> ${order.customer.phone}
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-900/50 p-2 rounded-lg mb-3 text-xs text-gray-300 flex items-start gap-2">
+                             <i class="fas fa-map-marker-alt text-red-500 mt-0.5"></i> ${order.customer.address}
+                        </div>
+                        
+                        <div class="space-y-1 mb-4">
+                             ${order.items.map(i => `
+                                <div class="flex justify-between text-xs text-gray-400 border-b border-gray-800/50 pb-1 last:border-0">
+                                    <span>${i.name} <strong class="text-white">x${i.qty}</strong></span>
+                                    <span>${i.price * i.qty}</span>
+                                </div>
+                             `).join('')}
+                        </div>
+
+                        <div class="flex justify-between items-center pt-2">
+                            <div class="text-lg font-black text-white">${order.total} <span class="text-xs text-neonPink">ج.م</span></div>
+                            
+                            ${isNew ? 
+                                `<button onclick="setStatus('${id}', 'done')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg transition">✅ توصيل</button>` : 
+                                `<span class="text-gray-600 text-xs font-bold border border-gray-800 px-3 py-1 rounded-full">تم التسليم</span>`
+                            }
+                        </div>
+                    </div>`;
                 });
 
-                // 3. تنفيذ المسح
-                await batch.commit();
-                alert("تم تنظيف الأرشيف بنجاح! 🧹✨");
-                
-            } catch (error) {
-                console.error("Error deleting: ", error);
-                alert("حدث خطأ أثناء المسح");
-            } finally {
-                btn.innerHTML = '<i class="fas fa-trash-alt"></i> مسح سجل الطلبات المنتهية';
-                btn.disabled = false;
+                if(!hasData) {
+                    list.innerHTML = `
+                        <div class="text-center py-12 opacity-50">
+                            <i class="fas fa-box-open text-4xl mb-3 text-gray-700"></i>
+                            <p class="text-gray-500 font-bold">لا توجد طلبات في هذه القائمة</p>
+                        </div>`;
+                } else {
+                    list.innerHTML = html;
+                }
+            }, (error) => {
+                console.error("Error fetching data:", error);
+                // لو حصل خطأ (مثلا بسبب الصلاحيات) نطلعله رسالة
+                list.innerHTML = '<div class="text-red-500 text-center p-4">لا تملك صلاحية لعرض البيانات (تأكد من تسجيل الدخول)</div>';
+            });
+        }
+
+        // 5. وظائف مساعدة (تغيير الحالة والفلتر)
+        window.setStatus = async (id, status) => {
+            if(confirm('هل استلمت المبلغ وتم التوصيل؟ 💰')) {
+                await updateDoc(doc(db, "orders", id), { status: status });
             }
         };
 
-        // تشغيل الفلتر الافتراضي عند البدء
-        setFilter('new');
+        window.setFilter = (f) => {
+            currentFilter = f;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-'+f).classList.add('active');
+            startListening(); // إعادة الرسم
+        };
     </script>
 </body>
 </html>
