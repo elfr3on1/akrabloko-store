@@ -26,7 +26,6 @@
         .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .tab-btn.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
         .hidden-force { display: none !important; }
-        /* ستايل زرار التبديل الجديد */
         .nav-switch.active { background: rgba(188, 19, 254, 0.2); border: 1px solid #bc13fe; color: white; }
     </style>
 </head>
@@ -43,11 +42,11 @@
             <form onsubmit="event.preventDefault(); login();">
                 <div class="mb-4 relative">
                     <i class="fas fa-envelope absolute top-4 right-4 text-gray-500"></i>
-                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition text-sm">
+                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue outline-none transition text-sm">
                 </div>
                 <div class="mb-6 relative">
                     <i class="fas fa-lock absolute top-4 right-4 text-gray-500"></i>
-                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition text-sm">
+                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue outline-none transition text-sm">
                 </div>
                 <button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-neonPink to-purple-900 hover:from-purple-800 hover:to-neonPink text-white font-bold py-3.5 rounded-xl shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2">
                     <span>فتح السيستم</span> <i class="fas fa-unlock"></i>
@@ -95,11 +94,41 @@
             <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-6 relative overflow-hidden shadow-lg">
                 <div class="absolute top-0 right-0 w-20 h-20 bg-neonBlue blur-[50px] opacity-10"></div>
                 <h3 class="font-bold text-lg mb-4 text-neonBlue flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة منتج</h3>
+                
                 <form onsubmit="event.preventDefault(); addProduct();" id="product-form" class="space-y-3">
                     <div class="grid grid-cols-2 gap-3">
                         <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: بيبسي)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
                         <input type="number" id="p-price" placeholder="السعر" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
                     </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="text-xs text-gray-400 mr-1">اختار أيقونة المنتج:</label>
+                        <div class="flex gap-2">
+                            <select onchange="updateIcon(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/3 text-sm">
+                                <option value="">اختر...</option>
+                                <option value="fa-box-open">📦 كرتونة</option>
+                                <option value="fa-bottle-water">🥤 زجاجة</option>
+                                <option value="fa-mug-hot">☕ مشروب ساخن</option>
+                                <option value="fa-glass-water">🧃 عصير/كانز</option>
+                                <option value="fa-cookie">🍪 بسكويت</option>
+                                <option value="fa-ice-cream">🍦 آيس كريم</option>
+                                <option value="fa-smoking">🚬 سجاير</option>
+                                <option value="fa-apple-whole">🍎 فاكهة</option>
+                                <option value="fa-bread-slice">🍞 مخبوزات</option>
+                                <option value="fa-cheese">🧀 جبنة</option>
+                                <option value="fa-drumstick-bite">🍗 لحوم</option>
+                                <option value="fa-soap">🧼 منظفات</option>
+                                <option value="fa-bolt">⚡ طاقة</option>
+                            </select>
+                            
+                            <input type="text" id="p-icon" oninput="updatePreview(this.value)" placeholder="أو اكتب الكود (fa-star)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full text-sm">
+                            
+                            <div class="w-12 h-11 bg-gray-800 rounded-xl flex items-center justify-center border border-gray-700 shadow-inner">
+                                <i id="icon-preview" class="fas fa-circle text-neonBlue text-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-3">
                         <select id="p-category" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
                             <option value="grocery">بقالة 🧺</option>
@@ -107,9 +136,9 @@
                             <option value="drinks">مشروبات 🥤</option>
                             <option value="mood">المزاج 🚬</option>
                         </select>
-                        <input type="text" id="p-icon" placeholder="الأيقونة (لو سبتها فاضية هختارلك)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
+                        <input type="text" id="p-desc" placeholder="وصف (مثلاً: 1 لتر)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
                     </div>
-                    <input type="text" id="p-desc" placeholder="وصف قصير (مثلاً: 1 لتر)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
+                    
                     <input type="text" id="p-variants" placeholder="الأنواع (افصل بفاصلة: شطة, ليمون)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
                     <button type="submit" id="add-btn" class="w-full bg-neonBlue hover:bg-cyan-400 text-black font-bold py-3 rounded-xl transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">حفظ المنتج 💾</button>
                 </form>
@@ -142,13 +171,25 @@
         let currentFilter = 'new';
         let unsubscribeOrders = null;
 
+        // --- دوال تحديث الأيقونة ---
+        window.updateIcon = (val) => {
+            if(val) {
+                document.getElementById('p-icon').value = val;
+                document.getElementById('icon-preview').className = `fas ${val} text-neonBlue text-lg`;
+            }
+        };
+        window.updatePreview = (val) => {
+            const icon = val || 'fa-circle';
+            document.getElementById('icon-preview').className = `fas ${icon} text-neonBlue text-lg`;
+        };
+
         // --- AUTH ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('login-screen').classList.add('hidden-force');
                 document.getElementById('dashboard-screen').classList.remove('hidden-force');
                 startListening();
-                loadProductsAdmin(); // تحميل المنتجات عند الدخول
+                loadProductsAdmin();
             } else {
                 document.getElementById('login-screen').classList.remove('hidden-force');
                 document.getElementById('dashboard-screen').classList.add('hidden-force');
@@ -173,7 +214,6 @@
 
         window.logout = () => { if(confirm("خروج؟")) signOut(auth); };
 
-        // --- View Switching ---
         window.switchView = (view) => {
             document.getElementById('view-orders').classList.add('hidden');
             document.getElementById('view-products').classList.add('hidden');
@@ -185,7 +225,6 @@
             btn.classList.add('active');
         };
 
-        // --- Orders Logic (القديم) ---
         function startListening() {
             const list = document.getElementById('orders-list');
             const deleteSection = document.getElementById('delete-section');
@@ -227,7 +266,6 @@
         window.deleteCompletedOrders = async () => { if (!confirm("مسح الأرشيف كله؟")) return; const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach((d) => b.delete(d.ref)); await b.commit(); alert("تم المسح!"); };
         window.setFilter = (f) => { currentFilter = f; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-'+f).classList.add('active'); startListening(); };
 
-        // --- Products Logic (الجديد) ---
         window.addProduct = async () => {
             const btn = document.getElementById('add-btn');
             btn.innerHTML = 'جاري الحفظ...'; btn.disabled = true;
@@ -238,13 +276,12 @@
             const desc = document.getElementById('p-desc').value;
             const variants = document.getElementById('p-variants').value ? document.getElementById('p-variants').value.split(',').map(s=>s.trim()) : [];
             
-            // Random Icon Logic
             const randomIcons = ['fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle'];
             const icon = document.getElementById('p-icon').value.trim() || randomIcons[Math.floor(Math.random() * randomIcons.length)];
 
             try {
                 await addDoc(collection(db, "products"), { name, price, category, icon, desc, variants, color: 'text-white', createdAt: serverTimestamp() });
-                alert('تمت الإضافة! ✅'); document.getElementById('product-form').reset();
+                alert('تمت الإضافة! ✅'); document.getElementById('product-form').reset(); document.getElementById('icon-preview').className = 'fas fa-circle text-neonBlue text-lg';
             } catch (e) { alert('خطأ: ' + e.message); }
             btn.innerHTML = 'حفظ المنتج 💾'; btn.disabled = false;
         };
