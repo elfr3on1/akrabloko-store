@@ -75,7 +75,6 @@
         </div>
 
         <div id="view-products" class="container mx-auto px-4 mt-6 pb-20 hidden">
-            
             <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-8 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-20 h-20 bg-neonBlue blur-[50px] opacity-10"></div>
                 <h3 class="font-bold text-lg mb-4 text-neonBlue"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h3>
@@ -97,7 +96,6 @@
                     </div>
 
                     <input type="text" id="p-desc" placeholder="وصف قصير (مثلاً: 1 لتر)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
-                    
                     <input type="text" id="p-variants" placeholder="الأنواع (افصل بفاصلة: شطة, ليمون, جبنة)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
 
                     <button type="submit" id="add-btn" class="w-full bg-neonBlue text-black font-bold py-3 rounded-xl hover:bg-cyan-400 transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">
@@ -131,7 +129,7 @@
         const db = getFirestore(app);
         let currentFilter = 'new';
 
-        // --- AUTH & SETUP ---
+        // ربط الدوال بـ window
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('login-screen').classList.add('hidden-force');
@@ -154,7 +152,6 @@
 
         window.logout = () => signOut(auth);
 
-        // --- NAVIGATION TABS ---
         window.switchMainView = (viewName) => {
             document.getElementById('view-orders').classList.add('hidden');
             document.getElementById('view-products').classList.add('hidden');
@@ -165,7 +162,6 @@
             document.getElementById('btn-view-' + viewName).classList.add('active-tab');
         };
 
-        // --- ORDERS LOGIC ---
         function loadOrders() {
             const list = document.getElementById('orders-list');
             const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
@@ -215,9 +211,6 @@
             loadOrders(); 
         };
 
-        // --- PRODUCTS LOGIC (UPDATED WITH RANDOM ICONS) ---
-        
-        // 1. إضافة منتج (تعديل: أيقونة عشوائية)
         window.addProduct = async () => {
             const btn = document.getElementById('add-btn');
             btn.innerHTML = 'جاري الحفظ...';
@@ -227,30 +220,19 @@
             const price = Number(document.getElementById('p-price').value);
             const category = document.getElementById('p-category').value;
             
-            // --- هنا التعديل: اختيار أيقونة عشوائية لو الخانة فاضية ---
-            const randomIcons = [
-                'fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 
-                'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle',
-                'fa-cart-plus', 'fa-bell'
-            ];
+            const randomIcons = ['fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle'];
             const userIcon = document.getElementById('p-icon').value.trim();
-            // لو المستخدم كتب أيقونة استخدمها، لو لأ استخدم واحدة عشوائي
             const icon = userIcon || randomIcons[Math.floor(Math.random() * randomIcons.length)];
-            // -----------------------------------------------------------
 
             const desc = document.getElementById('p-desc').value;
             const variantsRaw = document.getElementById('p-variants').value;
-            
-            // تحويل النص لمصفوفة
             const variants = variantsRaw ? variantsRaw.split(',').map(s => s.trim()) : [];
 
             try {
                 await addDoc(collection(db, "products"), {
                     name, price, category, icon, desc, variants,
-                    color: 'text-white', 
-                    createdAt: serverTimestamp()
+                    color: 'text-white', createdAt: serverTimestamp()
                 });
-                
                 alert('تمت الإضافة بنجاح! ✅');
                 document.getElementById('product-form').reset();
             } catch (error) {
@@ -260,7 +242,6 @@
             btn.disabled = false;
         };
 
-        // 2. تحميل المنتجات وعرضها
         function loadProducts() {
             const list = document.getElementById('products-list-admin');
             const q = query(collection(db, "products"), orderBy("category"));
@@ -290,13 +271,11 @@
             });
         }
 
-        // 3. حذف منتج
         window.deleteProduct = async (id) => {
             if(confirm('متأكد عايز تمسح المنتج ده نهائي؟')) {
                 await deleteDoc(doc(db, "products", id));
             }
         };
-
     </script>
 </body>
 </html>
