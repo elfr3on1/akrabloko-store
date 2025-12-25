@@ -27,6 +27,9 @@
         .tab-btn.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
         .hidden-force { display: none !important; }
         .nav-switch.active { background: rgba(188, 19, 254, 0.2); border: 1px solid #bc13fe; color: white; }
+        /* تحسين شكل القوائم المنسدلة */
+        select option { background: #111; color: white; padding: 10px; font-size: 16px; }
+        select optgroup { color: #00f3ff; font-weight: bold; background: #222; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -93,46 +96,91 @@
         <div id="view-products" class="hidden container mx-auto px-4 mt-6 pb-20 max-w-3xl">
             <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-6 relative overflow-hidden shadow-lg">
                 <div class="absolute top-0 right-0 w-20 h-20 bg-neonBlue blur-[50px] opacity-10"></div>
-                <h3 class="font-bold text-lg mb-4 text-neonBlue flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة منتج</h3>
+                <h3 class="font-bold text-lg mb-4 text-neonBlue flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة / تعديل منتج</h3>
                 
-                <form onsubmit="event.preventDefault(); addProduct();" id="product-form" class="space-y-3">
+                <form onsubmit="event.preventDefault(); saveProduct();" id="product-form" class="space-y-3">
+                    <input type="hidden" id="p-id">
+
                     <div class="grid grid-cols-2 gap-3">
                         <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: بيبسي)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
                         <input type="number" id="p-price" placeholder="السعر" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
                     </div>
 
                     <div class="grid grid-cols-1 gap-3">
-                        <label class="text-xs text-gray-400 mr-1">شكل ولون الأيقونة:</label>
+                        <label class="text-xs text-gray-400 mr-1">اختار شكل الأيقونة واللون:</label>
                         <div class="flex gap-2">
-                            <select onchange="updateIcon(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/3 text-sm">
-                                <option value="">اختر...</option>
-                                <option value="fa-box-open">📦 كرتونة</option>
-                                <option value="fa-bottle-water">🥤 زجاجة</option>
-                                <option value="fa-mug-hot">☕ مشروب ساخن</option>
-                                <option value="fa-glass-water">🧃 عصير/كانز</option>
-                                <option value="fa-cookie">🍪 بسكويت</option>
-                                <option value="fa-ice-cream">🍦 آيس كريم</option>
-                                <option value="fa-smoking">🚬 سجاير</option>
-                                <option value="fa-apple-whole">🍎 فاكهة</option>
-                                <option value="fa-bread-slice">🍞 مخبوزات</option>
-                                <option value="fa-cheese">🧀 جبنة</option>
-                                <option value="fa-drumstick-bite">🍗 لحوم</option>
-                                <option value="fa-soap">🧼 منظفات</option>
-                                <option value="fa-bolt">⚡ طاقة</option>
+                            <select onchange="updateIcon(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/3 text-sm font-sans">
+                                <option value="">اختر الشكل...</option>
+                                <optgroup label="🚬 المزاج والسجائر">
+                                    <option value="fa-smoking">🚬 سيجارة عادية</option>
+                                    <option value="fa-box-open">📦 علبة (بوكس)</option>
+                                    <option value="fa-crown">👑 مارلبورو (تاج)</option>
+                                    <option value="fa-star">⭐ ميريت (نجمة)</option>
+                                    <option value="fa-crosshairs">🎯 تارجت</option>
+                                    <option value="fa-w">🇼 وينستون</option>
+                                    <option value="fa-ship">🚢 كابتن بلاك</option>
+                                    <option value="fa-cloud">☁️ فيب (Vape)</option>
+                                    <option value="fa-fire">🔥 ولاعة</option>
+                                </optgroup>
+                                <optgroup label="🥤 مشروبات">
+                                    <option value="fa-bottle-water">💧 زجاجة مياه</option>
+                                    <option value="fa-glass-water">🥤 كوب / عصير</option>
+                                    <option value="fa-bottle-droplet">🍾 زجاجة صودا</option>
+                                    <option value="fa-mug-hot">☕ مج نسكافيه</option>
+                                    <option value="fa-mug-saucer">🍵 فنجان قهوة</option>
+                                    <option value="fa-bolt">⚡ طاقة (ستينج)</option>
+                                    <option value="fa-bullhorn">🐂 ريدبول</option>
+                                </optgroup>
+                                <optgroup label="🍫 سناكس وشيبسي">
+                                    <option value="fa-cookie">🍪 بسكويت مدور</option>
+                                    <option value="fa-cookie-bite">🍪 بسكويت مقطوم</option>
+                                    <option value="fa-ice-cream">🍦 آيس كريم</option>
+                                    <option value="fa-circle-notch">🥔 شيبسي (دائرة)</option>
+                                    <option value="fa-paw">🐾 تايجر / شيتوس</option>
+                                    <option value="fa-play">🔻 دوريتوس (مثلث)</option>
+                                    <option value="fa-bread-slice">🥐 مولتو / مخبوزات</option>
+                                    <option value="fa-candy-cane">🍥 هوهوز / كيك</option>
+                                    <option value="fa-cheese">🧀 جبنة / تويكنز</option>
+                                </optgroup>
+                                <optgroup label="🧺 بقالة ومعلبات">
+                                    <option value="fa-bowl-food">🍜 إندومي / طبق</option>
+                                    <option value="fa-utensils">🍴 مكرونة / أكل</option>
+                                    <option value="fa-jar">🏺 برطمان / سمنة</option>
+                                    <option value="fa-bottle-droplet">🌻 زيت</option>
+                                    <option value="fa-cube">🧊 سكر</option>
+                                    <option value="fa-cow">🐄 لبن / حليب</option>
+                                    <option value="fa-egg">🥚 بيض</option>
+                                    <option value="fa-spoon">🥄 زبادي</option>
+                                    <option value="fa-fish">🐟 تونا</option>
+                                    <option value="fa-drumstick-bite">🍗 لحوم / لانشون</option>
+                                </optgroup>
+                                <optgroup label="🏠 منظفات وبيت">
+                                    <option value="fa-soap">🧼 صابون</option>
+                                    <option value="fa-pump-soap">🧴 شاور / هاند</option>
+                                    <option value="fa-spray-can">💨 معطر</option>
+                                    <option value="fa-broom">🧹 مكناسة</option>
+                                    <option value="fa-baby">👶 حفاضات</option>
+                                </optgroup>
                             </select>
 
-                            <select id="p-color" onchange="updateColor(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/4 text-sm">
-                                <option value="text-white">⚪ أبيض</option>
-                                <option value="text-red-500">🔴 أحمر</option>
-                                <option value="text-blue-500">🔵 أزرق</option>
+                            <select id="p-color" onchange="updateColor(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/4 text-sm font-sans">
+                                <option value="text-white">⚪ أبيض (عادي)</option>
+                                <option value="text-red-500">🔴 أحمر فاتح</option>
+                                <option value="text-red-600">🩸 أحمر غامق</option>
+                                <option value="text-blue-500">🔵 أزرق غامق</option>
+                                <option value="text-blue-300">🧊 لبني فاتح</option>
+                                <option value="text-neonBlue">💎 نيون سماوي</option>
                                 <option value="text-green-500">🟢 أخضر</option>
                                 <option value="text-yellow-400">🟡 أصفر</option>
-                                <option value="text-neonPink">🟣 بينك</option>
-                                <option value="text-neonBlue">💧 لبني</option>
+                                <option value="text-yellow-600">🏆 ذهبي</option>
+                                <option value="text-amber-700">☕ بني (قهوة)</option>
+                                <option value="text-neonPink">🟣 نيون بينك</option>
+                                <option value="text-purple-600">🍆 موف غامق</option>
                                 <option value="text-orange-500">🟠 برتقالي</option>
+                                <option value="text-gray-400">👽 فضي / رمادي</option>
                             </select>
                             
-                            <input type="text" id="p-icon" oninput="updatePreview(this.value)" placeholder="أو اكتب الكود" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full text-sm">
+                            <input type="text" id="p-icon" oninput="updatePreview(this.value)" placeholder="كود" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full text-sm">
                             
                             <div class="w-12 h-11 bg-gray-800 rounded-xl flex items-center justify-center border border-gray-700 shadow-inner flex-shrink-0">
                                 <i id="icon-preview" class="fas fa-circle text-white text-lg transition"></i>
@@ -151,7 +199,11 @@
                     </div>
                     
                     <input type="text" id="p-variants" placeholder="الأنواع (افصل بفاصلة: شطة, ليمون)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
-                    <button type="submit" id="add-btn" class="w-full bg-neonBlue hover:bg-cyan-400 text-black font-bold py-3 rounded-xl transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">حفظ المنتج 💾</button>
+                    
+                    <div class="flex gap-2">
+                        <button type="submit" id="add-btn" class="flex-1 bg-neonBlue hover:bg-cyan-400 text-black font-bold py-3 rounded-xl transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">حفظ المنتج 💾</button>
+                        <button type="button" onclick="resetForm()" id="cancel-btn" class="hidden w-1/4 bg-red-500/10 text-red-500 border border-red-500/50 hover:bg-red-500 hover:text-white font-bold py-3 rounded-xl transition">إلغاء</button>
+                    </div>
                 </form>
             </div>
             
@@ -188,24 +240,23 @@
         const db = getFirestore(app);
         let currentFilter = 'new';
         let unsubscribeOrders = null;
+        let allProductsCache = {};
 
-        // --- دوال تحديث الأيقونة والألوان (الجديدة) ---
+        // --- دوال تحديث الأيقونة والألوان ---
         window.updateIcon = (val) => {
             if(val) {
                 document.getElementById('p-icon').value = val;
                 window.updatePreview();
             }
         };
-        
         window.updateColor = () => window.updatePreview();
-
-        window.updatePreview = (val) => {
+        window.updatePreview = () => {
             const iconInput = document.getElementById('p-icon').value || 'fa-circle';
             const colorInput = document.getElementById('p-color').value;
             document.getElementById('icon-preview').className = `fas ${iconInput} ${colorInput} text-lg transition`;
         };
 
-        // --- بحث المنتجات (الجديد) ---
+        // --- البحث ---
         window.searchAdminProducts = () => {
             const query = document.getElementById('admin-search').value.toLowerCase();
             const items = document.querySelectorAll('#products-list-admin > div');
@@ -299,26 +350,62 @@
         window.deleteCompletedOrders = async () => { if (!confirm("مسح الأرشيف كله؟")) return; const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach((d) => b.delete(d.ref)); await b.commit(); alert("تم المسح!"); };
         window.setFilter = (f) => { currentFilter = f; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-'+f).classList.add('active'); startListening(); };
 
-        window.addProduct = async () => {
+        // --- إدارة المنتجات (إضافة + تعديل) ---
+        window.saveProduct = async () => {
             const btn = document.getElementById('add-btn');
+            const id = document.getElementById('p-id').value; 
+            
             btn.innerHTML = 'جاري الحفظ...'; btn.disabled = true;
             
             const name = document.getElementById('p-name').value;
             const price = Number(document.getElementById('p-price').value);
             const category = document.getElementById('p-category').value;
             const desc = document.getElementById('p-desc').value;
-            // حفظ اللون الجديد
             const color = document.getElementById('p-color').value; 
             const variants = document.getElementById('p-variants').value ? document.getElementById('p-variants').value.split(',').map(s=>s.trim()) : [];
             
-            const randomIcons = ['fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle'];
-            const icon = document.getElementById('p-icon').value.trim() || randomIcons[Math.floor(Math.random() * randomIcons.length)];
+            const icon = document.getElementById('p-icon').value.trim() || 'fa-circle';
+
+            const productData = { name, price, category, icon, color, desc, variants, createdAt: serverTimestamp() };
 
             try {
-                await addDoc(collection(db, "products"), { name, price, category, icon, color, desc, variants, createdAt: serverTimestamp() });
-                alert('تمت الإضافة! ✅'); document.getElementById('product-form').reset(); window.updatePreview();
+                if (id) {
+                    await updateDoc(doc(db, "products", id), productData);
+                    alert('تم تعديل المنتج بنجاح! ✅');
+                } else {
+                    await addDoc(collection(db, "products"), productData);
+                    alert('تمت الإضافة! ✅');
+                }
+                resetForm();
             } catch (e) { alert('خطأ: ' + e.message); }
             btn.innerHTML = 'حفظ المنتج 💾'; btn.disabled = false;
+        };
+
+        window.editProd = (id) => {
+            const p = allProductsCache[id];
+            if (!p) return;
+
+            document.getElementById('p-id').value = id;
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-category').value = p.category;
+            document.getElementById('p-desc').value = p.desc || '';
+            document.getElementById('p-color').value = p.color || 'text-white';
+            document.getElementById('p-icon').value = p.icon;
+            document.getElementById('p-variants').value = p.variants ? p.variants.join(', ') : '';
+            
+            window.updatePreview();
+            document.getElementById('add-btn').innerHTML = 'تعديل المنتج ✏️';
+            document.getElementById('cancel-btn').classList.remove('hidden');
+            document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.resetForm = () => {
+            document.getElementById('product-form').reset();
+            document.getElementById('p-id').value = '';
+            document.getElementById('add-btn').innerHTML = 'حفظ المنتج 💾';
+            document.getElementById('cancel-btn').classList.add('hidden');
+            window.updatePreview();
         };
 
         function loadProductsAdmin() {
@@ -326,7 +413,7 @@
                 let html = '';
                 snap.forEach(doc => {
                     const p = doc.data();
-                    // استخدام اللون المحفوظ أو الأبيض كافتراضي
+                    allProductsCache[doc.id] = p;
                     html += `
                         <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-center relative group hover:border-neonBlue transition">
                             <div class="flex items-center gap-3">
@@ -335,7 +422,10 @@
                                 </div>
                                 <div><h4 class="font-bold text-white text-sm">${p.name}</h4><p class="text-[10px] text-gray-500">${p.price} ج.م | ${p.category}</p></div>
                             </div>
-                            <button onclick="deleteProd('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                            <div class="flex gap-2">
+                                <button onclick="editProd('${doc.id}')" class="text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg hover:bg-blue-500 hover:text-white transition"><i class="fas fa-pen"></i></button>
+                                <button onclick="deleteProd('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                            </div>
                         </div>`;
                 });
                 document.getElementById('products-list-admin').innerHTML = html || '<p class="text-center text-gray-500">مفيش منتجات.</p>';
