@@ -93,9 +93,11 @@
         <div id="view-products" class="hidden container mx-auto px-4 mt-6 pb-20 max-w-3xl">
             <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-6 relative overflow-hidden shadow-lg">
                 <div class="absolute top-0 right-0 w-20 h-20 bg-neonBlue blur-[50px] opacity-10"></div>
-                <h3 class="font-bold text-lg mb-4 text-neonBlue flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة منتج</h3>
+                <h3 class="font-bold text-lg mb-4 text-neonBlue flex items-center gap-2"><i class="fas fa-plus-circle"></i> إدارة المنتجات</h3>
                 
-                <form onsubmit="event.preventDefault(); addProduct();" id="product-form" class="space-y-3">
+                <form onsubmit="event.preventDefault(); saveProduct();" id="product-form" class="space-y-3">
+                    <input type="hidden" id="p-id">
+
                     <div class="grid grid-cols-2 gap-3">
                         <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: بيبسي)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
                         <input type="number" id="p-price" placeholder="السعر" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
@@ -151,7 +153,11 @@
                     </div>
                     
                     <input type="text" id="p-variants" placeholder="الأنواع (افصل بفاصلة: شطة, ليمون)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
-                    <button type="submit" id="add-btn" class="w-full bg-neonBlue hover:bg-cyan-400 text-black font-bold py-3 rounded-xl transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">حفظ المنتج 💾</button>
+                    
+                    <div class="flex gap-2">
+                        <button type="submit" id="add-btn" class="flex-1 bg-neonBlue hover:bg-cyan-400 text-black font-bold py-3 rounded-xl transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">حفظ المنتج 💾</button>
+                        <button type="button" onclick="resetForm()" id="cancel-btn" class="hidden w-1/4 bg-red-500/10 text-red-500 border border-red-500/50 hover:bg-red-500 hover:text-white font-bold py-3 rounded-xl transition">إلغاء</button>
+                    </div>
                 </form>
             </div>
             
@@ -171,7 +177,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, where, getDocs, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, where, getDocs, addDoc, deleteDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
@@ -188,24 +194,23 @@
         const db = getFirestore(app);
         let currentFilter = 'new';
         let unsubscribeOrders = null;
+        let allProductsCache = {}; // تخزين مؤقت للمنتجات للتعديل السريع
 
-        // --- دوال تحديث الأيقونة والألوان (الجديدة) ---
+        // --- دوال تحديث الأيقونة والألوان ---
         window.updateIcon = (val) => {
             if(val) {
                 document.getElementById('p-icon').value = val;
                 window.updatePreview();
             }
         };
-        
         window.updateColor = () => window.updatePreview();
-
-        window.updatePreview = (val) => {
+        window.updatePreview = () => {
             const iconInput = document.getElementById('p-icon').value || 'fa-circle';
             const colorInput = document.getElementById('p-color').value;
             document.getElementById('icon-preview').className = `fas ${iconInput} ${colorInput} text-lg transition`;
         };
 
-        // --- بحث المنتجات (الجديد) ---
+        // --- بحث المنتجات ---
         window.searchAdminProducts = () => {
             const query = document.getElementById('admin-search').value.toLowerCase();
             const items = document.querySelectorAll('#products-list-admin > div');
@@ -299,26 +304,67 @@
         window.deleteCompletedOrders = async () => { if (!confirm("مسح الأرشيف كله؟")) return; const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach((d) => b.delete(d.ref)); await b.commit(); alert("تم المسح!"); };
         window.setFilter = (f) => { currentFilter = f; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-'+f).classList.add('active'); startListening(); };
 
-        window.addProduct = async () => {
+        // --- إدارة المنتجات (إضافة + تعديل) ---
+        window.saveProduct = async () => {
             const btn = document.getElementById('add-btn');
+            const id = document.getElementById('p-id').value; // جلب الـ ID لو موجود
+            
             btn.innerHTML = 'جاري الحفظ...'; btn.disabled = true;
             
             const name = document.getElementById('p-name').value;
             const price = Number(document.getElementById('p-price').value);
             const category = document.getElementById('p-category').value;
             const desc = document.getElementById('p-desc').value;
-            // حفظ اللون الجديد
             const color = document.getElementById('p-color').value; 
             const variants = document.getElementById('p-variants').value ? document.getElementById('p-variants').value.split(',').map(s=>s.trim()) : [];
-            
             const randomIcons = ['fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle'];
             const icon = document.getElementById('p-icon').value.trim() || randomIcons[Math.floor(Math.random() * randomIcons.length)];
 
+            const productData = { name, price, category, icon, color, desc, variants, createdAt: serverTimestamp() };
+
             try {
-                await addDoc(collection(db, "products"), { name, price, category, icon, color, desc, variants, createdAt: serverTimestamp() });
-                alert('تمت الإضافة! ✅'); document.getElementById('product-form').reset(); window.updatePreview();
+                if (id) {
+                    // --- وضع التعديل ---
+                    await updateDoc(doc(db, "products", id), productData);
+                    alert('تم تعديل المنتج بنجاح! ✅');
+                } else {
+                    // --- وضع الإضافة ---
+                    await addDoc(collection(db, "products"), productData);
+                    alert('تمت الإضافة! ✅');
+                }
+                resetForm();
             } catch (e) { alert('خطأ: ' + e.message); }
             btn.innerHTML = 'حفظ المنتج 💾'; btn.disabled = false;
+        };
+
+        // دالة ملء الفورم للبيانات (تعديل)
+        window.editProd = (id) => {
+            const p = allProductsCache[id];
+            if (!p) return;
+
+            document.getElementById('p-id').value = id;
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-category').value = p.category;
+            document.getElementById('p-desc').value = p.desc || '';
+            document.getElementById('p-color').value = p.color || 'text-white';
+            document.getElementById('p-icon').value = p.icon;
+            document.getElementById('p-variants').value = p.variants ? p.variants.join(', ') : '';
+            
+            // تحديث المعاينة والزرار
+            window.updatePreview();
+            document.getElementById('add-btn').innerHTML = 'تعديل المنتج ✏️';
+            document.getElementById('cancel-btn').classList.remove('hidden');
+            document.getElementById('product-form').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // دالة إلغاء التعديل
+        window.resetForm = () => {
+            document.getElementById('product-form').reset();
+            document.getElementById('p-id').value = '';
+            document.getElementById('add-btn').innerHTML = 'حفظ المنتج 💾';
+            document.getElementById('cancel-btn').classList.add('hidden');
+            window.updatePreview();
         };
 
         function loadProductsAdmin() {
@@ -326,7 +372,7 @@
                 let html = '';
                 snap.forEach(doc => {
                     const p = doc.data();
-                    // استخدام اللون المحفوظ أو الأبيض كافتراضي
+                    allProductsCache[doc.id] = p; // حفظ في الذاكرة للتعديل
                     html += `
                         <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-center relative group hover:border-neonBlue transition">
                             <div class="flex items-center gap-3">
@@ -335,7 +381,10 @@
                                 </div>
                                 <div><h4 class="font-bold text-white text-sm">${p.name}</h4><p class="text-[10px] text-gray-500">${p.price} ج.م | ${p.category}</p></div>
                             </div>
-                            <button onclick="deleteProd('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                            <div class="flex gap-2">
+                                <button onclick="editProd('${doc.id}')" class="text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg hover:bg-blue-500 hover:text-white transition"><i class="fas fa-pen"></i></button>
+                                <button onclick="deleteProd('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                            </div>
                         </div>`;
                 });
                 document.getElementById('products-list-admin').innerHTML = html || '<p class="text-center text-gray-500">مفيش منتجات.</p>';
