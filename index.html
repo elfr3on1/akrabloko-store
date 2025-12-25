@@ -317,7 +317,7 @@
       const db = getFirestore(app);
 
       // --- Variables ---
-      let products = []; // فارغة، هتتملي من فايربيس
+      let products = []; 
       let cart = JSON.parse(localStorage.getItem('akrabloko_cart')) || [];
       window.currentSelectedProduct = null;
 
@@ -335,22 +335,49 @@
           }
       });
 
-      // --- Fetch from Firebase ---
+      // --- دالة الجلب الذكية (الموفرة) ---
       window.fetchProducts = async function() {
           const grid = document.getElementById('products-grid');
           grid.innerHTML = '<div class="col-span-full text-center py-10"><div class="loader"></div><p class="text-gray-400">جاري تحميل المنيو...</p></div>';
 
+          // 1. تحديد مدة الحفظ (مثلاً ساعة واحدة)
+          const CACHE_TIME = 60 * 60 * 1000; // ساعة بالمللي ثانية
+          const cachedData = localStorage.getItem('akrabloko_products');
+          const cachedTimestamp = localStorage.getItem('akrabloko_time');
+
+          // 2. فحص هل فيه نسخة محفوظة وجديدة؟
+          if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_TIME)) {
+              console.log("تم التحميل من ذاكرة التليفون (توفير القراءة) 💾");
+              products = JSON.parse(cachedData);
+              if(products.length === 0) grid.innerHTML = '<div class="col-span-full text-center text-gray-500">لا توجد منتجات.</div>';
+              else renderProducts(products);
+              return; // وقف هنا ومتكملش لفايربيس
+          }
+
+          // 3. لو مفيش نسخة، هات من فايربيس (يستهلك قراءة)
           try {
+              console.log("جاري التحميل من فايربيس (تحديث البيانات) 🔥");
               const q = query(collection(db, "products"), orderBy("category"));
               const snapshot = await getDocs(q);
               products = [];
               snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
               
+              // 4. احفظ النسخة الجديدة في التليفون للمرة الجاية
+              localStorage.setItem('akrabloko_products', JSON.stringify(products));
+              localStorage.setItem('akrabloko_time', Date.now());
+
               if(products.length === 0) grid.innerHTML = '<div class="col-span-full text-center text-gray-500">لا توجد منتجات حالياً.</div>';
               else renderProducts(products);
           } catch (error) {
               console.error(error);
-              grid.innerHTML = '<div class="col-span-full text-center text-red-500 p-5">فشل الاتصال! تأكد من الإنترنت<br><button onclick="fetchProducts()" class="mt-2 text-neonBlue underline">حاول تاني</button></div>';
+              // لو النت قاطع، حاول تعرض القديم حتى لو وقته خلص
+              if (cachedData) {
+                  products = JSON.parse(cachedData);
+                  renderProducts(products);
+                  alert("فشل الاتصال بالنت، تم عرض القائمة المحفوظة");
+              } else {
+                  grid.innerHTML = '<div class="col-span-full text-center text-red-500 p-5">فشل الاتصال! تأكد من الإنترنت<br><button onclick="fetchProducts()" class="mt-2 text-neonBlue underline">حاول تاني</button></div>';
+              }
           }
       }
 
