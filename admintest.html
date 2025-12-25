@@ -102,7 +102,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 gap-3">
-                        <label class="text-xs text-gray-400 mr-1">اختار أيقونة المنتج:</label>
+                        <label class="text-xs text-gray-400 mr-1">شكل ولون الأيقونة:</label>
                         <div class="flex gap-2">
                             <select onchange="updateIcon(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/3 text-sm">
                                 <option value="">اختر...</option>
@@ -120,11 +120,22 @@
                                 <option value="fa-soap">🧼 منظفات</option>
                                 <option value="fa-bolt">⚡ طاقة</option>
                             </select>
+
+                            <select id="p-color" onchange="updateColor(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/4 text-sm">
+                                <option value="text-white">⚪ أبيض</option>
+                                <option value="text-red-500">🔴 أحمر</option>
+                                <option value="text-blue-500">🔵 أزرق</option>
+                                <option value="text-green-500">🟢 أخضر</option>
+                                <option value="text-yellow-400">🟡 أصفر</option>
+                                <option value="text-neonPink">🟣 بينك</option>
+                                <option value="text-neonBlue">💧 لبني</option>
+                                <option value="text-orange-500">🟠 برتقالي</option>
+                            </select>
                             
-                            <input type="text" id="p-icon" oninput="updatePreview(this.value)" placeholder="أو اكتب الكود (fa-star)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full text-sm">
+                            <input type="text" id="p-icon" oninput="updatePreview(this.value)" placeholder="أو اكتب الكود" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full text-sm">
                             
-                            <div class="w-12 h-11 bg-gray-800 rounded-xl flex items-center justify-center border border-gray-700 shadow-inner">
-                                <i id="icon-preview" class="fas fa-circle text-neonBlue text-lg"></i>
+                            <div class="w-12 h-11 bg-gray-800 rounded-xl flex items-center justify-center border border-gray-700 shadow-inner flex-shrink-0">
+                                <i id="icon-preview" class="fas fa-circle text-white text-lg transition"></i>
                             </div>
                         </div>
                     </div>
@@ -144,6 +155,13 @@
                 </form>
             </div>
             
+            <div class="flex items-center gap-3 mb-4">
+                <div class="relative w-full">
+                    <input type="text" id="admin-search" onkeyup="searchAdminProducts()" placeholder="🔍 ابحث في المنتجات..." class="w-full bg-gray-900 border border-gray-800 rounded-xl py-3 px-10 text-white focus:border-neonBlue outline-none">
+                    <i class="fas fa-filter absolute right-4 top-3.5 text-gray-500"></i>
+                </div>
+            </div>
+
             <h3 class="font-bold text-white mb-3">المنتجات الحالية:</h3>
             <div id="products-list-admin" class="grid grid-cols-1 gap-3"></div>
         </div>
@@ -171,16 +189,31 @@
         let currentFilter = 'new';
         let unsubscribeOrders = null;
 
-        // --- دوال تحديث الأيقونة ---
+        // --- دوال تحديث الأيقونة والألوان (الجديدة) ---
         window.updateIcon = (val) => {
             if(val) {
                 document.getElementById('p-icon').value = val;
-                document.getElementById('icon-preview').className = `fas ${val} text-neonBlue text-lg`;
+                window.updatePreview();
             }
         };
+        
+        window.updateColor = () => window.updatePreview();
+
         window.updatePreview = (val) => {
-            const icon = val || 'fa-circle';
-            document.getElementById('icon-preview').className = `fas ${icon} text-neonBlue text-lg`;
+            const iconInput = document.getElementById('p-icon').value || 'fa-circle';
+            const colorInput = document.getElementById('p-color').value;
+            document.getElementById('icon-preview').className = `fas ${iconInput} ${colorInput} text-lg transition`;
+        };
+
+        // --- بحث المنتجات (الجديد) ---
+        window.searchAdminProducts = () => {
+            const query = document.getElementById('admin-search').value.toLowerCase();
+            const items = document.querySelectorAll('#products-list-admin > div');
+            items.forEach(item => {
+                const name = item.querySelector('h4').innerText.toLowerCase();
+                if(name.includes(query)) item.classList.remove('hidden');
+                else item.classList.add('hidden');
+            });
         };
 
         // --- AUTH ---
@@ -274,14 +307,16 @@
             const price = Number(document.getElementById('p-price').value);
             const category = document.getElementById('p-category').value;
             const desc = document.getElementById('p-desc').value;
+            // حفظ اللون الجديد
+            const color = document.getElementById('p-color').value; 
             const variants = document.getElementById('p-variants').value ? document.getElementById('p-variants').value.split(',').map(s=>s.trim()) : [];
             
             const randomIcons = ['fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle'];
             const icon = document.getElementById('p-icon').value.trim() || randomIcons[Math.floor(Math.random() * randomIcons.length)];
 
             try {
-                await addDoc(collection(db, "products"), { name, price, category, icon, desc, variants, color: 'text-white', createdAt: serverTimestamp() });
-                alert('تمت الإضافة! ✅'); document.getElementById('product-form').reset(); document.getElementById('icon-preview').className = 'fas fa-circle text-neonBlue text-lg';
+                await addDoc(collection(db, "products"), { name, price, category, icon, color, desc, variants, createdAt: serverTimestamp() });
+                alert('تمت الإضافة! ✅'); document.getElementById('product-form').reset(); window.updatePreview();
             } catch (e) { alert('خطأ: ' + e.message); }
             btn.innerHTML = 'حفظ المنتج 💾'; btn.disabled = false;
         };
@@ -291,10 +326,13 @@
                 let html = '';
                 snap.forEach(doc => {
                     const p = doc.data();
+                    // استخدام اللون المحفوظ أو الأبيض كافتراضي
                     html += `
                         <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-center relative group hover:border-neonBlue transition">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center text-neonBlue border border-gray-700"><i class="fas ${p.icon}"></i></div>
+                                <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center border border-gray-700">
+                                    <i class="fas ${p.icon} ${p.color || 'text-white'}"></i>
+                                </div>
                                 <div><h4 class="font-bold text-white text-sm">${p.name}</h4><p class="text-[10px] text-gray-500">${p.price} ج.م | ${p.category}</p></div>
                             </div>
                             <button onclick="deleteProd('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
