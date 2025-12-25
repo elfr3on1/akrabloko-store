@@ -21,7 +21,7 @@
         }
     </script>
     <style>
-        body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; text-align: center; padding: 20px; }
+        body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; text-align: center; }
         .neon-card {
             background: #111; border: 1px solid rgba(255,255,255,0.1);
             transition: all 0.3s;
@@ -30,11 +30,40 @@
         .custom-scrollbar::-webkit-scrollbar { width: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #bc13fe; border-radius: 4px; }
+        
+        /* ستايل شاشة الدخول */
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .hidden-force { display: none !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center">
 
-    <div class="max-w-5xl w-full">
+    <div id="login-screen" class="login-overlay">
+        <div class="bg-[#111] p-8 rounded-3xl border border-gray-800 shadow-[0_0_50px_rgba(188,19,254,0.1)] w-full max-w-sm text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonBlue to-neonPink"></div>
+            <div class="w-20 h-20 bg-gray-900 rounded-full mx-auto flex items-center justify-center mb-6 border-2 border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.3)]">
+                <i class="fas fa-user-secret text-4xl text-neonPink"></i>
+            </div>
+            <h2 class="text-2xl font-black text-white mb-2">منطقة خطرة ⚠️</h2>
+            <p class="text-gray-500 text-xs mb-6">يجب تسجيل الدخول للتحكم في البيانات</p>
+            <form onsubmit="event.preventDefault(); login();">
+                <div class="mb-4 relative">
+                    <i class="fas fa-envelope absolute top-4 right-4 text-gray-500"></i>
+                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue outline-none transition text-sm">
+                </div>
+                <div class="mb-6 relative">
+                    <i class="fas fa-lock absolute top-4 right-4 text-gray-500"></i>
+                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue outline-none transition text-sm">
+                </div>
+                <button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-neonPink to-purple-900 hover:from-purple-800 hover:to-neonPink text-white font-bold py-3.5 rounded-xl shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2">
+                    <span>فتح الخزنة</span> <i class="fas fa-unlock"></i>
+                </button>
+            </form>
+            <p id="login-error" class="text-red-500 text-xs mt-4 font-bold bg-red-900/10 py-2 rounded border border-red-900/30 hidden"><i class="fas fa-exclamation-circle"></i> بيانات خاطئة</p>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="hidden-force max-w-5xl w-full p-5">
         <h1 class="text-4xl font-black mb-2 text-white"><i class="fas fa-database text-neonBlue"></i> غرفة التحكم <span class="text-neonPink">والأمان</span></h1>
         <p class="text-gray-400 mb-10">تحكم كامل في بيانات منتجاتك: حفظ، حذف، واستعادة.</p>
 
@@ -79,16 +108,17 @@
         <div class="bg-[#111] border border-gray-800 rounded-3xl p-1 text-right">
             <div class="bg-black/50 p-3 rounded-t-3xl border-b border-gray-800 flex justify-between px-6">
                 <span class="text-gray-400"><i class="fas fa-terminal"></i> سجل العمليات</span>
-                <span id="status-badge" class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-400">جاهز</span>
+                <button onclick="logout()" class="text-red-500 text-xs border border-red-900 px-3 py-1 rounded hover:bg-red-900/20">خروج</button>
             </div>
             <div id="console" class="h-48 overflow-y-auto p-4 custom-scrollbar text-sm space-y-2 font-mono text-gray-300">
-                <div class="opacity-50">> في انتظار الأوامر...</div>
+                <div class="opacity-50">> يجب تسجيل الدخول أولاً...</div>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, addDoc, writeBatch, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -102,9 +132,40 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
         const consoleDiv = document.getElementById('console');
 
+        // --- نظام تسجيل الدخول ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-screen').classList.add('hidden-force');
+                document.getElementById('dashboard-screen').classList.remove('hidden-force');
+                log("✅ تم تسجيل الدخول بنجاح. أهلاً بك يا مدير.", "success");
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden-force');
+                document.getElementById('dashboard-screen').classList.add('hidden-force');
+            }
+        });
+
+        window.login = () => {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const btn = document.getElementById('login-btn');
+            
+            if (!email || !pass) return;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+            
+            signInWithEmailAndPassword(auth, email, pass)
+                .catch((error) => {
+                    document.getElementById('login-error').classList.remove('hidden');
+                    btn.innerHTML = '<span>فتح الخزنة</span> <i class="fas fa-unlock"></i>';
+                });
+        };
+
+        window.logout = () => signOut(auth);
+
+        // --- دوال الأداة ---
         function log(msg, type = 'info') {
             const colors = { info: 'text-gray-300', success: 'text-green-400', error: 'text-red-500', warn: 'text-yellow-400' };
             const time = new Date().toLocaleTimeString('en-US', {hour12: false});
@@ -112,19 +173,16 @@
             consoleDiv.scrollTop = consoleDiv.scrollHeight;
         }
 
-        // 1. تحميل نسخة احتياطية (Download)
         window.downloadBackup = async () => {
-            log("⏳ جاري جلب المنتجات من قاعدة البيانات...");
+            log("⏳ جاري جلب المنتجات...");
             try {
                 const q = query(collection(db, "products"));
                 const snapshot = await getDocs(q);
-                
-                if (snapshot.empty) return log("❌ لا توجد منتجات لتحميلها!", "error");
+                if (snapshot.empty) return log("❌ لا توجد منتجات!", "error");
 
                 const products = [];
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    // بنشيل وقت الإنشاء عشان لما نرفعها تاني تاخد وقت جديد
                     delete data.createdAt; 
                     products.push(data);
                 });
@@ -138,22 +196,19 @@
                 downloadAnchorNode.click();
                 downloadAnchorNode.remove();
 
-                log(`✅ تم تحميل ملف النسخة الاحتياطية (${products.length} منتج).`, "success");
+                log(`✅ تم تحميل ملف النسخة (${products.length} منتج).`, "success");
             } catch (e) {
-                log("❌ حدث خطأ أثناء التحميل: " + e.message, "error");
+                log("❌ خطأ: " + e.message, "error");
             }
         };
 
-        // 2. حذف الكل (Delete All)
         window.deleteAll = async () => {
-            if(!confirm("⚠️ تحذير نهائي!\nهل أنت متأكد من مسح جميع المنتجات؟")) return;
-            
+            if(!confirm("⚠️ تحذير!\nهل أنت متأكد من مسح جميع المنتجات؟")) return;
             log("⏳ جاري الحذف...", "warn");
             try {
                 const q = query(collection(db, "products"));
                 const snapshot = await getDocs(q);
-                
-                if (snapshot.empty) return log("ℹ️ المخزن فارغ بالفعل.", "info");
+                if (snapshot.empty) return log("ℹ️ المخزن فارغ.", "info");
 
                 const batch = writeBatch(db);
                 let count = 0;
@@ -161,7 +216,6 @@
                     batch.delete(doc.ref);
                     count++;
                 });
-
                 await batch.commit();
                 log(`🗑️ تم حذف ${count} منتج بنجاح.`, "success");
             } catch (e) {
@@ -169,40 +223,31 @@
             }
         };
 
-        // 3. استعادة نسخة (Restore / Upload)
         window.uploadBackup = async (input) => {
             const file = input.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
                     const products = JSON.parse(e.target.result);
-                    if (!Array.isArray(products)) throw new Error("الملف غير صالح");
-
-                    if(!confirm(`هل تريد رفع ${products.length} منتج من هذا الملف؟`)) return;
+                    if (!Array.isArray(products)) throw new Error("ملف غير صالح");
+                    if(!confirm(`هل تريد رفع ${products.length} منتج؟`)) return;
 
                     log(`⏳ جاري رفع ${products.length} منتج...`);
-                    
                     let count = 0;
-                    // رفع دفعات صغيرة لتجنب التعليق
                     const batchSize = 10;
                     for (let i = 0; i < products.length; i += batchSize) {
                         const chunk = products.slice(i, i + batchSize);
                         await Promise.all(chunk.map(async (p) => {
-                            await addDoc(collection(db, "products"), {
-                                ...p,
-                                createdAt: serverTimestamp()
-                            });
+                            await addDoc(collection(db, "products"), { ...p, createdAt: serverTimestamp() });
                             count++;
                         }));
-                        log(`... تم رفع ${count} منتج`, "info");
+                        log(`... تم رفع ${count}`, "info");
                     }
-
                     log(`🎉 تم استعادة ${count} منتج بنجاح!`, "success");
-                    input.value = ''; // تصفير الملف
+                    input.value = '';
                 } catch (err) {
-                    log("❌ الملف تالف أو غير صالح: " + err.message, "error");
+                    log("❌ ملف تالف: " + err.message, "error");
                 }
             };
             reader.readAsText(file);
