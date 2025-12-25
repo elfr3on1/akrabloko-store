@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير النسخ الاحتياطي 💾</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonBlue: '#00f3ff', neonPink: '#bc13fe', darkBg: '#050505', cardBg: '#111111'
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; text-align: center; padding: 20px; }
+        .neon-card {
+            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        .neon-card:hover { transform: translateY(-5px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #bc13fe; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center">
+
+    <div class="max-w-5xl w-full">
+        <h1 class="text-4xl font-black mb-2 text-white"><i class="fas fa-database text-neonBlue"></i> غرفة التحكم <span class="text-neonPink">والأمان</span></h1>
+        <p class="text-gray-400 mb-10">تحكم كامل في بيانات منتجاتك: حفظ، حذف، واستعادة.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            <div class="neon-card p-6 rounded-3xl border hover:border-green-500 hover:shadow-[0_0_20px_rgba(34,197,94,0.2)] group">
+                <div class="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-500/20 transition">
+                    <i class="fas fa-download text-3xl text-green-500"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-2">1. تحميل نسخة (Backup)</h2>
+                <p class="text-xs text-gray-400 mb-4">نزل كل المنتجات في ملف عندك للأمان.</p>
+                <button onclick="downloadBackup()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition">
+                    تحميل الملف 📥
+                </button>
+            </div>
+
+            <div class="neon-card p-6 rounded-3xl border hover:border-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] group">
+                <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-red-500/20 transition">
+                    <i class="fas fa-trash-alt text-3xl text-red-500"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-2">2. فورمات (حذف الكل)</h2>
+                <p class="text-xs text-gray-400 mb-4">مسح جميع المنتجات من الموقع نهائياً.</p>
+                <button onclick="deleteAll()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-xl transition">
+                    حذف البيانات 🗑️
+                </button>
+            </div>
+
+            <div class="neon-card p-6 rounded-3xl border hover:border-neonBlue hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] group">
+                <div class="w-16 h-16 bg-neonBlue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-neonBlue/20 transition">
+                    <i class="fas fa-cloud-upload-alt text-3xl text-neonBlue"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-2">3. استعادة نسخة</h2>
+                <p class="text-xs text-gray-400 mb-4">ارفع الملف اللي حملته عشان ترجع المنتجات.</p>
+                <label class="w-full bg-neonBlue hover:bg-cyan-400 text-black font-bold py-3 rounded-xl transition cursor-pointer block">
+                    <span>اختر ملف ورفع 📤</span>
+                    <input type="file" id="fileInput" accept=".json" class="hidden" onchange="uploadBackup(this)">
+                </label>
+            </div>
+
+        </div>
+
+        <div class="bg-[#111] border border-gray-800 rounded-3xl p-1 text-right">
+            <div class="bg-black/50 p-3 rounded-t-3xl border-b border-gray-800 flex justify-between px-6">
+                <span class="text-gray-400"><i class="fas fa-terminal"></i> سجل العمليات</span>
+                <span id="status-badge" class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-400">جاهز</span>
+            </div>
+            <div id="console" class="h-48 overflow-y-auto p-4 custom-scrollbar text-sm space-y-2 font-mono text-gray-300">
+                <div class="opacity-50">> في انتظار الأوامر...</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, writeBatch, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
+            authDomain: "akrabloko.firebaseapp.com",
+            projectId: "akrabloko",
+            storageBucket: "akrabloko.firebasestorage.app",
+            messagingSenderId: "846428093028",
+            appId: "1:846428093028:web:29f31599b90125c2673d71",
+            measurementId: "G-31SP9TP2N1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const consoleDiv = document.getElementById('console');
+
+        function log(msg, type = 'info') {
+            const colors = { info: 'text-gray-300', success: 'text-green-400', error: 'text-red-500', warn: 'text-yellow-400' };
+            const time = new Date().toLocaleTimeString('en-US', {hour12: false});
+            consoleDiv.innerHTML += `<div class="${colors[type]} border-b border-white/5 pb-1">[${time}] ${msg}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        // 1. تحميل نسخة احتياطية (Download)
+        window.downloadBackup = async () => {
+            log("⏳ جاري جلب المنتجات من قاعدة البيانات...");
+            try {
+                const q = query(collection(db, "products"));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) return log("❌ لا توجد منتجات لتحميلها!", "error");
+
+                const products = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    // بنشيل وقت الإنشاء عشان لما نرفعها تاني تاخد وقت جديد
+                    delete data.createdAt; 
+                    products.push(data);
+                });
+
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                const fileName = `backup_akrabloko_${new Date().toISOString().split('T')[0]}.json`;
+                downloadAnchorNode.setAttribute("download", fileName);
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+
+                log(`✅ تم تحميل ملف النسخة الاحتياطية (${products.length} منتج).`, "success");
+            } catch (e) {
+                log("❌ حدث خطأ أثناء التحميل: " + e.message, "error");
+            }
+        };
+
+        // 2. حذف الكل (Delete All)
+        window.deleteAll = async () => {
+            if(!confirm("⚠️ تحذير نهائي!\nهل أنت متأكد من مسح جميع المنتجات؟")) return;
+            
+            log("⏳ جاري الحذف...", "warn");
+            try {
+                const q = query(collection(db, "products"));
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) return log("ℹ️ المخزن فارغ بالفعل.", "info");
+
+                const batch = writeBatch(db);
+                let count = 0;
+                snapshot.forEach((doc) => {
+                    batch.delete(doc.ref);
+                    count++;
+                });
+
+                await batch.commit();
+                log(`🗑️ تم حذف ${count} منتج بنجاح.`, "success");
+            } catch (e) {
+                log("❌ فشل الحذف: " + e.message, "error");
+            }
+        };
+
+        // 3. استعادة نسخة (Restore / Upload)
+        window.uploadBackup = async (input) => {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const products = JSON.parse(e.target.result);
+                    if (!Array.isArray(products)) throw new Error("الملف غير صالح");
+
+                    if(!confirm(`هل تريد رفع ${products.length} منتج من هذا الملف؟`)) return;
+
+                    log(`⏳ جاري رفع ${products.length} منتج...`);
+                    
+                    let count = 0;
+                    // رفع دفعات صغيرة لتجنب التعليق
+                    const batchSize = 10;
+                    for (let i = 0; i < products.length; i += batchSize) {
+                        const chunk = products.slice(i, i + batchSize);
+                        await Promise.all(chunk.map(async (p) => {
+                            await addDoc(collection(db, "products"), {
+                                ...p,
+                                createdAt: serverTimestamp()
+                            });
+                            count++;
+                        }));
+                        log(`... تم رفع ${count} منتج`, "info");
+                    }
+
+                    log(`🎉 تم استعادة ${count} منتج بنجاح!`, "success");
+                    input.value = ''; // تصفير الملف
+                } catch (err) {
+                    log("❌ الملف تالف أو غير صالح: " + err.message, "error");
+                }
+            };
+            reader.readAsText(file);
+        };
+    </script>
+</body>
+</html>
