@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المدير الآمنة 🔒</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonBlue: '#00f3ff',
+                        neonPink: '#bc13fe',
+                        darkBg: '#050505',
+                        cardBg: '#111111'
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
+        .login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .hidden-force { display: none !important; }
+        .active-tab { background-color: rgba(188, 19, 254, 0.2); border: 1px solid #bc13fe; color: #fff; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div id="login-screen" class="login-overlay">
+        <div class="bg-[#111] p-8 rounded-3xl border border-gray-800 w-full max-w-sm text-center">
+            <h2 class="text-2xl font-black text-white mb-6">منطقة الإدارة</h2>
+            <form onsubmit="event.preventDefault(); login();">
+                <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 mb-4 text-white focus:border-neonBlue outline-none">
+                <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 mb-6 text-white focus:border-neonBlue outline-none">
+                <button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-neonPink to-purple-900 text-white font-bold py-3 rounded-xl">دخول</button>
+            </form>
+            <p id="login-error" class="text-red-500 text-xs mt-4 hidden">بيانات خاطئة</p>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="hidden-force flex-1 flex flex-col">
+        <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800 p-4 shadow-2xl">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-black text-white">لوحة التحكم 🚀</h1>
+                <button onclick="logout()" class="text-red-500 text-xs border border-red-900 px-3 py-1 rounded">خروج</button>
+            </div>
+            
+            <div class="container mx-auto mt-4 flex gap-2">
+                <button onclick="switchMainView('orders')" id="btn-view-orders" class="flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 active-tab">
+                    <i class="fas fa-receipt ml-1"></i> الطلبات
+                </button>
+                <button onclick="switchMainView('products')" id="btn-view-products" class="flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800">
+                    <i class="fas fa-boxes ml-1"></i> المنتجات
+                </button>
+            </div>
+        </nav>
+
+        <div id="view-orders" class="container mx-auto px-4 mt-6 pb-20">
+            <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 mb-4 max-w-md mx-auto">
+                <button onclick="setFilter('new')" class="filter-btn flex-1 py-1 text-sm rounded transition bg-white/10 text-white">🔥 جديدة</button>
+                <button onclick="setFilter('done')" class="filter-btn flex-1 py-1 text-sm rounded transition text-gray-400">✅ مكتملة</button>
+            </div>
+            <div id="orders-list" class="space-y-4"></div>
+        </div>
+
+        <div id="view-products" class="container mx-auto px-4 mt-6 pb-20 hidden">
+            
+            <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-neonBlue blur-[50px] opacity-10"></div>
+                <h3 class="font-bold text-lg mb-4 text-neonBlue"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h3>
+                
+                <form onsubmit="event.preventDefault(); addProduct();" id="product-form" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: بيبسي)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full" required>
+                        <input type="number" id="p-price" placeholder="السعر" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <select id="p-category" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
+                            <option value="grocery">بقالة 🧺</option>
+                            <option value="snacks">نقنقة 🍫</option>
+                            <option value="drinks">مشروبات 🥤</option>
+                            <option value="mood">المزاج 🚬</option>
+                        </select>
+                        <input type="text" id="p-icon" placeholder="الأيقونة (لو سبتها فاضية هختارلك عشوائي)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
+                    </div>
+
+                    <input type="text" id="p-desc" placeholder="وصف قصير (مثلاً: 1 لتر)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
+                    
+                    <input type="text" id="p-variants" placeholder="الأنواع (افصل بفاصلة: شطة, ليمون, جبنة)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
+
+                    <button type="submit" id="add-btn" class="w-full bg-neonBlue text-black font-bold py-3 rounded-xl hover:bg-cyan-400 transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">
+                        حفظ المنتج 💾
+                    </button>
+                </form>
+            </div>
+
+            <h3 class="font-bold text-white mb-3">المنتجات الحالية:</h3>
+            <div id="products-list-admin" class="grid grid-cols-1 gap-3"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
+            authDomain: "akrabloko.firebaseapp.com",
+            projectId: "akrabloko",
+            storageBucket: "akrabloko.firebasestorage.app",
+            messagingSenderId: "846428093028",
+            appId: "1:846428093028:web:29f31599b90125c2673d71",
+            measurementId: "G-31SP9TP2N1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentFilter = 'new';
+
+        // --- AUTH & SETUP ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-screen').classList.add('hidden-force');
+                document.getElementById('dashboard-screen').classList.remove('hidden-force');
+                loadOrders();
+                loadProducts(); 
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden-force');
+                document.getElementById('dashboard-screen').classList.add('hidden-force');
+            }
+        });
+
+        window.login = () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(() => {
+                document.getElementById('login-error').classList.remove('hidden');
+            });
+        };
+
+        window.logout = () => signOut(auth);
+
+        // --- NAVIGATION TABS ---
+        window.switchMainView = (viewName) => {
+            document.getElementById('view-orders').classList.add('hidden');
+            document.getElementById('view-products').classList.add('hidden');
+            document.getElementById('btn-view-orders').classList.remove('active-tab');
+            document.getElementById('btn-view-products').classList.remove('active-tab');
+
+            document.getElementById('view-' + viewName).classList.remove('hidden');
+            document.getElementById('btn-view-' + viewName).classList.add('active-tab');
+        };
+
+        // --- ORDERS LOGIC ---
+        function loadOrders() {
+            const list = document.getElementById('orders-list');
+            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+            
+            onSnapshot(q, (snapshot) => {
+                let html = '';
+                let hasData = false;
+                snapshot.forEach((doc) => {
+                    const order = doc.data();
+                    if(currentFilter === 'new' && order.status !== 'new') return;
+                    if(currentFilter === 'done' && order.status !== 'done') return;
+                    
+                    hasData = true;
+                    html += `
+                    <div class="bg-[#111] border ${order.status === 'new' ? 'border-neonPink' : 'border-gray-800'} p-4 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-white">${order.customer.name}</h3>
+                            <span class="text-neonGreen font-mono font-black">#${order.orderNum || '000'}</span>
+                        </div>
+                        <div class="text-sm text-gray-400 mb-2">${order.customer.address} | ${order.customer.phone}</div>
+                        <div class="bg-gray-900 p-2 rounded mb-2 text-xs text-gray-300">
+                             ${order.items.map(i => `${i.name} (x${i.qty})`).join(', ')}
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-neonBlue">${order.total} ج.م</span>
+                            ${order.status === 'new' ? 
+                                `<button onclick="setStatus('${doc.id}', 'done')" class="bg-green-600 px-4 py-1 rounded text-sm font-bold">توصيل</button>` : 
+                                `<span class="text-green-500 text-xs">تم التوصيل</span>`
+                            }
+                        </div>
+                    </div>`;
+                });
+                list.innerHTML = hasData ? html : '<p class="text-center text-gray-500">لا توجد طلبات</p>';
+            });
+        }
+
+        window.setStatus = (id, status) => updateDoc(doc(db, "orders", id), { status });
+        
+        window.setFilter = (f) => {
+            currentFilter = f;
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('bg-white/10', 'text-white');
+                b.classList.add('text-gray-400');
+            });
+            event.target.classList.add('bg-white/10', 'text-white');
+            event.target.classList.remove('text-gray-400');
+            loadOrders(); 
+        };
+
+        // --- PRODUCTS LOGIC (UPDATED WITH RANDOM ICONS) ---
+        
+        // 1. إضافة منتج (تعديل: أيقونة عشوائية)
+        window.addProduct = async () => {
+            const btn = document.getElementById('add-btn');
+            btn.innerHTML = 'جاري الحفظ...';
+            btn.disabled = true;
+
+            const name = document.getElementById('p-name').value;
+            const price = Number(document.getElementById('p-price').value);
+            const category = document.getElementById('p-category').value;
+            
+            // --- هنا التعديل: اختيار أيقونة عشوائية لو الخانة فاضية ---
+            const randomIcons = [
+                'fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 
+                'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle',
+                'fa-cart-plus', 'fa-bell'
+            ];
+            const userIcon = document.getElementById('p-icon').value.trim();
+            // لو المستخدم كتب أيقونة استخدمها، لو لأ استخدم واحدة عشوائي
+            const icon = userIcon || randomIcons[Math.floor(Math.random() * randomIcons.length)];
+            // -----------------------------------------------------------
+
+            const desc = document.getElementById('p-desc').value;
+            const variantsRaw = document.getElementById('p-variants').value;
+            
+            // تحويل النص لمصفوفة
+            const variants = variantsRaw ? variantsRaw.split(',').map(s => s.trim()) : [];
+
+            try {
+                await addDoc(collection(db, "products"), {
+                    name, price, category, icon, desc, variants,
+                    color: 'text-white', 
+                    createdAt: serverTimestamp()
+                });
+                
+                alert('تمت الإضافة بنجاح! ✅');
+                document.getElementById('product-form').reset();
+            } catch (error) {
+                alert('خطأ: ' + error.message);
+            }
+            btn.innerHTML = 'حفظ المنتج 💾';
+            btn.disabled = false;
+        };
+
+        // 2. تحميل المنتجات وعرضها
+        function loadProducts() {
+            const list = document.getElementById('products-list-admin');
+            const q = query(collection(db, "products"), orderBy("category"));
+            
+            onSnapshot(q, (snapshot) => {
+                let html = '';
+                snapshot.forEach((doc) => {
+                    const p = doc.data();
+                    html += `
+                        <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center text-neonBlue border border-gray-700">
+                                    <i class="fas ${p.icon}"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">${p.name}</h4>
+                                    <p class="text-[10px] text-gray-500">${p.price} ج.م | ${p.category}</p>
+                                </div>
+                            </div>
+                            <button onclick="deleteProduct('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html || '<p class="text-center text-gray-500">مفيش منتجات لسه.</p>';
+            });
+        }
+
+        // 3. حذف منتج
+        window.deleteProduct = async (id) => {
+            if(confirm('متأكد عايز تمسح المنتج ده نهائي؟')) {
+                await deleteDoc(doc(db, "products", id));
+            }
+        };
+
+    </script>
+</body>
+</html>
