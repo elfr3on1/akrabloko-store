@@ -74,12 +74,18 @@
             </div>
         </div>
 
-        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
-            </div>
+        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8"></div>
     </section>
 
-    <footer class="bg-black border-t border-gray-800 py-8 mt-auto text-center">
-        <p class="text-gray-600 text-xs">© 2025 جميع الحقوق محفوظة لـ أقربلوكو</p>
+    <footer class="bg-black border-t border-gray-800 py-8 mt-auto text-center relative z-10">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-black text-white mb-2">أقرب<span class="text-neonPink">لوكو</span></h2>
+            <p class="text-gray-500 text-sm mb-4">خدمة توصيل 24 ساعة - أسرع دليفري في مصر</p>
+            <div class="border-t border-gray-800 pt-6">
+                <p class="text-neonBlue font-bold text-lg mb-1"><i class="fas fa-phone-alt mr-2"></i> 01000000000</p>
+                <p class="text-gray-600 text-xs">© 2025 جميع الحقوق محفوظة لـ أقربلوكو</p>
+            </div>
+        </div>
     </footer>
 
     <div class="fixed bottom-5 left-4 right-4 z-40 max-w-lg mx-auto">
@@ -155,14 +161,12 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- المتغيرات العامة ---
-        let products = []; // فارغة، سيتم ملؤها من النت
+        let products = []; 
         let cart = JSON.parse(localStorage.getItem('akrabloko_cart')) || [];
         window.currentSelectedProduct = null;
 
-        // --- تحميل البيانات عند البدء ---
         window.addEventListener('DOMContentLoaded', async () => {
-            await fetchProducts(); // جلب المنتجات
+            await fetchProducts(); 
             updateCartUI();
             
             const savedData = JSON.parse(localStorage.getItem('akrabloko_user'));
@@ -173,17 +177,16 @@
             }
         });
 
-        // --- دالة جلب المنتجات من فايربيس ---
-        async function fetchProducts() {
+        // تم ربط الدوال بـ window لحل مشكلة "الوظيفة غير موجودة"
+        window.fetchProducts = async function() {
             const grid = document.getElementById('products-grid');
-            // عرض علامة تحميل
             grid.innerHTML = '<div class="col-span-full text-center py-10"><div class="loader"></div><p class="text-gray-400">جاري تحميل المنيو...</p></div>';
 
             try {
                 const q = query(collection(db, "products"), orderBy("category"));
                 const snapshot = await getDocs(q);
                 
-                products = []; // تفريغ المصفوفة
+                products = [];
                 snapshot.forEach(doc => {
                     products.push({ id: doc.id, ...doc.data() });
                 });
@@ -199,7 +202,6 @@
             }
         }
 
-        // --- دوال العرض والفلترة (تم تحديثها لتعمل مع البيانات الجديدة) ---
         window.renderProducts = (items) => {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = items.map(p => `
@@ -233,7 +235,6 @@
             renderProducts(products.filter(p => p.name.toLowerCase().includes(query)));
         };
 
-        // --- دوال السلة (تم تحديثها للتعامل مع الـ ID النصي) ---
         window.prepareAddToCart = (id) => {
             const product = products.find(p => p.id === id);
             if (product.variants && product.variants.length > 0) {
@@ -331,7 +332,6 @@
         window.openCheckoutModal = () => { if(cart.length===0) return alert('السلة فاضية!'); toggleCart(); document.getElementById('checkout-modal').classList.remove('hidden'); };
         window.closeCheckoutModal = () => document.getElementById('checkout-modal').classList.add('hidden');
         
-        // --- إرسال الطلب وتتبعه (نفس المنطق القديم) ---
         window.submitOrder = async () => {
             const name = document.getElementById('customer-name').value;
             const phone = document.getElementById('customer-phone').value;
@@ -355,6 +355,7 @@
                 clearCart();
                 closeCheckoutModal();
             } catch (e) {
+                console.error(e);
                 alert('خطأ في النت!');
             }
             btn.innerHTML = 'تأكيد الطلب 🚀';
