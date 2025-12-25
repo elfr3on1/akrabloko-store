@@ -202,93 +202,92 @@
     </div>
 
     <div id="track-modal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeTrackModal()"></div>
-        <div class="bg-[#151515] w-full max-w-md rounded-2xl border border-gray-700 relative animate-slide overflow-hidden shadow-2xl">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeTrackModal()"></div>
+        <div class="bg-black/70 backdrop-blur-xl w-full max-w-md rounded-2xl border border-white/10 relative animate-slide overflow-hidden shadow-2xl">
             <div class="p-6 text-center">
-                <div class="w-16 h-16 bg-gray-800 rounded-full mx-auto flex items-center justify-center mb-4 border border-neonBlue shadow-[0_0_15px_rgba(0,243,255,0.2)]">
+                <div class="w-16 h-16 bg-white/5 rounded-full mx-auto flex items-center justify-center mb-4 border border-neonBlue shadow-[0_0_15px_rgba(0,243,255,0.2)]">
                     <i class="fas fa-search-location text-3xl text-neonBlue"></i>
                 </div>
                 <h2 class="text-xl font-black text-white mb-2">تتبع حالة طلبك</h2>
-                <p class="text-gray-500 text-xs mb-4">اكتب رقم الطلب اللي ظهرلك بعد ما طلبت</p>
+                <p class="text-gray-400 text-xs mb-4">اكتب رقم الطلب اللي ظهرلك بعد ما طلبت</p>
                 
                 <div class="mb-4">
-                    <input type="number" id="track-input" placeholder="رقم الطلب (مثلاً 58293)" class="custom-input text-center text-lg font-bold tracking-widest bg-black border-gray-800 focus:border-neonBlue">
+                    <input type="number" id="track-input" placeholder="رقم الطلب (مثلاً 58293)" class="custom-input bg-white/5 border-white/10 focus:border-neonBlue text-center text-lg font-bold tracking-widest text-white">
                 </div>
 
-                <button onclick="trackOrder()" class="w-full bg-neonBlue text-black font-bold py-3 rounded-xl hover:bg-cyan-400 transition mb-4 shadow-lg">
+                <button onclick="trackOrder()" class="w-full bg-neonBlue text-black font-bold py-3 rounded-xl hover:bg-cyan-400 transition mb-4 shadow-lg border border-neonBlue/50">
                     بحث <i class="fas fa-arrow-left mr-1"></i>
                 </button>
 
-                <div id="track-result" class="hidden bg-gray-900 p-4 rounded-xl border border-gray-800 mt-4"></div>
+                <div id="track-result" class="hidden bg-black/40 p-4 rounded-xl border border-white/5 mt-4"></div>
             </div>
-            <button onclick="closeTrackModal()" class="absolute top-4 left-4 text-gray-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            <button onclick="closeTrackModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
         </div>
     </div>
 
     <div id="variant-modal" class="fixed inset-0 z-[70] hidden flex items-end md:items-center justify-center sm:p-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeVariantModal()"></div>
-        <div class="bg-black/60 backdrop-blur-xl w-full max-w-sm rounded-t-3xl md:rounded-3xl border-t md:border border-gray-500/30 relative animate-slide overflow-hidden flex flex-col max-h-[80vh]">
-
-            <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mt-3 mb-1 md:hidden"></div>
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeVariantModal()"></div>
+        <div class="bg-black/70 backdrop-blur-xl w-full max-w-sm rounded-t-3xl md:rounded-3xl border-t md:border border-white/10 relative animate-slide overflow-hidden flex flex-col max-h-[80vh] shadow-2xl">
+            <div class="w-12 h-1 bg-gray-500/50 rounded-full mx-auto mt-3 mb-1 md:hidden"></div>
             <div class="p-5 text-center flex-shrink-0">
-                <div class="w-16 h-16 bg-gray-800 rounded-full mx-auto flex items-center justify-center mb-3 border border-gray-700">
+                <div class="w-16 h-16 bg-white/5 rounded-full mx-auto flex items-center justify-center mb-3 border border-white/10 shadow-[0_0_15px_rgba(188,19,254,0.2)]">
                     <i id="modal-icon" class="fas fa-star text-3xl text-neonPink"></i>
                 </div>
                 <h3 id="modal-product-name" class="text-xl font-bold text-white mb-1">اسم المنتج</h3>
-                <p class="text-gray-400 text-xs">اختار الطعم أو النوع المفضل ليك</p>
+                <p class="text-gray-300 text-xs">اختار الطعم أو النوع المفضل ليك</p>
             </div>
             <div id="variant-options" class="grid grid-cols-2 gap-2 p-4 pt-0 overflow-y-auto custom-scrollbar"></div>
-            <div class="p-4 border-t border-gray-800 bg-gray-900">
-                <button onclick="closeVariantModal()" class="w-full bg-gray-800 text-white py-3 rounded-xl text-sm font-bold hover:bg-gray-700 transition">إلغاء</button>
+            <div class="p-4 border-t border-white/10 bg-black/20">
+                <button onclick="closeVariantModal()" class="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl text-sm font-bold transition border border-white/5">إلغاء</button>
             </div>
         </div>
     </div>
 
     <div id="checkout-modal" class="fixed inset-0 z-[80] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeCheckoutModal()"></div>
-        <div class="bg-[#151515] w-full max-w-md rounded-2xl border border-gray-700 relative animate-slide overflow-hidden shadow-2xl">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeCheckoutModal()"></div>
+        <div class="bg-black/70 backdrop-blur-xl w-full max-w-md rounded-2xl border border-white/10 relative animate-slide overflow-hidden shadow-2xl">
             <div class="p-6">
                 <h2 class="text-2xl font-black text-white mb-2 text-center">بيانات التوصيل 🛵</h2>
                 <p class="text-gray-400 text-xs text-center mb-6">اكتب بياناتك مرة واحدة بس عشان نوصلك لحد الباب.</p>
                 
                 <form id="checkout-form" onsubmit="event.preventDefault(); submitOrder();">
                     <div class="mb-4">
-                        <label class="block text-gray-400 text-xs font-bold mb-2">الاسم بالكامل</label>
-                        <input type="text" id="customer-name" class="custom-input" placeholder="اكتب اسمك هنا.." required>
+                        <label class="block text-gray-300 text-xs font-bold mb-2">الاسم بالكامل</label>
+                        <input type="text" id="customer-name" class="custom-input bg-white/5 border-white/10 focus:border-neonBlue" placeholder="اكتب اسمك هنا.." required>
                     </div>
                     
                     <div class="mb-4">
-                        <label class="block text-gray-400 text-xs font-bold mb-2">رقم الموبايل (واتساب)</label>
-                        <input type="tel" id="customer-phone" class="custom-input" placeholder="01xxxxxxxxx" maxlength="11" required>
+                        <label class="block text-gray-300 text-xs font-bold mb-2">رقم الموبايل (واتساب)</label>
+                        <input type="tel" id="customer-phone" class="custom-input bg-white/5 border-white/10 focus:border-neonBlue" placeholder="01xxxxxxxxx" maxlength="11" required>
                         <p class="text-red-500 text-xs hidden" id="phone-error">رقم الموبايل لازم يكون 11 رقم ويبدأ بـ 01</p>
                     </div>
 
                     <div class="mb-6">
-                        <label class="block text-gray-400 text-xs font-bold mb-2">العنوان بالتفصيل</label>
-                        <textarea id="customer-address" class="custom-input h-24 resize-none" placeholder="اسم الشارع، رقم العمارة، الدور، علامة مميزة.." required></textarea>
+                        <label class="block text-gray-300 text-xs font-bold mb-2">العنوان بالتفصيل</label>
+                        <textarea id="customer-address" class="custom-input bg-white/5 border-white/10 focus:border-neonBlue h-24 resize-none" placeholder="اسم الشارع، رقم العمارة، الدور، علامة مميزة.." required></textarea>
                     </div>
 
-                    <button type="submit" class="w-full bg-gradient-to-r from-neonPink to-purple-800 hover:from-purple-700 hover:to-neonPink text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2">
+                    <button type="submit" class="w-full bg-gradient-to-r from-neonPink to-purple-800 hover:from-purple-700 hover:to-neonPink text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2 border border-white/10">
                         <span>تأكيد وإرسال الطلب</span> <i class="fas fa-paper-plane"></i>
                     </button>
                 </form>
             </div>
-            <button onclick="closeCheckoutModal()" class="absolute top-4 left-4 text-gray-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            <button onclick="closeCheckoutModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
         </div>
     </div>
 
     <div id="cart-modal" class="fixed inset-0 z-[60] hidden">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" onclick="toggleCart()"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-[#0f0f0f] rounded-t-3xl border-t border-gray-800 shadow-2xl transform transition-transform duration-300 max-h-[90vh] flex flex-col">
-            <div class="w-full flex justify-center pt-3 pb-1" onclick="toggleCart()"><div class="w-12 h-1.5 bg-gray-700 rounded-full"></div></div>
-            <div class="px-6 py-4 flex justify-between items-center border-b border-gray-800">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-xl rounded-t-3xl border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] transform transition-transform duration-300 max-h-[90vh] flex flex-col">
+            <div class="w-full flex justify-center pt-3 pb-1" onclick="toggleCart()"><div class="w-12 h-1.5 bg-gray-500/50 rounded-full"></div></div>
+            <div class="px-6 py-4 flex justify-between items-center border-b border-white/10">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fas fa-receipt text-neonBlue"></i> مراجعة الطلب</h2>
-                <button type="button" onclick="clearCart()" class="text-red-400 text-xs px-3 py-1.5 bg-red-900/20 rounded-full hover:bg-red-900/40 transition border border-red-900/30 flex items-center gap-1">
+                <button type="button" onclick="clearCart()" class="text-red-400 text-xs px-3 py-1.5 bg-red-500/10 rounded-full hover:bg-red-500/20 transition border border-red-500/20 flex items-center gap-1">
                     <i class="fas fa-trash-alt"></i> حذف الكل
                 </button>
             </div>
             <div id="cart-items" class="p-4 overflow-y-auto flex-1 space-y-3 custom-scrollbar"></div>
-            <div class="p-5 bg-black/60 border-t border-gray-800 pb-8">
+            <div class="p-5 bg-black/40 border-t border-white/10 pb-8">
                 <div class="flex justify-between items-center mb-4 text-lg font-bold">
                     <span>الإجمالي:</span>
                     <span class="text-neonBlue text-xl" id="modal-total-price">0 ج.م</span>
