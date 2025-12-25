@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>أداة إدارة المنتجات السريعة 🚀</title>
+    <title>أداة إدارة المنتجات العملاقة 🚀</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
@@ -10,11 +10,11 @@
 </head>
 <body>
 
-    <h1 class="text-3xl font-bold mb-8 text-neonBlue">أداة التحكم الكامل في المنتجات</h1>
+    <h1 class="text-3xl font-bold mb-8 text-neonBlue">أداة رفع المنتجات (النسخة الكاملة)</h1>
 
     <div class="flex justify-center gap-4 mb-8">
         <button onclick="uploadAll()" id="btn-upload" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-xl text-xl transition shadow-lg flex items-center gap-2">
-            <i class="fas fa-cloud-upload-alt"></i> رفع 45 منتج (سعر السوق)
+            <i class="fas fa-cloud-upload-alt"></i> رفع المنتجات (+150 منتج)
         </button>
 
         <button onclick="deleteAll()" id="btn-delete" class="bg-red-600 hover:bg-red-500 text-white font-bold py-4 px-8 rounded-xl text-xl transition shadow-lg flex items-center gap-2 border border-red-400">
@@ -22,7 +22,7 @@
         </button>
     </div>
 
-    <div id="status" class="mt-4 text-gray-300 space-y-2 text-sm h-96 overflow-y-auto border border-gray-800 p-6 rounded-2xl bg-black text-right custom-scrollbar"></div>
+    <div id="status" class="mt-4 text-gray-300 space-y-2 text-sm h-[500px] overflow-y-auto border border-gray-800 p-6 rounded-2xl bg-black text-right custom-scrollbar"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -41,62 +41,135 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // قائمة 45 منتج بأسعار السوق الشعبي
+        // قائمة المنتجات الشاملة
         const productsData = [
-            // --- قسم المزاج (سجائر) ---
+            // ==================== قسم الإندومي والنودلز ====================
+            { name: "إندومي خضار", price: 15, category: "snacks", icon: "fa-bowl-food", color: "text-green-500", desc: "نودلز", variants: ["جامبو", "عادي"] },
+            { name: "إندومي فراخ", price: 15, category: "snacks", icon: "fa-bowl-food", color: "text-yellow-500", desc: "نودلز", variants: ["جامبو", "عادي"] },
+            { name: "إندومي سجق", price: 15, category: "snacks", icon: "fa-bowl-food", color: "text-red-500", desc: "نودلز", variants: ["جامبو", "عادي"] },
+            { name: "إندومي لحمة", price: 15, category: "snacks", icon: "fa-bowl-food", color: "text-orange-700", desc: "نودلز", variants: ["جامبو", "عادي"] },
+            { name: "إندومي كاري", price: 15, category: "snacks", icon: "fa-bowl-food", color: "text-yellow-600", desc: "نودلز", variants: ["جامبو", "عادي"] },
+            { name: "إندومي جمبري", price: 15, category: "snacks", icon: "fa-bowl-food", color: "text-pink-500", desc: "نودلز", variants: ["جامبو", "عادي"] },
+            { name: "إندومي شطة وليمون", price: 15, category: "snacks", icon: "fa-bowl-food", color: "text-red-600", desc: "نودلز", variants: ["جامبو", "عادي"] },
+            { name: "نودلز كلوجز", price: 12, category: "snacks", icon: "fa-bowl-food", color: "text-red-500", desc: "نودلز", variants: ["فراخ", "لحمة"] },
+            
+            // ==================== قسم الشيبسي والسناكس ====================
+            { name: "شيبسي ملح", price: 10, category: "snacks", icon: "fa-circle-notch", color: "text-yellow-400", desc: "كيس كبير", variants: ["عائلي", "وسط"] },
+            { name: "شيبسي طماطم", price: 10, category: "snacks", icon: "fa-circle-notch", color: "text-red-500", desc: "كيس كبير", variants: ["عائلي", "وسط"] },
+            { name: "شيبسي شطة وليمون", price: 10, category: "snacks", icon: "fa-circle-notch", color: "text-orange-500", desc: "كيس كبير", variants: ["عائلي", "وسط"] },
+            { name: "شيبسي جبنة متبلة", price: 10, category: "snacks", icon: "fa-circle-notch", color: "text-yellow-600", desc: "كيس كبير", variants: ["عائلي", "وسط"] },
+            { name: "شيبسي كباب", price: 10, category: "snacks", icon: "fa-circle-notch", color: "text-purple-600", desc: "كيس كبير", variants: ["عائلي", "وسط"] },
+            
+            { name: "تايجر شطة وليمون", price: 10, category: "snacks", icon: "fa-paw", color: "text-red-600", desc: "كرانشي", variants: ["كبير"] },
+            { name: "تايجر جبنة", price: 10, category: "snacks", icon: "fa-paw", color: "text-yellow-500", desc: "كرانشي", variants: ["كبير"] },
+            { name: "تايجر فلفل حلو", price: 10, category: "snacks", icon: "fa-paw", color: "text-purple-500", desc: "كرانشي", variants: ["كبير"] },
+            
+            { name: "شيتوس جبنة", price: 10, category: "snacks", icon: "fa-paw", color: "text-orange-500", desc: "كرانشي", variants: ["كبير"] },
+            { name: "شيتوس كاتشب", price: 10, category: "snacks", icon: "fa-paw", color: "text-red-500", desc: "كرانشي", variants: ["كبير"] },
+            
+            { name: "دوريتوس جبنة", price: 10, category: "snacks", icon: "fa-play", color: "text-orange-500", desc: "ذرة", variants: ["كبير"] },
+            { name: "دوريتوس فلفل حلو", price: 10, category: "snacks", icon: "fa-play", color: "text-purple-600", desc: "ذرة", variants: ["كبير"] },
+            { name: "دوريتوس حار نار", price: 10, category: "snacks", icon: "fa-play", color: "text-red-600", desc: "ذرة", variants: ["كبير"] },
+            
+            { name: "ويندوز", price: 8, category: "snacks", icon: "fa-table-cells", color: "text-green-500", desc: "سناكس", variants: ["طماطم", "جبنة", "شطة"] },
+            { name: "بريك (Break)", price: 8, category: "snacks", icon: "fa-cookie", color: "text-purple-400", desc: "سناكس", variants: ["شطة وليمون", "جبنة"] },
+            { name: "بيج شيبس", price: 8, category: "snacks", icon: "fa-circle-notch", color: "text-red-500", desc: "سناكس", variants: ["شطة", "جبنة", "طماطم"] },
+
+            // ==================== بسكويت وكيك ====================
+            { name: "مولتو ماكس", price: 15, category: "snacks", icon: "fa-bread-slice", color: "text-red-600", desc: "كرواسون", variants: ["شوكولاتة", "فراولة", "بندق"] },
+            { name: "مولتو مالح", price: 15, category: "snacks", icon: "fa-bread-slice", color: "text-yellow-600", desc: "كرواسون", variants: ["جبنة بيضاء", "جبنة رومي", "اسطنبولي"] },
+            { name: "هوهوز", price: 10, category: "snacks", icon: "fa-candy-cane", color: "text-red-500", desc: "كيك", variants: ["شوكولاتة", "فراولة", "كريم"] },
+            { name: "تودو براونيز", price: 10, category: "snacks", icon: "fa-cookie", color: "text-purple-600", desc: "كيك", variants: ["شوكولاتة"] },
+            { name: "تودو بومب", price: 10, category: "snacks", icon: "fa-bomb", color: "text-red-500", desc: "كيك", variants: ["شوكولاتة"] },
+            { name: "أهلاوي", price: 5, category: "snacks", icon: "fa-cookie", color: "text-red-600", desc: "بسكويت", variants: ["عادي"] },
+            { name: "بسكريم", price: 8, category: "snacks", icon: "fa-cookie-bite", color: "text-pink-600", desc: "بسكويت", variants: ["شوكولاتة"] },
+            { name: "أولكر", price: 8, category: "snacks", icon: "fa-cookie", color: "text-red-600", desc: "بسكويت", variants: ["سادة", "تمر"] },
+            { name: "لوتس", price: 15, category: "snacks", icon: "fa-cookie", color: "text-amber-600", desc: "بسكويت", variants: ["قطعة"] },
+            { name: "ويفر فريسكا", price: 8, category: "snacks", icon: "fa-bars", color: "text-yellow-500", desc: "ويفر", variants: ["شوكولاتة", "فانيليا", "بندق"] },
+            { name: "شمعدان", price: 5, category: "snacks", icon: "fa-bars", color: "text-blue-500", desc: "ويفر", variants: ["عادي"] },
+            { name: "بوريو", price: 8, category: "snacks", icon: "fa-cookie", color: "text-blue-900", desc: "بسكويت", variants: ["عادي"] },
+            { name: "أوريو", price: 10, category: "snacks", icon: "fa-cookie", color: "text-blue-600", desc: "بسكويت", variants: ["عادي"] },
+
+            // ==================== قسم المزاج (سجائر) ====================
             { name: "LM أحمر", price: 85, category: "mood", icon: "fa-smoking", color: "text-red-500", desc: "سجائر", variants: ["أحمر"] },
             { name: "LM أزرق", price: 85, category: "mood", icon: "fa-smoking", color: "text-blue-500", desc: "سجائر", variants: ["أزرق"] },
+            { name: "LM فضي", price: 85, category: "mood", icon: "fa-smoking", color: "text-gray-400", desc: "سجائر", variants: ["فضي"] },
             { name: "مارلبورو أحمر", price: 110, category: "mood", icon: "fa-crown", color: "text-red-600", desc: "أصلي", variants: ["أحمر"] },
             { name: "مارلبورو جولد", price: 110, category: "mood", icon: "fa-crown", color: "text-yellow-500", desc: "جولد", variants: ["جولد"] },
+            { name: "مارلبورو Purple", price: 110, category: "mood", icon: "fa-crown", color: "text-purple-600", desc: "ميكس", variants: ["توت"] },
             { name: "ميريت أصفر", price: 120, category: "mood", icon: "fa-star", color: "text-yellow-400", desc: "Merit", variants: ["أصفر"] },
+            { name: "ميريت أزرق", price: 120, category: "mood", icon: "fa-star", color: "text-blue-600", desc: "Merit", variants: ["أزرق"] },
             { name: "كليوباترا بوكس", price: 45, category: "mood", icon: "fa-box-open", color: "text-green-600", desc: "مصري", variants: ["أبيض", "ألوان"] },
-            { name: "تارجت (Target)", price: 45, category: "mood", icon: "fa-crosshairs", color: "text-red-600", desc: "سجائر", variants: ["أحمر", "أزرق"] },
+            { name: "كليوباترا سوفت", price: 45, category: "mood", icon: "fa-box-open", color: "text-green-500", desc: "مصري", variants: ["سوفت"] },
+            { name: "تارجت أحمر", price: 45, category: "mood", icon: "fa-crosshairs", color: "text-red-600", desc: "سجائر", variants: ["أحمر"] },
+            { name: "تارجت أزرق", price: 45, category: "mood", icon: "fa-crosshairs", color: "text-blue-600", desc: "سجائر", variants: ["أزرق"] },
             { name: "وينستون أحمر", price: 75, category: "mood", icon: "fa-w", color: "text-red-600", desc: "Winston", variants: ["أحمر"] },
             { name: "وينستون أزرق", price: 75, category: "mood", icon: "fa-w", color: "text-blue-600", desc: "Winston", variants: ["أزرق"] },
+            { name: "وينستون توت", price: 75, category: "mood", icon: "fa-w", color: "text-purple-600", desc: "Winston", variants: ["توت"] },
             { name: "شيستر فيلد", price: 65, category: "mood", icon: "fa-smoking", color: "text-orange-500", desc: "سجائر", variants: ["أحمر", "أزرق"] },
             { name: "كابتن بلاك", price: 150, category: "mood", icon: "fa-ship", color: "text-gray-400", desc: "سيجار", variants: ["شوكولاتة", "كريز", "فانيليا"] },
 
-            // --- مشروبات ---
-            { name: "بيبسي كانز", price: 15, category: "drinks", icon: "fa-glass-water", color: "text-blue-600", desc: "330 مل", variants: ["بيبسي", "دايت"] },
-            { name: "كوكاكولا كانز", price: 15, category: "drinks", icon: "fa-bottle-droplet", color: "text-red-600", desc: "330 مل", variants: ["كولا", "زيرو"] },
+            // ==================== قسم المشروبات ====================
+            { name: "بيبسي", price: 15, category: "drinks", icon: "fa-glass-water", color: "text-blue-600", desc: "330 مل", variants: ["بيبسي", "دايت"] },
+            { name: "كوكاكولا", price: 15, category: "drinks", icon: "fa-bottle-droplet", color: "text-red-600", desc: "330 مل", variants: ["كولا", "زيرو"] },
             { name: "سفن أب", price: 15, category: "drinks", icon: "fa-glass-water", color: "text-green-400", desc: "ليمون", variants: ["عادي", "دايت"] },
+            { name: "ميرندا", price: 15, category: "drinks", icon: "fa-bottle-droplet", color: "text-orange-500", desc: "صودا", variants: ["برتقال", "تفاح", "يوسفي"] },
             { name: "فيروز", price: 15, category: "drinks", icon: "fa-apple-whole", color: "text-yellow-300", desc: "شعير", variants: ["أناناس", "تفاح", "مانجو"] },
+            { name: "بريل", price: 15, category: "drinks", icon: "fa-beer", color: "text-green-700", desc: "شعير", variants: ["عادي"] },
             { name: "شويبس", price: 15, category: "drinks", icon: "fa-bottle-water", color: "text-yellow-500", desc: "جولد", variants: ["رمان", "أناناس", "خوخ"] },
-            { name: "ستينج (Sting)", price: 15, category: "drinks", icon: "fa-bolt", color: "text-yellow-400", desc: "طاقة", variants: ["جولد", "توت"] },
+            { name: "سبيرو سباتس", price: 15, category: "drinks", icon: "fa-bottle-water", color: "text-purple-500", desc: "مصري", variants: ["عنب", "ليمون ونعناع", "تفاح", "خوخ"] },
+            { name: "بيج كولا", price: 10, category: "drinks", icon: "fa-bottle-droplet", color: "text-red-600", desc: "كبير", variants: ["كولا"] },
+            
+            // مشروبات طاقة
+            { name: "ستينج", price: 15, category: "drinks", icon: "fa-bolt", color: "text-yellow-400", desc: "طاقة", variants: ["جولد", "توت"] },
             { name: "ريد بُل", price: 45, category: "drinks", icon: "fa-bullhorn", color: "text-blue-500", desc: "طاقة", variants: ["عادي", "Sugar Free"] },
-            { name: "جهينة ميكس", price: 10, category: "drinks", icon: "fa-cow", color: "text-pink-400", desc: "حليب", variants: ["شوكولاتة", "فراولة", "موز"] },
-            { name: "مياه معدنية", price: 7, category: "drinks", icon: "fa-bottle-water", color: "text-blue-300", desc: "600 مل", variants: ["داساني", "نسلة", "أكوافاينا"] },
+            { name: "مونستر", price: 55, category: "drinks", icon: "fa-dragon", color: "text-green-500", desc: "طاقة", variants: ["أخضر", "أبيض"] },
+            
+            // عصائر
+            { name: "جهينة بيور", price: 15, category: "drinks", icon: "fa-glass-water", color: "text-orange-500", desc: "عصير", variants: ["مانجو", "جوافة", "تفاح", "أناناس", "برتقال"] },
+            { name: "جهينة كلاسيك", price: 10, category: "drinks", icon: "fa-glass-water", color: "text-yellow-400", desc: "عصير", variants: ["مانجو", "جوافة", "كوكتيل"] },
+            { name: "بيتي", price: 10, category: "drinks", icon: "fa-glass-water", color: "text-green-500", desc: "عصير", variants: ["مانجو", "تفاح", "أناناس"] },
+            { name: "بست", price: 8, category: "drinks", icon: "fa-glass-water", color: "text-red-400", desc: "عصير", variants: ["تفاح", "جوافة", "مانجو"] },
+            
+            // مياه
+            { name: "مياه معدنية (صغير)", price: 7, category: "drinks", icon: "fa-bottle-water", color: "text-blue-300", desc: "600 مل", variants: ["داساني", "نسلة", "أكوافاينا", "صافي"] },
+            { name: "مياه معدنية (كبير)", price: 12, category: "drinks", icon: "fa-bottle-water", color: "text-blue-400", desc: "1.5 لتر", variants: ["داساني", "نسلة", "أكوافاينا"] },
 
-            // --- بقالة (قهوة وشاي) ---
-            { name: "بن عبد المعبود", price: 55, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-800", desc: "50 جرام", variants: ["فاتح سادة", "فاتح محوج", "غامق سادة"] },
-            { name: "بن محوج (خصوصي)", price: 65, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-600", desc: "توليفة", variants: ["وسط", "فاتح"] },
+            // ==================== البقالة ====================
+            // القهوة والشاي
+            { name: "بن عبد المعبود", price: 55, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-800", desc: "50 جرام", variants: ["فاتح سادة", "فاتح محوج", "غامق سادة", "وسط سادة"] },
+            { name: "بن أبو عوف", price: 65, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-900", desc: "تركي", variants: ["وسط", "فاتح"] },
             { name: "شاي العروسة", price: 15, category: "grocery", icon: "fa-mug-hot", color: "text-red-700", desc: "40 جرام", variants: ["ناعم"] },
+            { name: "شاي العروسة (ربع)", price: 65, category: "grocery", icon: "fa-mug-hot", color: "text-red-700", desc: "250 جرام", variants: ["ناعم"] },
             { name: "شاي ليبتون", price: 15, category: "grocery", icon: "fa-mug-hot", color: "text-yellow-500", desc: "40 جرام", variants: ["ناعم", "خرز"] },
+            { name: "ليبتون فتلة", price: 25, category: "grocery", icon: "fa-tag", color: "text-yellow-500", desc: "25 فتلة", variants: ["أخضر", "أحمر"] },
             { name: "نسكافيه كلاسيك", price: 10, category: "grocery", icon: "fa-mug-hot", color: "text-amber-700", desc: "ظرف", variants: ["بلاك"] },
-            { name: "نسكافيه 3×1", price: 8, category: "grocery", icon: "fa-mug-hot", color: "text-amber-400", desc: "ميكس", variants: ["أوريجينال", "بندق", "شوكولاتة"] },
-            { name: "كوفي ميكس", price: 7, category: "grocery", icon: "fa-mug-hot", color: "text-blue-400", desc: "ظرف", variants: ["عادي"] },
+            { name: "نسكافيه 3×1", price: 8, category: "grocery", icon: "fa-mug-hot", color: "text-amber-400", desc: "ميكس", variants: ["أوريجينال", "بندق", "شوكولاتة", "فانيليا"] },
+            { name: "كوفي ميكس", price: 7, category: "grocery", icon: "fa-mug-hot", color: "text-blue-400", desc: "ظرف", variants: ["عادي", "خمسينة"] },
+            { name: "كابتشينو", price: 12, category: "grocery", icon: "fa-mug-saucer", color: "text-orange-400", desc: "توروبيكا", variants: ["سادة", "بندق", "شوكولاتة"] },
 
-            // --- نقنقة (سناكس) ---
-            { name: "شيبسي عائلي", price: 10, category: "snacks", icon: "fa-circle-notch", color: "text-yellow-500", desc: "كيس كبير", variants: ["ملح", "شطة وليمون", "طماطم", "كباب"] },
-            { name: "دوريتوس", price: 10, category: "snacks", icon: "fa-play", color: "text-orange-600", desc: "ذرة", variants: ["جبنة", "فلفل حلو"] },
-            { name: "شيتوس", price: 10, category: "snacks", icon: "fa-paw", color: "text-orange-500", desc: "كرانشي", variants: ["جبنة"] },
-            { name: "صن بايتس", price: 8, category: "snacks", icon: "fa-bread-slice", color: "text-yellow-600", desc: "خبز", variants: ["جبنة", "طماطم", "زيتون"] },
-            { name: "إندومي جامبو", price: 15, category: "snacks", icon: "fa-bowl-food", color: "text-yellow-300", desc: "نودلز", variants: ["خضار", "فراخ", "سجق", "لحمة"] },
-            { name: "إندومي عادي", price: 12, category: "snacks", icon: "fa-bowl-food", color: "text-white", desc: "صغير", variants: ["فراخ", "لحمة"] },
-            { name: "مولتو ماكس", price: 15, category: "snacks", icon: "fa-bread-slice", color: "text-red-600", desc: "كرواسون", variants: ["شوكولاتة", "فراولة", "جبنة"] },
-            { name: "هوهوز", price: 10, category: "snacks", icon: "fa-candy-cane", color: "text-red-500", desc: "كيك", variants: ["شوكولاتة", "فراولة"] },
-            { name: "توينكيز", price: 10, category: "snacks", icon: "fa-cheese", color: "text-yellow-400", desc: "كيك", variants: ["كريمة"] },
-            { name: "تودو براونيز", price: 10, category: "snacks", icon: "fa-cookie", color: "text-purple-500", desc: "كيك", variants: ["شوكولاتة"] },
-            { name: "بيك رولز", price: 10, category: "snacks", icon: "fa-cookie-bite", color: "text-orange-500", desc: "مقرمشات", variants: ["ملح", "كاتشب", "بيتزا"] },
-
-            // --- بقالة (بيت) ---
+            // أساسيات البيت
             { name: "سكر الأسرة", price: 45, category: "grocery", icon: "fa-cube", color: "text-white", desc: "1 كيلو", variants: ["1 كيلو"] },
-            { name: "أرز الضحى", price: 40, category: "grocery", icon: "fa-bowl-rice", color: "text-white", desc: "1 كيلو", variants: ["1 كيلو"] },
+            { name: "أرز الضحى", price: 45, category: "grocery", icon: "fa-bowl-rice", color: "text-white", desc: "1 كيلو", variants: ["1 كيلو"] },
+            { name: "أرز الساعة", price: 40, category: "grocery", icon: "fa-bowl-rice", color: "text-white", desc: "1 كيلو", variants: ["1 كيلو"] },
             { name: "زيت كريستال", price: 95, category: "grocery", icon: "fa-bottle-droplet", color: "text-yellow-300", desc: "800 مل", variants: ["عباد الشمس", "ذرة"] },
-            { name: "سمنة روابي", price: 95, category: "grocery", icon: "fa-jar", color: "text-green-500", desc: "700 جم", variants: ["قشطة"] },
-            { name: "مكرونة الملكة", price: 18, category: "grocery", icon: "fa-utensils", color: "text-yellow-200", desc: "400 جم", variants: ["خواتم", "قلم", "اسباجتي", "شعرية"] },
+            { name: "زيت عافية", price: 100, category: "grocery", icon: "fa-bottle-droplet", color: "text-yellow-400", desc: "800 مل", variants: ["ذرة"] },
+            { name: "زيت هلا", price: 85, category: "grocery", icon: "fa-bottle-droplet", color: "text-yellow-200", desc: "قلي", variants: ["عباد"] },
+            { name: "سمنة روابي", price: 95, category: "grocery", icon: "fa-jar", color: "text-green-500", desc: "700 جم", variants: ["قشطة", "عادي"] },
+            { name: "سمنة جنة", price: 95, category: "grocery", icon: "fa-jar", color: "text-blue-500", desc: "700 جم", variants: ["عادي"] },
+            { name: "مكرونة الملكة", price: 18, category: "grocery", icon: "fa-utensils", color: "text-yellow-200", desc: "400 جم", variants: ["خواتم", "قلم", "اسباجتي", "شعرية", "مرمرية"] },
+            { name: "مكرونة حواء", price: 18, category: "grocery", icon: "fa-utensils", color: "text-blue-200", desc: "400 جم", variants: ["خواتم", "قلم", "اسباجتي"] },
+            
+            // معلبات وألبان
             { name: "تونا صن شاين", price: 65, category: "grocery", icon: "fa-fish", color: "text-pink-300", desc: "قطع", variants: ["قطع", "مفتتة"] },
-            { name: "لبن جهينة", price: 45, category: "grocery", icon: "fa-cow", color: "text-blue-500", desc: "1 لتر", variants: ["كامل الدسم", "خالي الدسم"] }
+            { name: "صلصة هارفست", price: 20, category: "grocery", icon: "fa-jar", color: "text-red-700", desc: "برطمان", variants: ["300 جم"] },
+            { name: "فول حدائق كاليفورنيا", price: 25, category: "grocery", icon: "fa-bowl-food", color: "text-orange-800", desc: "علبة", variants: ["سادة", "خلطة"] },
+            { name: "لبن جهينة", price: 45, category: "grocery", icon: "fa-cow", color: "text-blue-500", desc: "1 لتر", variants: ["كامل الدسم", "خالي الدسم"] },
+            { name: "لبن بخيره", price: 25, category: "grocery", icon: "fa-cow", color: "text-green-500", desc: "نص لتر", variants: ["كيس"] },
+            { name: "زبادي جهينة", price: 10, category: "grocery", icon: "fa-spoon", color: "text-white", desc: "علبة", variants: ["سادة", "فراولة"] },
+            { name: "جبنة عبور لاند", price: 35, category: "grocery", icon: "fa-cheese", color: "text-white", desc: "ربع كيلو", variants: ["فيتا", "اسطنبولي", "رومي", "زيتون"] },
+            { name: "جبنة دومتي", price: 35, category: "grocery", icon: "fa-cheese", color: "text-blue-600", desc: "ربع كيلو", variants: ["فيتا", "بلس"] },
+            { name: "بيض", price: 6, category: "grocery", icon: "fa-egg", color: "text-white", desc: "واحدة", variants: ["أحمر", "أبيض"] }
         ];
 
         // 1. دالة رفع المنتجات
@@ -104,74 +177,72 @@
             const btn = document.getElementById('btn-upload');
             const status = document.getElementById('status');
             
-            if(!confirm("هل أنت متأكد من رفع 45 منتج؟")) return;
+            if(!confirm("هل أنت متأكد من رفع كل هذه المنتجات؟")) return;
 
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
-            status.innerHTML = ""; // تنظيف
+            status.innerHTML = ""; 
 
             let count = 0;
-            for (const p of productsData) {
-                try {
-                    await addDoc(collection(db, "products"), {
-                        ...p,
-                        createdAt: serverTimestamp()
-                    });
-                    count++;
-                    status.innerHTML += `<div class="text-green-400 border-b border-gray-800 pb-1 mb-1">✅ تم رفع: ${p.name} <span class="text-gray-500 text-xs">(${p.price}ج)</span></div>`;
-                    
-                    // Auto scroll to bottom
-                    status.scrollTop = status.scrollHeight;
-                } catch (e) {
-                    status.innerHTML += `<div class="text-red-500">❌ خطأ في: ${p.name} - ${e.message}</div>`;
-                }
-                // تأخير بسيط عشان المتصفح ميهنجش
-                await new Promise(r => setTimeout(r, 50));
+            const batchSize = 10; // رفع 10 بـ 10 عشان السرعة
+            for (let i = 0; i < productsData.length; i += batchSize) {
+                const batch = productsData.slice(i, i + batchSize);
+                await Promise.all(batch.map(async (p) => {
+                    try {
+                        await addDoc(collection(db, "products"), {
+                            ...p,
+                            createdAt: serverTimestamp()
+                        });
+                        count++;
+                        status.innerHTML += `<div class="text-green-400 border-b border-gray-800 pb-1 mb-1">✅ ${p.name} <span class="text-gray-500 text-xs">(${p.price}ج)</span></div>`;
+                    } catch (e) {
+                        status.innerHTML += `<div class="text-red-500">❌ فشل: ${p.name}</div>`;
+                    }
+                }));
+                status.scrollTop = status.scrollHeight;
+                await new Promise(r => setTimeout(r, 50)); // راحة خفيفة
             }
 
-            status.innerHTML += `<div class="text-neonBlue font-bold mt-4 text-xl border-t border-gray-700 pt-2">🎉 تم الانتهاء! تم رفع ${count} منتج بنجاح.</div>`;
+            status.innerHTML += `<div class="text-neonBlue font-bold mt-4 text-xl border-t border-gray-700 pt-2">🎉 تم الانتهاء! تم رفع ${count} منتج.</div>`;
             btn.innerHTML = 'تم الانتهاء ✅';
         };
 
-        // 2. دالة مسح كل المنتجات (جديد)
+        // 2. دالة مسح كل المنتجات
         window.deleteAll = async () => {
             const btn = document.getElementById('btn-delete');
             const status = document.getElementById('status');
 
-            if (!confirm("⚠️ تحذير خطير!\nهل أنت متأكد أنك تريد مسح كل المنتجات من الموقع؟\nلا يمكن التراجع عن هذا!")) return;
-            if (!confirm("تأكيد أخير: هل تريد المسح فعلاً؟")) return;
+            if (!confirm("⚠️ تحذير!\nهل تريد مسح كل المنتجات من الموقع تماماً؟")) return;
 
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المسح...';
-            status.innerHTML = '<div class="text-yellow-400">⏳ جاري جلب المنتجات للمسح...</div>';
+            status.innerHTML = '<div class="text-yellow-400">⏳ جاري الحذف...</div>';
 
             try {
                 const q = query(collection(db, "products"));
                 const snapshot = await getDocs(q);
                 
                 if (snapshot.empty) {
-                    status.innerHTML += '<div class="text-gray-400">لا توجد منتجات لمسحها.</div>';
-                    btn.innerHTML = 'المنتجات فارغة أصلاً';
+                    status.innerHTML = '<div class="text-gray-400">الموقع فارغ بالفعل.</div>';
                     btn.disabled = false;
+                    btn.innerHTML = 'الموقع فارغ';
                     return;
                 }
 
+                // Firestore Batched Write limit is 500
                 const batch = writeBatch(db);
                 let count = 0;
-
                 snapshot.forEach((doc) => {
                     batch.delete(doc.ref);
                     count++;
                 });
 
                 await batch.commit();
-                status.innerHTML += `<div class="text-red-500 font-bold mt-4">🗑️ تم مسح ${count} منتج بنجاح! الموقع الآن فارغ.</div>`;
+                status.innerHTML += `<div class="text-red-500 font-bold mt-4">🗑️ تم مسح ${count} منتج.</div>`;
                 btn.innerHTML = 'تم المسح 🗑️';
 
             } catch (error) {
-                console.error(error);
-                status.innerHTML += `<div class="text-red-500">❌ حدث خطأ أثناء المسح: ${error.message}</div>`;
-                btn.innerHTML = 'فشل المسح ❌';
+                status.innerHTML += `<div class="text-red-500">❌ خطأ: ${error.message}</div>`;
             } finally {
                 btn.disabled = false;
             }
