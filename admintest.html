@@ -14,10 +14,7 @@
             theme: {
                 extend: {
                     colors: {
-                        neonBlue: '#00f3ff',
-                        neonPink: '#bc13fe',
-                        darkBg: '#050505',
-                        cardBg: '#111111'
+                        neonBlue: '#00f3ff', neonPink: '#bc13fe', darkBg: '#050505', cardBg: '#111111'
                     },
                     fontFamily: { cairo: ['Cairo', 'sans-serif'] }
                 }
@@ -26,93 +23,108 @@
     </script>
     <style>
         body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
-        .login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000; z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .tab-btn.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
         .hidden-force { display: none !important; }
-        .active-tab { background-color: rgba(188, 19, 254, 0.2); border: 1px solid #bc13fe; color: #fff; }
+        /* ستايل زرار التبديل الجديد */
+        .nav-switch.active { background: rgba(188, 19, 254, 0.2); border: 1px solid #bc13fe; color: white; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <div id="login-screen" class="login-overlay">
-        <div class="bg-[#111] p-8 rounded-3xl border border-gray-800 w-full max-w-sm text-center">
-            <h2 class="text-2xl font-black text-white mb-6">منطقة الإدارة</h2>
+        <div class="bg-[#111] p-8 rounded-3xl border border-gray-800 shadow-[0_0_50px_rgba(188,19,254,0.1)] w-full max-w-sm text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonBlue to-neonPink"></div>
+            <div class="w-20 h-20 bg-gray-900 rounded-full mx-auto flex items-center justify-center mb-6 border-2 border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.3)]">
+                <i class="fas fa-fingerprint text-4xl text-neonPink"></i>
+            </div>
+            <h2 class="text-2xl font-black text-white mb-2">منطقة الإدارة</h2>
+            <p class="text-gray-500 text-xs mb-6">يجب تسجيل الدخول للمتابعة</p>
             <form onsubmit="event.preventDefault(); login();">
-                <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 mb-4 text-white focus:border-neonBlue outline-none">
-                <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 mb-6 text-white focus:border-neonBlue outline-none">
-                <button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-neonPink to-purple-900 text-white font-bold py-3 rounded-xl">دخول</button>
+                <div class="mb-4 relative">
+                    <i class="fas fa-envelope absolute top-4 right-4 text-gray-500"></i>
+                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition text-sm">
+                </div>
+                <div class="mb-6 relative">
+                    <i class="fas fa-lock absolute top-4 right-4 text-gray-500"></i>
+                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition text-sm">
+                </div>
+                <button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-neonPink to-purple-900 hover:from-purple-800 hover:to-neonPink text-white font-bold py-3.5 rounded-xl shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2">
+                    <span>فتح السيستم</span> <i class="fas fa-unlock"></i>
+                </button>
             </form>
-            <p id="login-error" class="text-red-500 text-xs mt-4 hidden">بيانات خاطئة</p>
+            <p id="login-error" class="text-red-500 text-xs mt-4 font-bold bg-red-900/10 py-2 rounded border border-red-900/30 hidden"><i class="fas fa-exclamation-circle"></i> <span id="error-text">بيانات الدخول غير صحيحة</span></p>
         </div>
     </div>
 
     <div id="dashboard-screen" class="hidden-force flex-1 flex flex-col">
         <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800 p-4 shadow-2xl">
-            <div class="container mx-auto flex justify-between items-center">
-                <h1 class="text-xl font-black text-white">لوحة التحكم 🚀</h1>
-                <button onclick="logout()" class="text-red-500 text-xs border border-red-900 px-3 py-1 rounded">خروج</button>
+            <div class="container mx-auto flex justify-between items-center mb-3">
+                <h1 class="text-xl font-black text-white flex items-center gap-2">
+                    <i class="fas fa-user-astronaut text-neonPink"></i> لوحة التحكم
+                </h1>
+                <button onclick="logout()" class="text-red-500 text-xs font-bold border border-red-900 bg-red-900/10 px-4 py-2 rounded-lg hover:bg-red-900/30 transition flex items-center gap-2">
+                    خروج <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
-            
-            <div class="container mx-auto mt-4 flex gap-2">
-                <button onclick="switchMainView('orders')" id="btn-view-orders" class="flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 active-tab">
-                    <i class="fas fa-receipt ml-1"></i> الطلبات
-                </button>
-                <button onclick="switchMainView('products')" id="btn-view-products" class="flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800">
-                    <i class="fas fa-boxes ml-1"></i> المنتجات
-                </button>
+            <div class="container mx-auto flex gap-2">
+                <button onclick="switchView('orders')" id="btn-view-orders" class="nav-switch active flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition"><i class="fas fa-receipt"></i> الطلبات</button>
+                <button onclick="switchView('products')" id="btn-view-products" class="nav-switch flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition"><i class="fas fa-boxes"></i> المنتجات</button>
             </div>
         </nav>
 
-        <div id="view-orders" class="container mx-auto px-4 mt-6 pb-20">
-            <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 mb-4 max-w-md mx-auto">
-                <button onclick="setFilter('new')" class="filter-btn flex-1 py-1 text-sm rounded transition bg-white/10 text-white">🔥 جديدة</button>
-                <button onclick="setFilter('done')" class="filter-btn flex-1 py-1 text-sm rounded transition text-gray-400">✅ مكتملة</button>
+        <div id="view-orders" class="flex-1 flex flex-col">
+            <div class="container mx-auto px-4 mt-6 mb-4">
+                <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 max-w-md mx-auto">
+                    <button onclick="setFilter('new')" id="tab-new" class="tab-btn active flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">🔥 جديدة</button>
+                    <button onclick="setFilter('done')" id="tab-done" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">✅ مكتملة</button>
+                    <button onclick="setFilter('all')" id="tab-all" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">📂 الكل</button>
+                </div>
             </div>
-            <div id="orders-list" class="space-y-4"></div>
+            <div id="delete-section" class="container mx-auto px-4 mb-4 text-center hidden">
+                <button onclick="deleteCompletedOrders()" class="text-red-500 hover:text-red-400 text-xs font-bold border border-red-900/50 bg-red-900/10 px-4 py-2 rounded-full transition flex items-center gap-2 mx-auto">
+                    <i class="fas fa-trash-alt"></i> مسح سجل الطلبات المنتهية
+                </button>
+            </div>
+            <div class="container mx-auto px-4 mt-4 max-w-3xl flex-1 pb-20">
+                <div id="orders-list" class="space-y-4"></div>
+            </div>
         </div>
 
-        <div id="view-products" class="container mx-auto px-4 mt-6 pb-20 hidden">
-            <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-8 relative overflow-hidden">
+        <div id="view-products" class="hidden container mx-auto px-4 mt-6 pb-20 max-w-3xl">
+            <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-6 relative overflow-hidden shadow-lg">
                 <div class="absolute top-0 right-0 w-20 h-20 bg-neonBlue blur-[50px] opacity-10"></div>
-                <h3 class="font-bold text-lg mb-4 text-neonBlue"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h3>
-                
+                <h3 class="font-bold text-lg mb-4 text-neonBlue flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة منتج</h3>
                 <form onsubmit="event.preventDefault(); addProduct();" id="product-form" class="space-y-3">
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: بيبسي)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full" required>
-                        <input type="number" id="p-price" placeholder="السعر" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full" required>
+                        <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: بيبسي)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
+                        <input type="number" id="p-price" placeholder="السعر" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
                     </div>
-
                     <div class="grid grid-cols-2 gap-3">
-                        <select id="p-category" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
+                        <select id="p-category" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
                             <option value="grocery">بقالة 🧺</option>
                             <option value="snacks">نقنقة 🍫</option>
                             <option value="drinks">مشروبات 🥤</option>
                             <option value="mood">المزاج 🚬</option>
                         </select>
-                        <input type="text" id="p-icon" placeholder="الأيقونة (لو سبتها فاضية هختارلك عشوائي)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
+                        <input type="text" id="p-icon" placeholder="الأيقونة (لو سبتها فاضية هختارلك)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
                     </div>
-
-                    <input type="text" id="p-desc" placeholder="وصف قصير (مثلاً: 1 لتر)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
-                    <input type="text" id="p-variants" placeholder="الأنواع (افصل بفاصلة: شطة, ليمون, جبنة)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full">
-
-                    <button type="submit" id="add-btn" class="w-full bg-neonBlue text-black font-bold py-3 rounded-xl hover:bg-cyan-400 transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">
-                        حفظ المنتج 💾
-                    </button>
+                    <input type="text" id="p-desc" placeholder="وصف قصير (مثلاً: 1 لتر)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
+                    <input type="text" id="p-variants" placeholder="الأنواع (افصل بفاصلة: شطة, ليمون)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
+                    <button type="submit" id="add-btn" class="w-full bg-neonBlue hover:bg-cyan-400 text-black font-bold py-3 rounded-xl transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">حفظ المنتج 💾</button>
                 </form>
             </div>
-
+            
             <h3 class="font-bold text-white mb-3">المنتجات الحالية:</h3>
             <div id="products-list-admin" class="grid grid-cols-1 gap-3"></div>
         </div>
+
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, where, getDocs, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
@@ -128,154 +140,133 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let currentFilter = 'new';
+        let unsubscribeOrders = null;
 
-        // ربط الدوال بـ window
+        // --- AUTH ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('login-screen').classList.add('hidden-force');
                 document.getElementById('dashboard-screen').classList.remove('hidden-force');
-                loadOrders();
-                loadProducts(); 
+                startListening();
+                loadProductsAdmin(); // تحميل المنتجات عند الدخول
             } else {
                 document.getElementById('login-screen').classList.remove('hidden-force');
                 document.getElementById('dashboard-screen').classList.add('hidden-force');
+                if(unsubscribeOrders) unsubscribeOrders();
             }
         });
 
         window.login = () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(() => {
-                document.getElementById('login-error').classList.remove('hidden');
-            });
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const btn = document.getElementById('login-btn');
+            if (!email || !pass) return alert("اكتب البيانات!");
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+            signInWithEmailAndPassword(auth, email, pass)
+                .catch(() => {
+                    document.getElementById('login-error').classList.remove('hidden');
+                    btn.innerHTML = '<span>فتح السيستم</span> <i class="fas fa-unlock"></i>';
+                    btn.disabled = false;
+                });
         };
 
-        window.logout = () => signOut(auth);
+        window.logout = () => { if(confirm("خروج؟")) signOut(auth); };
 
-        window.switchMainView = (viewName) => {
+        // --- View Switching ---
+        window.switchView = (view) => {
             document.getElementById('view-orders').classList.add('hidden');
             document.getElementById('view-products').classList.add('hidden');
-            document.getElementById('btn-view-orders').classList.remove('active-tab');
-            document.getElementById('btn-view-products').classList.remove('active-tab');
-
-            document.getElementById('view-' + viewName).classList.remove('hidden');
-            document.getElementById('btn-view-' + viewName).classList.add('active-tab');
+            document.getElementById('btn-view-orders').classList.remove('active', 'bg-white/10', 'text-white', 'border-neonPink');
+            document.getElementById('btn-view-products').classList.remove('active', 'bg-white/10', 'text-white', 'border-neonPink');
+            
+            document.getElementById('view-' + view).classList.remove('hidden');
+            const btn = document.getElementById('btn-view-' + view);
+            btn.classList.add('active');
         };
 
-        function loadOrders() {
+        // --- Orders Logic (القديم) ---
+        function startListening() {
             const list = document.getElementById('orders-list');
-            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+            const deleteSection = document.getElementById('delete-section');
+            list.innerHTML = '<div class="text-center py-10"><i class="fas fa-circle-notch fa-spin text-neonPink text-2xl"></i></div>';
             
-            onSnapshot(q, (snapshot) => {
+            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+            unsubscribeOrders = onSnapshot(q, (snapshot) => {
                 let html = '';
                 let hasData = false;
+                if (currentFilter === 'done') deleteSection.classList.remove('hidden'); else deleteSection.classList.add('hidden');
+
                 snapshot.forEach((doc) => {
                     const order = doc.data();
-                    if(currentFilter === 'new' && order.status !== 'new') return;
-                    if(currentFilter === 'done' && order.status !== 'done') return;
-                    
+                    if(currentFilter !== 'all') {
+                        if(currentFilter === 'new' && order.status !== 'new') return;
+                        if(currentFilter === 'done' && order.status !== 'done') return;
+                    }
                     hasData = true;
+                    const isNew = order.status === 'new';
+                    const borderClass = isNew ? 'border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.1)]' : 'border-gray-800 opacity-60 grayscale';
                     html += `
-                    <div class="bg-[#111] border ${order.status === 'new' ? 'border-neonPink' : 'border-gray-800'} p-4 rounded-xl">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-bold text-white">${order.customer.name}</h3>
-                            <span class="text-neonGreen font-mono font-black">#${order.orderNum || '000'}</span>
+                    <div class="bg-[#111] border ${borderClass} p-5 rounded-2xl mb-4 relative transition hover:-translate-y-1">
+                        ${isNew ? '<span class="absolute top-4 left-4 bg-neonPink text-white text-[10px] px-2 py-0.5 rounded font-bold animate-pulse">جديد</span>' : ''}
+                        <div class="flex justify-between items-start mb-3 border-b border-gray-800 pb-2">
+                            <div><h3 class="font-bold text-white text-lg">${order.customer.name}</h3><a href="tel:${order.customer.phone}" class="text-neonBlue text-sm font-bold flex items-center gap-1 hover:underline"><i class="fas fa-phone"></i> ${order.customer.phone}</a></div>
+                            <div class="text-center"><span class="block text-[10px] text-gray-500">Code</span><span class="text-xl font-black text-neonGreen font-mono tracking-widest">#${order.orderNum || '---'}</span></div>
                         </div>
-                        <div class="text-sm text-gray-400 mb-2">${order.customer.address} | ${order.customer.phone}</div>
-                        <div class="bg-gray-900 p-2 rounded mb-2 text-xs text-gray-300">
-                             ${order.items.map(i => `${i.name} (x${i.qty})`).join(', ')}
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-neonBlue">${order.total} ج.م</span>
-                            ${order.status === 'new' ? 
-                                `<button onclick="setStatus('${doc.id}', 'done')" class="bg-green-600 px-4 py-1 rounded text-sm font-bold">توصيل</button>` : 
-                                `<span class="text-green-500 text-xs">تم التوصيل</span>`
-                            }
+                        <div class="bg-gray-900/50 p-2 rounded-lg mb-3 text-xs text-gray-300 flex items-start gap-2"><i class="fas fa-map-marker-alt text-red-500 mt-0.5"></i> ${order.customer.address}</div>
+                        <div class="space-y-1 mb-4">${order.items.map(i => `<div class="flex justify-between text-xs text-gray-400 border-b border-gray-800/50 pb-1 last:border-0"><span>${i.name} <strong class="text-white">x${i.qty}</strong></span><span>${i.price * i.qty}</span></div>`).join('')}</div>
+                        <div class="flex justify-between items-center pt-2"><div class="text-lg font-black text-white">${order.total} <span class="text-xs text-neonPink">ج.م</span></div>
+                            ${isNew ? `<button onclick="setStatus('${doc.id}', 'done')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg transition">✅ توصيل</button>` : `<button onclick="setStatus('${doc.id}', 'new')" class="text-gray-500 hover:text-white text-xs underline">إعادة للجديد ↺</button>`}
                         </div>
                     </div>`;
                 });
-                list.innerHTML = hasData ? html : '<p class="text-center text-gray-500">لا توجد طلبات</p>';
+                list.innerHTML = hasData ? html : '<div class="text-center py-12 opacity-50"><p class="text-gray-500 font-bold">لا توجد طلبات</p></div>';
             });
         }
+        window.setStatus = async (id, status) => { if(status === 'done' && !confirm('هل استلمت المبلغ؟ 💰')) return; await updateDoc(doc(db, "orders", id), { status }); };
+        window.deleteCompletedOrders = async () => { if (!confirm("مسح الأرشيف كله؟")) return; const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach((d) => b.delete(d.ref)); await b.commit(); alert("تم المسح!"); };
+        window.setFilter = (f) => { currentFilter = f; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-'+f).classList.add('active'); startListening(); };
 
-        window.setStatus = (id, status) => updateDoc(doc(db, "orders", id), { status });
-        
-        window.setFilter = (f) => {
-            currentFilter = f;
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('bg-white/10', 'text-white');
-                b.classList.add('text-gray-400');
-            });
-            event.target.classList.add('bg-white/10', 'text-white');
-            event.target.classList.remove('text-gray-400');
-            loadOrders(); 
-        };
-
+        // --- Products Logic (الجديد) ---
         window.addProduct = async () => {
             const btn = document.getElementById('add-btn');
-            btn.innerHTML = 'جاري الحفظ...';
-            btn.disabled = true;
-
+            btn.innerHTML = 'جاري الحفظ...'; btn.disabled = true;
+            
             const name = document.getElementById('p-name').value;
             const price = Number(document.getElementById('p-price').value);
             const category = document.getElementById('p-category').value;
-            
-            const randomIcons = ['fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle'];
-            const userIcon = document.getElementById('p-icon').value.trim();
-            const icon = userIcon || randomIcons[Math.floor(Math.random() * randomIcons.length)];
-
             const desc = document.getElementById('p-desc').value;
-            const variantsRaw = document.getElementById('p-variants').value;
-            const variants = variantsRaw ? variantsRaw.split(',').map(s => s.trim()) : [];
+            const variants = document.getElementById('p-variants').value ? document.getElementById('p-variants').value.split(',').map(s=>s.trim()) : [];
+            
+            // Random Icon Logic
+            const randomIcons = ['fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle'];
+            const icon = document.getElementById('p-icon').value.trim() || randomIcons[Math.floor(Math.random() * randomIcons.length)];
 
             try {
-                await addDoc(collection(db, "products"), {
-                    name, price, category, icon, desc, variants,
-                    color: 'text-white', createdAt: serverTimestamp()
-                });
-                alert('تمت الإضافة بنجاح! ✅');
-                document.getElementById('product-form').reset();
-            } catch (error) {
-                alert('خطأ: ' + error.message);
-            }
-            btn.innerHTML = 'حفظ المنتج 💾';
-            btn.disabled = false;
+                await addDoc(collection(db, "products"), { name, price, category, icon, desc, variants, color: 'text-white', createdAt: serverTimestamp() });
+                alert('تمت الإضافة! ✅'); document.getElementById('product-form').reset();
+            } catch (e) { alert('خطأ: ' + e.message); }
+            btn.innerHTML = 'حفظ المنتج 💾'; btn.disabled = false;
         };
 
-        function loadProducts() {
-            const list = document.getElementById('products-list-admin');
-            const q = query(collection(db, "products"), orderBy("category"));
-            
-            onSnapshot(q, (snapshot) => {
+        function loadProductsAdmin() {
+            onSnapshot(query(collection(db, "products"), orderBy("category")), (snap) => {
                 let html = '';
-                snapshot.forEach((doc) => {
+                snap.forEach(doc => {
                     const p = doc.data();
                     html += `
-                        <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-center">
+                        <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-center relative group hover:border-neonBlue transition">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center text-neonBlue border border-gray-700">
-                                    <i class="fas ${p.icon}"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-white text-sm">${p.name}</h4>
-                                    <p class="text-[10px] text-gray-500">${p.price} ج.م | ${p.category}</p>
-                                </div>
+                                <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center text-neonBlue border border-gray-700"><i class="fas ${p.icon}"></i></div>
+                                <div><h4 class="font-bold text-white text-sm">${p.name}</h4><p class="text-[10px] text-gray-500">${p.price} ج.م | ${p.category}</p></div>
                             </div>
-                            <button onclick="deleteProduct('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
+                            <button onclick="deleteProd('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                        </div>`;
                 });
-                list.innerHTML = html || '<p class="text-center text-gray-500">مفيش منتجات لسه.</p>';
+                document.getElementById('products-list-admin').innerHTML = html || '<p class="text-center text-gray-500">مفيش منتجات.</p>';
             });
         }
-
-        window.deleteProduct = async (id) => {
-            if(confirm('متأكد عايز تمسح المنتج ده نهائي؟')) {
-                await deleteDoc(doc(db, "products", id));
-            }
-        };
+        window.deleteProd = async (id) => { if(confirm('مسح المنتج؟')) await deleteDoc(doc(db, "products", id)); };
     </script>
 </body>
 </html>
