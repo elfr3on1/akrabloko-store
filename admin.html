@@ -14,10 +14,7 @@
             theme: {
                 extend: {
                     colors: {
-                        neonBlue: '#00f3ff',
-                        neonPink: '#bc13fe',
-                        darkBg: '#050505',
-                        cardBg: '#111111'
+                        neonBlue: '#00f3ff', neonPink: '#bc13fe', darkBg: '#050505', cardBg: '#111111'
                     },
                     fontFamily: { cairo: ['Cairo', 'sans-serif'] }
                 }
@@ -26,16 +23,10 @@
     </script>
     <style>
         body { background-color: #050505; color: white; font-family: 'Cairo', sans-serif; }
-        
-        .login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000;
-            z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-        }
-        
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .tab-btn.active { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
         .hidden-force { display: none !important; }
+        .nav-switch.active { background: rgba(188, 19, 254, 0.2); border: 1px solid #bc13fe; color: white; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -43,39 +34,31 @@
     <div id="login-screen" class="login-overlay">
         <div class="bg-[#111] p-8 rounded-3xl border border-gray-800 shadow-[0_0_50px_rgba(188,19,254,0.1)] w-full max-w-sm text-center relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonBlue to-neonPink"></div>
-            
             <div class="w-20 h-20 bg-gray-900 rounded-full mx-auto flex items-center justify-center mb-6 border-2 border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.3)]">
                 <i class="fas fa-fingerprint text-4xl text-neonPink"></i>
             </div>
-            
             <h2 class="text-2xl font-black text-white mb-2">منطقة الإدارة</h2>
             <p class="text-gray-500 text-xs mb-6">يجب تسجيل الدخول للمتابعة</p>
-            
             <form onsubmit="event.preventDefault(); login();">
                 <div class="mb-4 relative">
                     <i class="fas fa-envelope absolute top-4 right-4 text-gray-500"></i>
-                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition text-sm">
+                    <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue outline-none transition text-sm">
                 </div>
-                
                 <div class="mb-6 relative">
                     <i class="fas fa-lock absolute top-4 right-4 text-gray-500"></i>
-                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition text-sm">
+                    <input type="password" id="password" placeholder="كلمة المرور" class="w-full bg-black border border-gray-800 rounded-xl py-3 pr-10 pl-3 text-white focus:border-neonBlue outline-none transition text-sm">
                 </div>
-
                 <button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-neonPink to-purple-900 hover:from-purple-800 hover:to-neonPink text-white font-bold py-3.5 rounded-xl shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2">
                     <span>فتح السيستم</span> <i class="fas fa-unlock"></i>
                 </button>
             </form>
-            
-            <p id="login-error" class="text-red-500 text-xs mt-4 font-bold bg-red-900/10 py-2 rounded border border-red-900/30 hidden">
-                <i class="fas fa-exclamation-circle"></i> <span id="error-text">بيانات الدخول غير صحيحة</span>
-            </p>
+            <p id="login-error" class="text-red-500 text-xs mt-4 font-bold bg-red-900/10 py-2 rounded border border-red-900/30 hidden"><i class="fas fa-exclamation-circle"></i> <span id="error-text">بيانات الدخول غير صحيحة</span></p>
         </div>
     </div>
 
     <div id="dashboard-screen" class="hidden-force flex-1 flex flex-col">
         <nav class="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800 p-4 shadow-2xl">
-            <div class="container mx-auto flex justify-between items-center">
+            <div class="container mx-auto flex justify-between items-center mb-3">
                 <h1 class="text-xl font-black text-white flex items-center gap-2">
                     <i class="fas fa-user-astronaut text-neonPink"></i> لوحة التحكم
                 </h1>
@@ -83,33 +66,113 @@
                     خروج <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
+            <div class="container mx-auto flex gap-2">
+                <button onclick="switchView('orders')" id="btn-view-orders" class="nav-switch active flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition"><i class="fas fa-receipt"></i> الطلبات</button>
+                <button onclick="switchView('products')" id="btn-view-products" class="nav-switch flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition"><i class="fas fa-boxes"></i> المنتجات</button>
+            </div>
         </nav>
 
-        <div class="container mx-auto px-4 mt-6 mb-4">
-            <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 max-w-md mx-auto">
-                <button onclick="setFilter('new')" id="tab-new" class="tab-btn active flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">🔥 جديدة</button>
-                <button onclick="setFilter('done')" id="tab-done" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">✅ مكتملة</button>
-                <button onclick="setFilter('all')" id="tab-all" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">📂 الكل</button>
+        <div id="view-orders" class="flex-1 flex flex-col">
+            <div class="container mx-auto px-4 mt-6 mb-4">
+                <div class="flex justify-center bg-gray-900/50 p-1 rounded-xl border border-gray-800 max-w-md mx-auto">
+                    <button onclick="setFilter('new')" id="tab-new" class="tab-btn active flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">🔥 جديدة</button>
+                    <button onclick="setFilter('done')" id="tab-done" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">✅ مكتملة</button>
+                    <button onclick="setFilter('all')" id="tab-all" class="tab-btn flex-1 py-2 font-bold text-sm rounded-lg transition hover:bg-white/5">📂 الكل</button>
+                </div>
+            </div>
+            <div id="delete-section" class="container mx-auto px-4 mb-4 text-center hidden">
+                <button onclick="deleteCompletedOrders()" class="text-red-500 hover:text-red-400 text-xs font-bold border border-red-900/50 bg-red-900/10 px-4 py-2 rounded-full transition flex items-center gap-2 mx-auto">
+                    <i class="fas fa-trash-alt"></i> مسح سجل الطلبات المنتهية
+                </button>
+            </div>
+            <div class="container mx-auto px-4 mt-4 max-w-3xl flex-1 pb-20">
+                <div id="orders-list" class="space-y-4"></div>
             </div>
         </div>
 
-        <div id="delete-section" class="container mx-auto px-4 mb-4 text-center hidden">
-            <button onclick="deleteCompletedOrders()" class="text-red-500 hover:text-red-400 text-xs font-bold border border-red-900/50 bg-red-900/10 px-4 py-2 rounded-full transition flex items-center gap-2 mx-auto">
-                <i class="fas fa-trash-alt"></i> مسح سجل الطلبات المنتهية
-            </button>
+        <div id="view-products" class="hidden container mx-auto px-4 mt-6 pb-20 max-w-3xl">
+            <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-6 relative overflow-hidden shadow-lg">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-neonBlue blur-[50px] opacity-10"></div>
+                <h3 class="font-bold text-lg mb-4 text-neonBlue flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة منتج</h3>
+                
+                <form onsubmit="event.preventDefault(); addProduct();" id="product-form" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: بيبسي)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
+                        <input type="number" id="p-price" placeholder="السعر" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm" required>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="text-xs text-gray-400 mr-1">شكل ولون الأيقونة:</label>
+                        <div class="flex gap-2">
+                            <select onchange="updateIcon(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/3 text-sm">
+                                <option value="">اختر...</option>
+                                <option value="fa-box-open">📦 كرتونة</option>
+                                <option value="fa-bottle-water">🥤 زجاجة</option>
+                                <option value="fa-mug-hot">☕ مشروب ساخن</option>
+                                <option value="fa-glass-water">🧃 عصير/كانز</option>
+                                <option value="fa-cookie">🍪 بسكويت</option>
+                                <option value="fa-ice-cream">🍦 آيس كريم</option>
+                                <option value="fa-smoking">🚬 سجاير</option>
+                                <option value="fa-apple-whole">🍎 فاكهة</option>
+                                <option value="fa-bread-slice">🍞 مخبوزات</option>
+                                <option value="fa-cheese">🧀 جبنة</option>
+                                <option value="fa-drumstick-bite">🍗 لحوم</option>
+                                <option value="fa-soap">🧼 منظفات</option>
+                                <option value="fa-bolt">⚡ طاقة</option>
+                            </select>
+
+                            <select id="p-color" onchange="updateColor(this.value)" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-1/4 text-sm">
+                                <option value="text-white">⚪ أبيض</option>
+                                <option value="text-red-500">🔴 أحمر</option>
+                                <option value="text-blue-500">🔵 أزرق</option>
+                                <option value="text-green-500">🟢 أخضر</option>
+                                <option value="text-yellow-400">🟡 أصفر</option>
+                                <option value="text-neonPink">🟣 بينك</option>
+                                <option value="text-neonBlue">💧 لبني</option>
+                                <option value="text-orange-500">🟠 برتقالي</option>
+                            </select>
+                            
+                            <input type="text" id="p-icon" oninput="updatePreview(this.value)" placeholder="أو اكتب الكود" class="bg-black border border-gray-700 text-white p-3 rounded-xl focus:border-neonBlue outline-none w-full text-sm">
+                            
+                            <div class="w-12 h-11 bg-gray-800 rounded-xl flex items-center justify-center border border-gray-700 shadow-inner flex-shrink-0">
+                                <i id="icon-preview" class="fas fa-circle text-white text-lg transition"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <select id="p-category" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
+                            <option value="grocery">بقالة 🧺</option>
+                            <option value="snacks">نقنقة 🍫</option>
+                            <option value="drinks">مشروبات 🥤</option>
+                            <option value="mood">المزاج 🚬</option>
+                        </select>
+                        <input type="text" id="p-desc" placeholder="وصف (مثلاً: 1 لتر)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
+                    </div>
+                    
+                    <input type="text" id="p-variants" placeholder="الأنواع (افصل بفاصلة: شطة, ليمون)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
+                    <button type="submit" id="add-btn" class="w-full bg-neonBlue hover:bg-cyan-400 text-black font-bold py-3 rounded-xl transition shadow-[0_0_15px_rgba(0,243,255,0.3)]">حفظ المنتج 💾</button>
+                </form>
+            </div>
+            
+            <div class="flex items-center gap-3 mb-4">
+                <div class="relative w-full">
+                    <input type="text" id="admin-search" onkeyup="searchAdminProducts()" placeholder="🔍 ابحث في المنتجات..." class="w-full bg-gray-900 border border-gray-800 rounded-xl py-3 px-10 text-white focus:border-neonBlue outline-none">
+                    <i class="fas fa-filter absolute right-4 top-3.5 text-gray-500"></i>
+                </div>
+            </div>
+
+            <h3 class="font-bold text-white mb-3">المنتجات الحالية:</h3>
+            <div id="products-list-admin" class="grid grid-cols-1 gap-3"></div>
         </div>
 
-        <div class="container mx-auto px-4 mt-4 max-w-3xl flex-1 pb-20">
-            <div id="orders-list" class="space-y-4"></div>
-        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, where, getDocs, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 🔴🔴 استبدل هذا الجزء بمفاتيح مشروعك 🔴🔴
         const firebaseConfig = {
             apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg",
             authDomain: "akrabloko.firebaseapp.com",
@@ -126,189 +189,159 @@
         let currentFilter = 'new';
         let unsubscribeOrders = null;
 
-        // 1. مراقب البوابة
-        onAuthStateChanged(auth, (user) => {
-            const loginScreen = document.getElementById('login-screen');
-            const dashboardScreen = document.getElementById('dashboard-screen');
+        // --- دوال تحديث الأيقونة والألوان (الجديدة) ---
+        window.updateIcon = (val) => {
+            if(val) {
+                document.getElementById('p-icon').value = val;
+                window.updatePreview();
+            }
+        };
+        
+        window.updateColor = () => window.updatePreview();
 
+        window.updatePreview = (val) => {
+            const iconInput = document.getElementById('p-icon').value || 'fa-circle';
+            const colorInput = document.getElementById('p-color').value;
+            document.getElementById('icon-preview').className = `fas ${iconInput} ${colorInput} text-lg transition`;
+        };
+
+        // --- بحث المنتجات (الجديد) ---
+        window.searchAdminProducts = () => {
+            const query = document.getElementById('admin-search').value.toLowerCase();
+            const items = document.querySelectorAll('#products-list-admin > div');
+            items.forEach(item => {
+                const name = item.querySelector('h4').innerText.toLowerCase();
+                if(name.includes(query)) item.classList.remove('hidden');
+                else item.classList.add('hidden');
+            });
+        };
+
+        // --- AUTH ---
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                loginScreen.classList.add('hidden-force');
-                dashboardScreen.classList.remove('hidden-force');
-                startListening(); 
+                document.getElementById('login-screen').classList.add('hidden-force');
+                document.getElementById('dashboard-screen').classList.remove('hidden-force');
+                startListening();
+                loadProductsAdmin();
             } else {
-                loginScreen.classList.remove('hidden-force');
-                dashboardScreen.classList.add('hidden-force');
-                if(unsubscribeOrders) unsubscribeOrders(); 
+                document.getElementById('login-screen').classList.remove('hidden-force');
+                document.getElementById('dashboard-screen').classList.add('hidden-force');
+                if(unsubscribeOrders) unsubscribeOrders();
             }
         });
 
-        // 2. دالة تسجيل الدخول (مع التحقق من الحقول الفارغة)
         window.login = () => {
             const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value.trim();
             const btn = document.getElementById('login-btn');
-            const err = document.getElementById('login-error');
-            const errText = document.getElementById('error-text');
-
-            // إخفاء الخطأ السابق
-            err.classList.add('hidden');
-
-            // ⚠️ التحقق: هل الحقول فارغة؟
-            if (!email || !pass) {
-                errText.innerText = "يرجى ملء جميع الحقول!";
-                err.classList.remove('hidden');
-                // هز الشاشة (اختياري لجذب الانتباه)
-                document.querySelector('.login-overlay > div').classList.add('animate-bounce');
-                setTimeout(() => document.querySelector('.login-overlay > div').classList.remove('animate-bounce'), 500);
-                return; // وقف التنفيذ هنا
-            }
-
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+            if (!email || !pass) return alert("اكتب البيانات!");
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             btn.disabled = true;
-
             signInWithEmailAndPassword(auth, email, pass)
-                .then(() => { btn.innerHTML = 'تم الدخول بنجاح!'; })
-                .catch((error) => {
-                    console.error("Login failed", error);
-                    errText.innerText = "بيانات الدخول غير صحيحة";
-                    err.classList.remove('hidden');
+                .catch(() => {
+                    document.getElementById('login-error').classList.remove('hidden');
                     btn.innerHTML = '<span>فتح السيستم</span> <i class="fas fa-unlock"></i>';
                     btn.disabled = false;
                 });
         };
 
-        window.logout = () => {
-            if(confirm("هل تريد تسجيل الخروج؟")) signOut(auth);
+        window.logout = () => { if(confirm("خروج؟")) signOut(auth); };
+
+        window.switchView = (view) => {
+            document.getElementById('view-orders').classList.add('hidden');
+            document.getElementById('view-products').classList.add('hidden');
+            document.getElementById('btn-view-orders').classList.remove('active', 'bg-white/10', 'text-white', 'border-neonPink');
+            document.getElementById('btn-view-products').classList.remove('active', 'bg-white/10', 'text-white', 'border-neonPink');
+            
+            document.getElementById('view-' + view).classList.remove('hidden');
+            const btn = document.getElementById('btn-view-' + view);
+            btn.classList.add('active');
         };
 
-        // 3. تحميل الطلبات (تم إضافة كود الطلب)
         function startListening() {
             const list = document.getElementById('orders-list');
             const deleteSection = document.getElementById('delete-section');
-
-            list.innerHTML = '<div class="text-center py-10"><i class="fas fa-circle-notch fa-spin text-neonPink text-2xl"></i><br>جاري جلب البيانات...</div>';
-
-            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+            list.innerHTML = '<div class="text-center py-10"><i class="fas fa-circle-notch fa-spin text-neonPink text-2xl"></i></div>';
             
+            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
             unsubscribeOrders = onSnapshot(q, (snapshot) => {
                 let html = '';
                 let hasData = false;
-
-                if (currentFilter === 'done') deleteSection.classList.remove('hidden');
-                else deleteSection.classList.add('hidden');
+                if (currentFilter === 'done') deleteSection.classList.remove('hidden'); else deleteSection.classList.add('hidden');
 
                 snapshot.forEach((doc) => {
                     const order = doc.data();
-                    const id = doc.id;
-                    
                     if(currentFilter !== 'all') {
                         if(currentFilter === 'new' && order.status !== 'new') return;
                         if(currentFilter === 'done' && order.status !== 'done') return;
                     }
-                    
                     hasData = true;
                     const isNew = order.status === 'new';
                     const borderClass = isNew ? 'border-neonPink shadow-[0_0_15px_rgba(188,19,254,0.1)]' : 'border-gray-800 opacity-60 grayscale';
-                    
-                    // 🔢 كود الطلب (لو مش موجود نعرض شرطة)
-                    const displayCode = order.orderNum ? `#${order.orderNum}` : '---';
-
                     html += `
                     <div class="bg-[#111] border ${borderClass} p-5 rounded-2xl mb-4 relative transition hover:-translate-y-1">
                         ${isNew ? '<span class="absolute top-4 left-4 bg-neonPink text-white text-[10px] px-2 py-0.5 rounded font-bold animate-pulse">جديد</span>' : ''}
-                        
                         <div class="flex justify-between items-start mb-3 border-b border-gray-800 pb-2">
-                            <div>
-                                <h3 class="font-bold text-white text-lg">${order.customer.name}</h3>
-                                <a href="tel:${order.customer.phone}" class="text-neonBlue text-sm font-bold flex items-center gap-1 hover:underline">
-                                    <i class="fas fa-phone"></i> ${order.customer.phone}
-                                </a>
-                            </div>
-                            <div class="text-center">
-                                <span class="block text-[10px] text-gray-500">Code</span>
-                                <span class="text-xl font-black text-neonGreen font-mono tracking-widest">${displayCode}</span>
-                            </div>
+                            <div><h3 class="font-bold text-white text-lg">${order.customer.name}</h3><a href="tel:${order.customer.phone}" class="text-neonBlue text-sm font-bold flex items-center gap-1 hover:underline"><i class="fas fa-phone"></i> ${order.customer.phone}</a></div>
+                            <div class="text-center"><span class="block text-[10px] text-gray-500">Code</span><span class="text-xl font-black text-neonGreen font-mono tracking-widest">#${order.orderNum || '---'}</span></div>
                         </div>
-                        
-                        <div class="bg-gray-900/50 p-2 rounded-lg mb-3 text-xs text-gray-300 flex items-start gap-2">
-                             <i class="fas fa-map-marker-alt text-red-500 mt-0.5"></i> ${order.customer.address}
-                        </div>
-                        
-                        <div class="space-y-1 mb-4">
-                             ${order.items.map(i => `
-                                <div class="flex justify-between text-xs text-gray-400 border-b border-gray-800/50 pb-1 last:border-0">
-                                    <span>${i.name} <strong class="text-white">x${i.qty}</strong></span>
-                                    <span>${i.price * i.qty}</span>
-                                </div>
-                             `).join('')}
-                        </div>
-
-                        <div class="flex justify-between items-center pt-2">
-                            <div class="text-lg font-black text-white">${order.total} <span class="text-xs text-neonPink">ج.م</span></div>
-                            
-                            ${isNew ? 
-                                `<button onclick="setStatus('${id}', 'done')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg transition">✅ توصيل</button>` : 
-                                `<button onclick="setStatus('${id}', 'new')" class="text-gray-500 hover:text-white text-xs underline">إعادة للجديد ↺</button>`
-                            }
+                        <div class="bg-gray-900/50 p-2 rounded-lg mb-3 text-xs text-gray-300 flex items-start gap-2"><i class="fas fa-map-marker-alt text-red-500 mt-0.5"></i> ${order.customer.address}</div>
+                        <div class="space-y-1 mb-4">${order.items.map(i => `<div class="flex justify-between text-xs text-gray-400 border-b border-gray-800/50 pb-1 last:border-0"><span>${i.name} <strong class="text-white">x${i.qty}</strong></span><span>${i.price * i.qty}</span></div>`).join('')}</div>
+                        <div class="flex justify-between items-center pt-2"><div class="text-lg font-black text-white">${order.total} <span class="text-xs text-neonPink">ج.م</span></div>
+                            ${isNew ? `<button onclick="setStatus('${doc.id}', 'done')" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg transition">✅ توصيل</button>` : `<button onclick="setStatus('${doc.id}', 'new')" class="text-gray-500 hover:text-white text-xs underline">إعادة للجديد ↺</button>`}
                         </div>
                     </div>`;
                 });
-
-                if(!hasData) {
-                    list.innerHTML = `
-                        <div class="text-center py-12 opacity-50">
-                            <i class="fas fa-box-open text-4xl mb-3 text-gray-700"></i>
-                            <p class="text-gray-500 font-bold">لا توجد طلبات هنا</p>
-                        </div>`;
-                } else {
-                    list.innerHTML = html;
-                }
-            }, (error) => {
-                list.innerHTML = '<div class="text-red-500 text-center p-4">لا تملك صلاحية لعرض البيانات (تأكد من تسجيل الدخول)</div>';
+                list.innerHTML = hasData ? html : '<div class="text-center py-12 opacity-50"><p class="text-gray-500 font-bold">لا توجد طلبات</p></div>';
             });
         }
+        window.setStatus = async (id, status) => { if(status === 'done' && !confirm('هل استلمت المبلغ؟ 💰')) return; await updateDoc(doc(db, "orders", id), { status }); };
+        window.deleteCompletedOrders = async () => { if (!confirm("مسح الأرشيف كله؟")) return; const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach((d) => b.delete(d.ref)); await b.commit(); alert("تم المسح!"); };
+        window.setFilter = (f) => { currentFilter = f; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-'+f).classList.add('active'); startListening(); };
 
-        // 4. وظائف مساعدة
-        window.setStatus = async (id, status) => {
-            if(status === 'done' && !confirm('هل استلمت المبلغ وتم التوصيل؟ 💰')) return;
-            await updateDoc(doc(db, "orders", id), { status: status });
-        };
-
-        window.deleteCompletedOrders = async () => {
-            if (!confirm("⚠️ تحذير هام!\nهل أنت متأكد من مسح كل الطلبات المكتملة (الأرشيف)؟\nلا يمكن التراجع عن هذه الخطوة.")) return;
+        window.addProduct = async () => {
+            const btn = document.getElementById('add-btn');
+            btn.innerHTML = 'جاري الحفظ...'; btn.disabled = true;
             
-            const btn = document.querySelector('#delete-section button');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'جاري المسح...';
-            btn.disabled = true;
+            const name = document.getElementById('p-name').value;
+            const price = Number(document.getElementById('p-price').value);
+            const category = document.getElementById('p-category').value;
+            const desc = document.getElementById('p-desc').value;
+            // حفظ اللون الجديد
+            const color = document.getElementById('p-color').value; 
+            const variants = document.getElementById('p-variants').value ? document.getElementById('p-variants').value.split(',').map(s=>s.trim()) : [];
+            
+            const randomIcons = ['fa-box-open', 'fa-star', 'fa-fire', 'fa-basket-shopping', 'fa-tag', 'fa-layer-group', 'fa-gift', 'fa-check-circle'];
+            const icon = document.getElementById('p-icon').value.trim() || randomIcons[Math.floor(Math.random() * randomIcons.length)];
 
             try {
-                const q = query(collection(db, "orders"), where("status", "==", "done"));
-                const querySnapshot = await getDocs(q);
+                await addDoc(collection(db, "products"), { name, price, category, icon, color, desc, variants, createdAt: serverTimestamp() });
+                alert('تمت الإضافة! ✅'); document.getElementById('product-form').reset(); window.updatePreview();
+            } catch (e) { alert('خطأ: ' + e.message); }
+            btn.innerHTML = 'حفظ المنتج 💾'; btn.disabled = false;
+        };
 
-                const batch = writeBatch(db);
-                querySnapshot.forEach((doc) => {
-                    batch.delete(doc.ref);
+        function loadProductsAdmin() {
+            onSnapshot(query(collection(db, "products"), orderBy("category")), (snap) => {
+                let html = '';
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    // استخدام اللون المحفوظ أو الأبيض كافتراضي
+                    html += `
+                        <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-center relative group hover:border-neonBlue transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center border border-gray-700">
+                                    <i class="fas ${p.icon} ${p.color || 'text-white'}"></i>
+                                </div>
+                                <div><h4 class="font-bold text-white text-sm">${p.name}</h4><p class="text-[10px] text-gray-500">${p.price} ج.م | ${p.category}</p></div>
+                            </div>
+                            <button onclick="deleteProd('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                        </div>`;
                 });
-
-                await batch.commit();
-                alert("تم تنظيف الأرشيف بنجاح! 🧹✨");
-            } catch (error) {
-                console.error("Error deleting: ", error);
-                alert("حدث خطأ أثناء المسح");
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        };
-
-        window.setFilter = (f) => {
-            currentFilter = f;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-'+f).classList.add('active');
-            startListening(); 
-        };
+                document.getElementById('products-list-admin').innerHTML = html || '<p class="text-center text-gray-500">مفيش منتجات.</p>';
+            });
+        }
+        window.deleteProd = async (id) => { if(confirm('مسح المنتج؟')) await deleteDoc(doc(db, "products", id)); };
     </script>
 </body>
 </html>
-
