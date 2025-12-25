@@ -58,6 +58,17 @@
         <div class="bg-gradient-to-b from-gray-900 to-black rounded-3xl p-6 border border-gray-800 relative overflow-hidden">
             <h1 class="text-2xl md:text-3xl font-black mb-2 text-white">أقرب ماركت <span class="text-neonBlue">لدماغك</span> 🚀</h1>
             <p class="text-gray-400 text-xs md:text-sm max-w-md mx-auto">من الإبرة للصاروخ.. مزاجك وطلبات بيتك توصلك في ثواني.</p>
+            
+            <div id="download-section" style="display: none;" class="mt-5 justify-center">
+                <a href="Akrabloko.apk" download="Akrabloko.apk" class="bg-neonGreen/20 hover:bg-neonGreen/40 text-neonGreen font-bold px-6 py-3 rounded-2xl border border-neonGreen/50 shadow-[0_0_15px_rgba(57,255,20,0.2)] flex items-center gap-3 transition-all transform active:scale-95 group">
+                    <i class="fab fa-android text-2xl group-hover:scale-110 transition"></i>
+                    <div class="text-right">
+                        <p class="text-[9px] uppercase tracking-widest opacity-70 leading-none mb-1">Download App</p>
+                        <p class="text-sm leading-none">تحميل تطبيق الأندرويد</p>
+                    </div>
+                </a>
+            </div>
+
         </div>
     </header>
 
@@ -117,7 +128,12 @@
     <div id="variant-modal" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeVariantModal()"></div>
         <div class="bg-black/70 backdrop-blur-xl w-full max-w-sm rounded-3xl border border-white/10 relative overflow-hidden flex flex-col max-h-[80vh] shadow-2xl">
-            <div class="p-5 text-center"><h3 id="modal-product-name" class="text-xl font-bold text-white mb-1"></h3></div>
+            <div class="p-5 text-center flex flex-col items-center">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-3 border border-white/10 shadow-[0_0_15px_rgba(188,19,254,0.2)]">
+                    <i id="modal-icon" class="fas fa-star text-3xl"></i>
+                </div>
+                <h3 id="modal-product-name" class="text-xl font-bold text-white mb-1"></h3>
+            </div>
             <div id="variant-options" class="grid grid-cols-2 gap-2 p-4 pt-0 overflow-y-auto custom-scrollbar"></div>
             <div class="p-4 border-t border-white/10"><button onclick="closeVariantModal()" class="w-full bg-white/10 text-white py-3 rounded-xl font-bold">إلغاء</button></div>
         </div>
@@ -170,14 +186,15 @@
         const db = getFirestore(app);
 
         // --- GLOBAL VARIABLES ---
-        let products = []; // الليسته بقت فاضية وهتتملي من النت
+        let products = []; 
         let cart = JSON.parse(localStorage.getItem('akrabloko_cart')) || [];
         window.currentSelectedProduct = null;
 
         // --- STARTUP LOGIC ---
         window.addEventListener('DOMContentLoaded', () => {
-            fetchProducts(); // تحميل المنتجات فوراً
+            fetchProducts(); 
             updateCartUI();
+            checkAppContext(); // تشغيل فحص التطبيق
             
             const savedData = JSON.parse(localStorage.getItem('akrabloko_user'));
             if(savedData) {
@@ -187,7 +204,16 @@
             }
         });
 
-        // --- FETCH PRODUCTS (NEW) ---
+        // --- وظيفة إخفاء زر التحميل داخل التطبيق ---
+        function checkAppContext() {
+            const downloadSection = document.getElementById('download-section');
+            if (!navigator.userAgent.includes("AkrablokoApp")) {
+                // لو مش فاتح من التطبيق، أظهر الزرار
+                if (downloadSection) downloadSection.style.display = 'flex';
+            }
+        }
+
+        // --- FETCH PRODUCTS ---
         window.fetchProducts = async function() {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '<div class="col-span-full text-center py-10"><div class="loader"></div><p class="text-gray-400">جاري تحميل المنيو...</p></div>';
@@ -251,6 +277,11 @@
         window.openVariantModal = (product) => {
             window.currentSelectedProduct = product;
             document.getElementById('modal-product-name').innerText = product.name;
+            
+            // تم إصلاح كود إظهار الأيقونة هنا
+            const iconEl = document.getElementById('modal-icon');
+            iconEl.className = `fas ${product.icon} text-3xl ${product.color || 'text-neonPink'}`;
+            
             const container = document.getElementById('variant-options');
             container.innerHTML = product.variants.map(variant => `
                 <button onclick="selectVariant('${variant}')" class="bg-gray-800 hover:bg-neonBlue hover:text-black text-gray-200 py-3 px-2 rounded-xl text-xs font-bold transition border border-gray-700 h-14">
