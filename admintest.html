@@ -24,9 +24,15 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; }
         .active-tab { background-color: #bc13fe; color: white; border-color: #bc13fe; box-shadow: 0 0 15px rgba(188,19,254,0.4); }
-        .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; }
+        .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; box-shadow: 0 0 10px rgba(0,243,255,0.4); }
+        
+        /* Inputs */
         input, select, textarea { background-color: #111; border: 1px solid #333; color: white; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; }
-        input:focus, select:focus, textarea:focus { border-color: #bc13fe; }
+        input:focus, select:focus, textarea:focus { border-color: #bc13fe; box-shadow: 0 0 8px rgba(188,19,254,0.2); }
+        
+        /* Neon Card */
+        .neon-card { border: 1px solid rgba(255,255,255,0.1); background: #0a0a0a; transition: all 0.3s; }
+        .neon-card:hover { border-color: #00f3ff; box-shadow: 0 0 15px rgba(0,243,255,0.1); transform: translateY(-2px); }
     </style>
 </head>
 <body class="p-4 md:p-8 pb-32">
@@ -35,7 +41,7 @@
         <h1 class="text-3xl font-black text-white">لوحة القيادة 👮‍♂️ <span class="text-neonPink">أقربلوكو</span></h1>
     </header>
 
-    <div class="flex justify-center gap-2 mb-6 border-b border-gray-800 pb-4 sticky top-0 bg-black/90 z-20 pt-2">
+    <div class="flex justify-center gap-2 mb-6 border-b border-gray-800 pb-4 sticky top-0 bg-black/95 z-20 pt-2 backdrop-blur-md">
         <button onclick="switchTab('orders-tab')" id="btn-orders" class="tab-btn active-tab px-4 py-2 rounded-xl border border-gray-700 transition text-sm font-bold flex-1 md:flex-none">📦 الطلبات</button>
         <button onclick="switchTab('products-tab')" id="btn-products" class="tab-btn px-4 py-2 rounded-xl border border-gray-700 transition text-sm font-bold flex-1 md:flex-none">👕 المنتجات</button>
         <button onclick="switchTab('cats-tab')" id="btn-cats" class="tab-btn px-4 py-2 rounded-xl border border-gray-700 transition text-sm font-bold flex-1 md:flex-none">🏷️ الأقسام</button>
@@ -50,7 +56,7 @@
         </div>
 
         <div id="orders-container" class="space-y-4 min-h-[200px]">
-            <p class="text-center text-gray-500 mt-10">جاري الاتصال...</p>
+            <p class="text-center text-gray-500 mt-10">جاري تحميل الطلبات...</p>
         </div>
         
         <div id="delete-all-wrapper" class="hidden mt-8 text-center border-t border-gray-800 pt-6">
@@ -58,52 +64,71 @@
         </div>
     </section>
 
-    <section id="products-tab" class="tab-content hidden max-w-2xl mx-auto">
-        <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 shadow-xl">
-            <h2 class="text-xl font-bold mb-4 text-white"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</h2>
+    <section id="products-tab" class="tab-content hidden max-w-3xl mx-auto">
+        
+        <div class="bg-gray-900/80 p-6 rounded-2xl border border-neonPink/30 shadow-[0_0_20px_rgba(188,19,254,0.1)] mb-8 relative">
+            <h2 class="text-xl font-bold mb-4 text-white flex justify-between">
+                <span id="form-title"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</span>
+                <button onclick="resetForm()" id="cancel-edit" class="hidden text-xs text-red-400 border border-red-900 px-2 py-1 rounded hover:bg-red-900/20">إلغاء التعديل ❌</button>
+            </h2>
+            
             <div class="space-y-4">
-                <input type="text" id="p-name" placeholder="اسم المنتج">
+                <input type="hidden" id="p-id"> <input type="text" id="p-name" placeholder="اسم المنتج">
+                
                 <div class="flex gap-2">
                     <input type="number" id="p-price" placeholder="السعر">
                     <select id="p-category" class="bg-gray-800"><option value="" disabled selected>تحميل الأقسام...</option></select>
                 </div>
+                
                 <input type="text" id="p-desc" placeholder="وصف المنتج">
+
                 <div class="bg-black/40 p-4 rounded-xl border border-gray-700">
-                    <label class="text-xs text-neonPink font-bold block mb-2">📸 1. رابط صورة الغلاف:</label>
-                    <input type="text" id="p-cover" placeholder="Link" class="mb-3 text-left font-mono text-sm border-gray-600 text-neonBlue" dir="ltr">
-                    <label class="text-xs text-gray-400 font-bold block mb-2">📸 2. روابط إضافية (اختياري):</label>
+                    <label class="text-xs text-neonPink font-bold block mb-2">📸 1. رابط صورة الغلاف (الرئيسية):</label>
+                    <input type="text" id="p-cover" placeholder="Link (https://...)" class="mb-3 text-left font-mono text-sm border-gray-600 text-neonBlue" dir="ltr">
+                    
+                    <label class="text-xs text-gray-400 font-bold block mb-2">📸 2. روابط صور إضافية (اختياري):</label>
                     <textarea id="p-gallery" placeholder="Link1, Link2" class="h-20 text-left font-mono text-sm border-gray-600" dir="ltr"></textarea>
                 </div>
+
                 <div class="flex gap-2">
-                    <input type="text" id="p-sizes" value="S, M, L, XL, XXL" class="text-center text-neonPink font-bold">
-                    <input type="text" id="p-colors" value="أحمر, أسود, أبيض, كحلي" class="text-center text-neonBlue font-bold">
+                    <div class="w-1/2">
+                        <label class="text-xs text-gray-400 mb-1 block">المقاسات:</label>
+                        <input type="text" id="p-sizes" value="S, M, L, XL, XXL" class="text-center text-neonPink font-bold">
+                    </div>
+                    <div class="w-1/2">
+                        <label class="text-xs text-gray-400 mb-1 block">الألوان:</label>
+                        <input type="text" id="p-colors" value="أحمر, أسود, أبيض, كحلي" class="text-center text-neonBlue font-bold">
+                    </div>
                 </div>
-                <button onclick="addProduct()" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg transition">نشر المنتج 🚀</button>
+
+                <button onclick="saveProduct()" id="save-btn" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg transition transform hover:scale-[1.01]">نشر المنتج 🚀</button>
             </div>
+        </div>
+
+        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-800 pb-2">📦 كل المنتجات (<span id="p-count">0</span>)</h3>
+        <div id="products-list" class="space-y-3">
+            <p class="text-center text-gray-500">جاري تحميل القائمة...</p>
         </div>
     </section>
 
     <section id="cats-tab" class="tab-content hidden max-w-2xl mx-auto">
-        <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 mb-6 shadow-lg neon-border">
-            <h2 class="text-xl font-bold mb-4 text-white"><i class="fas fa-tags text-neonGreen"></i> إضافة قسم جديد</h2>
+        <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 mb-6 shadow-lg neon-card">
+            <h2 class="text-xl font-bold mb-4 text-white"><i class="fas fa-tags text-neonGreen"></i> تعريف قسم جديد</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div>
-                    <label class="text-xs text-gray-400 mb-1 block">اسم القسم (عربي)</label>
-                    <input type="text" id="cat-name" placeholder="مثال: أحذية رجالي" class="border-gray-600 focus:border-neonGreen">
+                    <label class="text-xs text-gray-400 mb-1 block">اسم القسم</label>
+                    <input type="text" id="cat-name" placeholder="مثال: أحذية" class="border-gray-600 focus:border-neonGreen">
                 </div>
-
                 <div>
-                    <label class="text-xs text-gray-400 mb-1 block">رمز الأيقونة (FontAwesome)</label>
+                    <label class="text-xs text-gray-400 mb-1 block">الأيقونة (FontAwesome)</label>
                     <div class="relative">
-                        <input type="text" id="cat-icon" placeholder="مثال: fa-shoe-prints" class="border-gray-600 focus:border-neonGreen text-left pl-10" dir="ltr">
+                        <input type="text" id="cat-icon" placeholder="fa-tag" class="border-gray-600 focus:border-neonGreen text-left pl-10" dir="ltr">
                         <i class="fas fa-icons absolute left-3 top-3.5 text-gray-500"></i>
                     </div>
                 </div>
             </div>
             
-            <p class="text-[10px] text-gray-500 mb-3 text-left" dir="ltr">Icons: fa-tshirt, fa-user-tie, fa-female, fa-shoe-prints, fa-child, fa-hat-cowboy</p>
-
             <button onclick="addCategory()" class="w-full bg-neonGreen hover:bg-green-500 text-black font-bold py-3 rounded-xl transition">إضافة القسم ✅</button>
         </div>
 
@@ -128,13 +153,13 @@
             if(id.includes('cats')) document.getElementById('btn-cats').classList.add('active-tab');
         };
 
-        // --- Orders Logic (Safe) ---
+        // --- 1. Orders Logic (مع الصور) 🖼️ ---
         let allOrders = [], currentFilter = 'new';
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
             allOrders = [];
             snap.forEach(doc => {
                 const d = doc.data();
-                if (!d.customer) d.customer = { name: "غير معروف", phone: "---", address: "---" }; // Fix old orders
+                if (!d.customer) d.customer = { name: "غير معروف", phone: "---", address: "---" };
                 allOrders.push({id: doc.id, ...d});
             });
             renderOrders();
@@ -154,23 +179,35 @@
             if(filtered.length === 0) return container.innerHTML = '<div class="text-center text-gray-500 py-10">لا توجد طلبات هنا.</div>';
 
             container.innerHTML = filtered.map(o => `
-                <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl relative overflow-hidden shadow-lg mb-4">
+                <div class="neon-card p-4 rounded-xl relative overflow-hidden shadow-lg mb-4">
                     <div class="absolute top-0 right-0 w-1.5 h-full ${o.status==='new'?'bg-yellow-500':(o.status==='shipping'?'bg-neonBlue':'bg-green-500')}"></div>
-                    <div class="flex justify-between items-start border-b border-gray-800 pb-3 mb-3">
+                    
+                    <div class="flex justify-between items-start border-b border-gray-800 pb-3 mb-3 pl-3">
                         <div>
                             <h3 class="font-bold text-white text-lg">#${o.orderNum || '?'}</h3>
                             <p class="text-gray-400 text-sm font-bold">${o.customer.name}</p>
                             <a href="tel:${o.customer.phone}" class="text-neonBlue font-mono text-xl block mt-1 hover:underline tracking-wider">${o.customer.phone}</a>
                         </div>
                         <div class="text-left">
-                            <p class="font-black text-2xl">${o.total} <span class="text-xs text-gray-500">ج.م</span></p>
+                            <p class="font-black text-2xl text-white">${o.total} <span class="text-xs text-gray-500">ج.م</span></p>
                             <span class="text-[10px] text-gray-500 block mt-1">${o.date || ''}</span>
                         </div>
                     </div>
+                    
                     <div class="text-gray-300 text-sm mb-3">
                         <p class="mb-2 text-xs"><i class="fas fa-map-marker-alt text-gray-500 ml-1"></i> ${o.customer.address}</p>
-                        <div class="bg-black/30 p-2 rounded border border-gray-700">
-                            ${(o.items || []).map(i => `<div class="flex justify-between text-xs py-1 border-b border-gray-800 last:border-0"><span>${i.name}</span><span class="font-bold text-white">x${i.qty}</span></div>`).join('')}
+                        <div class="bg-black/40 p-2 rounded border border-gray-700 space-y-2">
+                            ${(o.items || []).map(i => `
+                                <div class="flex items-center gap-3 border-b border-gray-800 pb-2 last:border-0 last:pb-0">
+                                    <img src="${i.image || 'https://placehold.co/50'}" class="w-10 h-10 rounded object-cover border border-gray-600">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="text-xs font-bold text-white">${i.name}</span>
+                                            <span class="text-neonPink font-bold text-xs">x${i.qty}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                     ${getActionBtn(o)}
@@ -183,79 +220,137 @@
             if(o.status === 'shipping') return `<button onclick="setStatus('${o.id}', 'done')" class="w-full bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold transition shadow-lg">تم التحصيل ✅</button>`;
             return `<div class="text-center text-green-500 font-bold bg-green-900/10 py-2 rounded-lg border border-green-900/50">مكتمل</div>`;
         }
-
         window.setStatus = async (id, s) => { if(confirm("تغيير الحالة؟")) await updateDoc(doc(db, "orders", id), {status: s}); };
         window.deleteAllCompleted = async () => { if(confirm("حذف كل المكتمل؟")) { const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach(d => b.delete(d.ref)); await b.commit(); alert("تم!"); } };
 
-        // --- Categories Logic (Fix) ---
-        onSnapshot(query(collection(db, "categories"), orderBy("name")), (snap) => {
-            const select = document.getElementById('p-category');
-            const list = document.getElementById('cats-list');
+        // --- 2. Products Logic (Edit & Delete) ⭐ ---
+        let allProducts = [];
+        onSnapshot(query(collection(db, "products"), orderBy("timestamp", "desc")), (snap) => {
+            allProducts = [];
+            snap.forEach(doc => allProducts.push({id: doc.id, ...doc.data()}));
+            renderProductsList();
             
-            // 1. Update Select for Products
-            if(select) select.innerHTML = '<option value="" disabled selected>اختر القسم</option>' + snap.docs.map(d=>`<option value="${d.data().slug}">${d.data().name}</option>`).join('');
-            
-            // 2. Update Categories List Management
-            if(list) {
-                list.innerHTML = snap.docs.map(d => `
-                    <div class="flex justify-between items-center bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm group hover:border-neonGreen transition">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center text-neonGreen border border-gray-700">
-                                <i class="fas ${d.data().icon || 'fa-tag'}"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white">${d.data().name}</h4>
-                                <p class="text-[10px] text-gray-500 font-mono">${d.data().slug}</p>
-                            </div>
-                        </div>
-                        <button onclick="delCat('${d.id}')" class="text-red-500 bg-red-900/10 p-2 rounded-lg hover:bg-red-900/30 transition"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                `).join('');
-            }
+            // Update Select
+            onSnapshot(query(collection(db, "categories"), orderBy("name")), (cSnap) => {
+                const s = document.getElementById('p-category');
+                if(s) s.innerHTML = '<option value="" disabled selected>اختر القسم</option>' + cSnap.docs.map(d=>`<option value="${d.data().slug}">${d.data().name}</option>`).join('');
+                renderCatsList(cSnap);
+            });
         });
 
-        window.addCategory = async () => {
-            const name = document.getElementById('cat-name').value;
-            const icon = document.getElementById('cat-icon').value || 'fa-tag'; // Default icon
+        function renderProductsList() {
+            const list = document.getElementById('products-list');
+            document.getElementById('p-count').innerText = allProducts.length;
             
-            if(!name) return alert("❌ اكتب اسم القسم");
+            if(allProducts.length === 0) return list.innerHTML = '<p class="text-center text-gray-500">مفيش منتجات لسه.</p>';
             
-            const slug = name.trim().toLowerCase().replace(/\s+/g, '-'); // Auto Slug
-            
-            const btn = event.target; btn.disabled = true;
-            try {
-                await addDoc(collection(db, "categories"), { name, slug, icon });
-                document.getElementById('cat-name').value = '';
-                document.getElementById('cat-icon').value = '';
-            } catch(e) { alert("خطأ!"); }
-            finally { btn.disabled = false; }
-        };
+            list.innerHTML = allProducts.map(p => `
+                <div class="flex gap-3 bg-gray-900 border border-gray-800 p-3 rounded-xl items-center hover:border-neonPink transition">
+                    <img src="${p.coverImage}" class="w-16 h-16 rounded-lg object-cover bg-gray-800">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-white line-clamp-1">${p.name}</h4>
+                        <div class="flex gap-2 text-xs text-gray-400 mt-1">
+                            <span class="text-neonBlue font-bold">${p.price} ج.م</span>
+                            <span class="bg-gray-800 px-2 rounded">${p.category}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button onclick="editProduct('${p.id}')" class="bg-blue-900/30 text-blue-400 border border-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteProduct('${p.id}')" class="bg-red-900/30 text-red-400 border border-red-900 p-2 rounded hover:bg-red-900 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-        window.delCat = async (id) => { if(confirm("حذف هذا القسم؟")) await deleteDoc(doc(db,"categories",id)); };
-
-        // --- Products Logic ---
-        window.addProduct = async () => {
+        window.saveProduct = async () => {
+            const id = document.getElementById('p-id').value;
             const name = document.getElementById('p-name').value;
             const price = Number(document.getElementById('p-price').value);
             const cat = document.getElementById('p-category').value;
             const cover = document.getElementById('p-cover').value;
             
             if (!name || !price || !cat || !cover) return alert("❌ بيانات ناقصة");
-            const btn = event.target; btn.innerHTML = '⏳...'; btn.disabled = true;
+
+            const data = {
+                name, price, category: cat, desc: document.getElementById('p-desc').value,
+                coverImage: cover,
+                extraImages: document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s),
+                sizes: document.getElementById('p-sizes').value.split(',').map(s=>s.trim()),
+                colors: document.getElementById('p-colors').value.split(',').map(s=>s.trim()),
+                timestamp: serverTimestamp()
+            };
+
+            const btn = document.getElementById('save-btn');
+            btn.innerHTML = '⏳ جاري الحفظ...'; btn.disabled = true;
 
             try {
-                await addDoc(collection(db, "products"), {
-                    name, price, category: cat, desc: document.getElementById('p-desc').value,
-                    coverImage: cover,
-                    extraImages: document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s),
-                    sizes: document.getElementById('p-sizes').value.split(',').map(s=>s.trim()),
-                    colors: document.getElementById('p-colors').value.split(',').map(s=>s.trim()),
-                    timestamp: serverTimestamp()
-                });
-                alert("✅ تم!");
-                document.getElementById('p-name').value = ''; document.getElementById('p-cover').value = ''; document.getElementById('p-gallery').value = '';
-            } catch (e) { alert("⛔ خطأ"); } finally { btn.innerHTML = 'نشر المنتج 🚀'; btn.disabled = false; }
+                if(id) {
+                    // Update
+                    await updateDoc(doc(db, "products", id), data);
+                    alert("✅ تم تعديل المنتج!");
+                    resetForm();
+                } else {
+                    // Create
+                    await addDoc(collection(db, "products"), data);
+                    alert("✅ تم نشر المنتج!");
+                    resetForm();
+                }
+            } catch (e) { alert("⛔ خطأ: " + e.message); } 
+            finally { btn.innerHTML = id ? 'تحديث المنتج 🔄' : 'نشر المنتج 🚀'; btn.disabled = false; }
         };
+
+        window.editProduct = (id) => {
+            const p = allProducts.find(x => x.id === id);
+            if(!p) return;
+            document.getElementById('p-id').value = id;
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-category').value = p.category;
+            document.getElementById('p-desc').value = p.desc;
+            document.getElementById('p-cover').value = p.coverImage;
+            document.getElementById('p-gallery').value = (p.extraImages || []).join(', ');
+            document.getElementById('p-sizes').value = (p.sizes || []).join(', ');
+            document.getElementById('p-colors').value = (p.colors || []).join(', ');
+
+            // UI Changes
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-yellow-500"></i> تعديل المنتج';
+            document.getElementById('save-btn').innerHTML = 'تحديث البيانات 🔄';
+            document.getElementById('save-btn').classList.replace('bg-neonPink', 'bg-yellow-600');
+            document.getElementById('cancel-edit').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.resetForm = () => {
+            document.getElementById('p-id').value = '';
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-desc').value = '';
+            document.getElementById('p-cover').value = '';
+            document.getElementById('p-gallery').value = '';
+            
+            // UI Reset
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد';
+            document.getElementById('save-btn').innerHTML = 'نشر المنتج 🚀';
+            document.getElementById('save-btn').classList.replace('bg-yellow-600', 'bg-neonPink');
+            document.getElementById('cancel-edit').classList.add('hidden');
+        };
+
+        window.deleteProduct = async (id) => { if(confirm("مسح المنتج ده نهائي؟")) await deleteDoc(doc(db, "products", id)); };
+
+        // --- Categories ---
+        function renderCatsList(snap) {
+            const l = document.getElementById('cats-list');
+            if(l) l.innerHTML = snap.docs.map(d => `
+                <div class="flex justify-between bg-gray-800 p-3 rounded mb-2 border border-gray-700 items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="fas ${d.data().icon} text-neonGreen w-6 text-center"></i>
+                        <span>${d.data().name}</span>
+                    </div>
+                    <button onclick="delCat('${d.id}')" class="text-red-500 hover:text-white"><i class="fas fa-trash"></i></button>
+                </div>`).join('');
+        }
+        window.addCategory = async () => { const n=document.getElementById('cat-name').value; const i=document.getElementById('cat-icon').value||'fa-tag'; if(n) await addDoc(collection(db,"categories"),{name:n, slug:n.replace(/\s/g,'-'), icon:i}); document.getElementById('cat-name').value=''; document.getElementById('cat-icon').value=''; };
+        window.delCat = async (id) => { if(confirm("مسح؟")) await deleteDoc(doc(db,"categories",id)); };
     </script>
 </body>
 </html>
