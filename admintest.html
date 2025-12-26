@@ -8,22 +8,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        neonBlue: '#00f3ff', neonPink: '#bc13fe', neonGreen: '#39ff14', darkBg: '#050505',
-                    },
-                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { neonBlue: '#00f3ff', neonPink: '#bc13fe', darkBg: '#050505' }, fontFamily: { cairo: ['Cairo', 'sans-serif'] } } } }
     </script>
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; }
-        .active-tab { background-color: #bc13fe; color: white; border-color: #bc13fe; box-shadow: 0 0 15px rgba(188,19,254,0.4); }
+        .neon-border { border: 1px solid rgba(188,19,254,0.3); box-shadow: 0 0 10px rgba(188,19,254,0.1); }
+        .active-tab { background-color: #bc13fe; color: white; border-color: #bc13fe; }
         .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; }
         input, select, textarea { background-color: #111; border: 1px solid #333; color: white; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: #bc13fe; }
@@ -50,55 +41,46 @@
         </div>
 
         <div id="orders-container" class="space-y-4 min-h-[200px]">
-            <p class="text-center text-gray-500 mt-10">جاري الاتصال...</p>
+            <p class="text-center text-gray-500 mt-10">جاري الاتصال بقاعدة البيانات...</p>
         </div>
         
         <div id="delete-all-wrapper" class="hidden mt-8 text-center border-t border-gray-800 pt-6">
-            <button onclick="deleteAllCompleted()" class="bg-red-900/30 text-red-500 border border-red-900 hover:bg-red-900 hover:text-white px-6 py-3 rounded-xl font-bold transition">🗑️ تنظيف الأرشيف المكتمل</button>
+            <button onclick="deleteAllCompleted()" class="bg-red-900/30 text-red-500 border border-red-900 hover:bg-red-900 hover:text-white px-6 py-3 rounded-xl font-bold transition">🗑️ تنظيف الأرشيف</button>
         </div>
     </section>
 
     <section id="products-tab" class="tab-content hidden max-w-2xl mx-auto">
-        <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 shadow-xl">
-            <h2 class="text-xl font-bold mb-4 text-white"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</h2>
+        <div class="bg-gray-900/50 p-6 rounded-2xl neon-border">
+            <h2 class="text-xl font-bold mb-4 text-white"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج (روابط)</h2>
             
             <div class="space-y-4">
-                <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: قميص كتان)">
-                
+                <input type="text" id="p-name" placeholder="اسم المنتج">
                 <div class="flex gap-2">
                     <input type="number" id="p-price" placeholder="السعر">
-                    <select id="p-category" class="bg-gray-800"><option value="" disabled selected>جاري تحميل الأقسام...</option></select>
+                    <select id="p-category"><option value="" disabled selected>تحميل الأقسام...</option></select>
                 </div>
-                
-                <input type="text" id="p-desc" placeholder="وصف المنتج (خامة، تقفيل، ملاحظات..)">
+                <input type="text" id="p-desc" placeholder="الوصف">
 
                 <div class="bg-black/40 p-4 rounded-xl border border-gray-700">
-                    <label class="text-xs text-neonPink font-bold block mb-2">📸 1. رابط صورة الغلاف (الرئيسية):</label>
-                    <input type="text" id="p-cover" placeholder="ضع رابط الصورة هنا (Link)" class="mb-3 text-left font-mono text-sm border-gray-600 text-neonBlue" dir="ltr">
+                    <label class="text-xs text-neonPink font-bold block mb-2">1. رابط صورة الغلاف (الرئيسية):</label>
+                    <input type="text" id="p-cover" placeholder="https://i.ibb.co/..." class="mb-3 text-left font-mono text-sm border-gray-600 text-neonBlue" dir="ltr">
                     
-                    <label class="text-xs text-gray-400 font-bold block mb-2">📸 2. روابط صور إضافية (اختياري):</label>
+                    <label class="text-xs text-gray-400 font-bold block mb-2">2. روابط الصور الإضافية (اختياري):</label>
                     <textarea id="p-gallery" placeholder="رابط 1, رابط 2, ..." class="h-20 text-left font-mono text-sm border-gray-600" dir="ltr"></textarea>
-                    <p class="text-[10px] text-gray-500 mt-1">نسخ روابط الصور من ImgBB وضعها هنا، وافصل بينهم بفاصلة (,)</p>
                 </div>
 
                 <div class="flex gap-2">
-                    <div class="w-1/2">
-                        <label class="text-xs text-gray-400 mb-1 block">المقاسات:</label>
-                        <input type="text" id="p-sizes" value="S, M, L, XL, XXL" class="text-center text-neonPink font-bold">
-                    </div>
-                    <div class="w-1/2">
-                        <label class="text-xs text-gray-400 mb-1 block">الألوان:</label>
-                        <input type="text" id="p-colors" value="أحمر, أسود, أبيض, كحلي" class="text-center text-neonBlue font-bold">
-                    </div>
+                    <input type="text" id="p-sizes" value="S,M,L,XL" class="text-center text-neonPink font-bold">
+                    <input type="text" id="p-colors" value="ألوان العرض" class="text-center text-neonBlue font-bold">
                 </div>
 
-                <button onclick="addProduct()" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg transform hover:scale-[1.02] transition">نشر المنتج 🚀</button>
+                <button onclick="addProduct()" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg">نشر المنتج 🚀</button>
             </div>
         </div>
     </section>
 
     <section id="cats-tab" class="tab-content hidden max-w-2xl mx-auto">
-        <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 mb-6">
+        <div class="bg-gray-900/50 p-6 rounded-2xl neon-border mb-6">
             <div class="flex gap-2">
                 <input type="text" id="cat-name" placeholder="اسم القسم الجديد">
                 <button onclick="addCategory()" class="bg-neonBlue text-black font-bold px-6 rounded-lg">إضافة</button>
@@ -125,26 +107,19 @@
             if(id.includes('cats')) document.getElementById('btn-cats').classList.add('active-tab');
         };
 
-        // --- Orders Logic (PROTECTED 🛡️) ---
+        // --- Orders Logic ---
         let allOrders = [], currentFilter = 'new';
         
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
             allOrders = [];
-            snap.forEach(doc => {
-                const data = doc.data();
-                // كود الحماية: لو الطلب مفيهوش بيانات زبون (قديم)، حط بيانات وهمية عشان الصفحة متقعش
-                if (!data.customer) {
-                    data.customer = { name: "زبون قديم", phone: "غير مسجل", address: "غير مسجل" };
-                }
-                allOrders.push({id: doc.id, ...data});
-            });
+            snap.forEach(doc => allOrders.push({id: doc.id, ...doc.data()}));
             renderOrders();
         });
 
         window.setFilter = (f) => { currentFilter = f; renderOrders(); };
 
         function renderOrders() {
-            // Update Buttons Styles
+            // Update buttons
             document.querySelectorAll('.sub-tab-btn').forEach(b => { b.classList.remove('active-sub-tab', 'bg-neonBlue', 'text-black'); b.classList.add('bg-gray-800', 'text-white'); });
             const btn = document.getElementById(`filter-${currentFilter}`);
             if(btn) { btn.classList.remove('bg-gray-800', 'text-white'); btn.classList.add('active-sub-tab', 'bg-neonBlue', 'text-black'); }
@@ -154,28 +129,26 @@
 
             document.getElementById('delete-all-wrapper').classList.toggle('hidden', currentFilter !== 'done' || filtered.length === 0);
 
-            if(filtered.length === 0) return container.innerHTML = '<div class="text-center text-gray-500 py-10">لا توجد طلبات في هذه القائمة.</div>';
+            if(filtered.length === 0) return container.innerHTML = '<div class="text-center text-gray-500 py-10">لا توجد طلبات هنا.</div>';
 
             container.innerHTML = filtered.map(o => `
-                <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl relative overflow-hidden shadow-lg transition hover:bg-gray-800">
+                <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl relative overflow-hidden shadow-lg">
                     <div class="absolute top-0 right-0 w-1.5 h-full ${o.status==='new'?'bg-yellow-500':(o.status==='shipping'?'bg-neonBlue':'bg-green-500')}"></div>
-                    
                     <div class="flex justify-between items-start border-b border-gray-800 pb-3 mb-3">
                         <div>
-                            <h3 class="font-bold text-white text-lg">#${o.orderNum || '???'}</h3>
-                            <p class="text-gray-400 text-sm font-bold">${o.customer.name}</p>
-                            <a href="tel:${o.customer.phone}" class="text-neonBlue font-mono text-xl block mt-1 hover:underline tracking-wider">${o.customer.phone}</a>
+                            <h3 class="font-bold text-white text-lg">#${o.orderNum}</h3>
+                            <p class="text-gray-400 text-sm">${o.customer?.name || 'ضيف'}</p>
+                            <a href="tel:${o.customer?.phone}" class="text-neonBlue font-mono text-lg block mt-1 hover:underline">${o.customer?.phone || '--'}</a>
                         </div>
                         <div class="text-left">
-                            <p class="font-black text-2xl">${o.total || 0} <span class="text-xs text-gray-500">ج.م</span></p>
-                            <span class="text-[10px] text-gray-500 block mt-1">${o.date || ''}</span>
+                            <p class="font-black text-2xl">${o.total} <span class="text-xs text-gray-500">ج.م</span></p>
+                            <span class="text-[10px] text-gray-500">${o.date || ''}</span>
                         </div>
                     </div>
-                    
                     <div class="text-gray-300 text-sm mb-3">
-                        <p class="mb-2 flex items-center gap-1 text-xs"><i class="fas fa-map-marker-alt text-gray-500"></i> ${o.customer.address}</p>
+                        <p class="mb-2"><i class="fas fa-map-marker-alt text-gray-500 ml-1"></i> ${o.customer?.address || ''}</p>
                         <div class="bg-black/30 p-2 rounded border border-gray-700">
-                            ${(o.items || []).map(i => `<div class="flex justify-between text-xs py-1 border-b border-gray-800 last:border-0"><span>${i.name}</span><span class="font-bold text-white">x${i.qty}</span></div>`).join('')}
+                            ${o.items.map(i => `<div class="flex justify-between text-xs py-1 border-b border-gray-800 last:border-0"><span>${i.name}</span><span class="font-bold">x${i.qty}</span></div>`).join('')}
                         </div>
                     </div>
                     ${getActionBtn(o)}
@@ -184,23 +157,13 @@
         }
 
         function getActionBtn(o) {
-            if(o.status === 'new') return `<button onclick="setStatus('${o.id}', 'shipping')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition shadow-lg">تسليم للطيار 🛵</button>`;
-            if(o.status === 'shipping') return `<button onclick="setStatus('${o.id}', 'done')" class="w-full bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold transition shadow-lg">تم التحصيل ✅</button>`;
+            if(o.status === 'new') return `<button onclick="setStatus('${o.id}', 'shipping')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition">تسليم للطيار 🛵</button>`;
+            if(o.status === 'shipping') return `<button onclick="setStatus('${o.id}', 'done')" class="w-full bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold transition">تم التحصيل ✅</button>`;
             return `<div class="text-center text-green-500 font-bold bg-green-900/10 py-2 rounded-lg border border-green-900/50">مكتمل</div>`;
         }
 
-        window.setStatus = async (id, s) => { if(confirm("تغيير حالة الطلب؟")) await updateDoc(doc(db, "orders", id), {status: s}); };
-        
-        window.deleteAllCompleted = async () => { 
-            if(confirm("تحذير: هتمسح كل الطلبات المكتملة نهائياً. متأكد؟")) { 
-                const q = query(collection(db, "orders"), where("status", "==", "done")); 
-                const s = await getDocs(q); 
-                const b = writeBatch(db); 
-                s.forEach(d => b.delete(d.ref)); 
-                await b.commit(); 
-                alert("تم تنظيف الأرشيف!"); 
-            } 
-        };
+        window.setStatus = async (id, s) => { if(confirm("تغيير الحالة؟")) await updateDoc(doc(db, "orders", id), {status: s}); };
+        window.deleteAllCompleted = async () => { if(confirm("حذف كل المكتمل؟")) { const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach(d => b.delete(d.ref)); await b.commit(); alert("تم!"); } };
 
         // --- Products Logic (Fixed Upload) ---
         onSnapshot(query(collection(db, "categories"), orderBy("name")), (snap) => {
@@ -214,9 +177,9 @@
             const name = document.getElementById('p-name').value;
             const price = Number(document.getElementById('p-price').value);
             const cat = document.getElementById('p-category').value;
-            const cover = document.getElementById('p-cover').value;
+            const cover = document.getElementById('p-cover').value; // Link Input
             
-            // Validation (رسائل خطأ واضحة)
+            // Validation
             if (!name) return alert("❌ لازم تكتب اسم المنتج");
             if (!price) return alert("❌ لازم تكتب السعر");
             if (!cat) return alert("❌ لازم تختار القسم");
@@ -227,17 +190,14 @@
             try {
                 await addDoc(collection(db, "products"), {
                     name, price, category: cat, desc: document.getElementById('p-desc').value,
-                    coverImage: cover, // Link text
+                    coverImage: cover, // Saving the link directly
                     extraImages: document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s),
                     sizes: document.getElementById('p-sizes').value.split(',').map(s=>s.trim()),
                     colors: document.getElementById('p-colors').value.split(',').map(s=>s.trim()),
                     timestamp: serverTimestamp()
                 });
                 alert("✅ تم نشر المنتج بنجاح!");
-                // Clear only name and links to allow fast uploading of variants
-                document.getElementById('p-name').value = '';
-                document.getElementById('p-cover').value = '';
-                document.getElementById('p-gallery').value = '';
+                location.reload(); // Refresh to clear inputs properly
             } catch (e) {
                 alert("⛔ خطأ في الاتصال: " + e.message);
                 console.error(e);
