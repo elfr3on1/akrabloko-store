@@ -4,29 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أقربلوكو ستور | Akrabloko Store</title>
-    
     <meta name="theme-color" content="#bc13fe">
     <link rel="icon" href="images/logo.png" type="image/png">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        neonBlue: '#00f3ff', neonPink: '#bc13fe', neonGreen: '#39ff14', darkBg: '#050505',
-                    },
-                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { neonBlue: '#00f3ff', neonPink: '#bc13fe', neonGreen: '#39ff14', darkBg: '#050505' }, fontFamily: { cairo: ['Cairo', 'sans-serif'] } } } }
     </script>
-
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; -webkit-tap-highlight-color: transparent; }
         .neon-box { border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5); transition: all 0.3s; }
         .neon-box:hover { border-color: #bc13fe; box-shadow: 0 0 15px rgba(188,19,254,0.3); transform: translateY(-2px); }
         .custom-scrollbar::-webkit-scrollbar { height: 4px; width: 4px; }
@@ -45,18 +32,15 @@
             <div class="flex items-center gap-2">
                 <div class="text-2xl font-black flex items-center gap-1">
                     <span class="text-white">أقرب</span><span class="text-neonPink">لوكو</span>
-                    <i class="fas fa-rocket text-neonBlue text-lg animate-pulse ml-1"></i> </div>
-                <button onclick="openTrackModal()" class="mr-2 text-[10px] font-bold text-neonBlue border border-neonBlue/30 bg-neonBlue/10 px-3 py-1.5 rounded-full flex items-center gap-1 hover:bg-neonBlue/20 transition">
-                    <i class="fas fa-motorcycle"></i> تتبع الطلب
-                </button>
+                    <i class="fas fa-rocket text-neonBlue text-lg animate-pulse ml-1"></i>
+                </div>
+                <button onclick="openTrackModal()" class="mr-2 text-[10px] font-bold text-neonBlue border border-neonBlue/30 bg-neonBlue/10 px-3 py-1.5 rounded-full flex items-center gap-1 hover:bg-neonBlue/20 transition"><i class="fas fa-motorcycle"></i> تتبع الطلب</button>
             </div>
         </div>
     </nav>
 
     <header class="mt-20 mb-6 px-4 text-center">
         <div class="bg-gradient-to-b from-gray-900 to-black rounded-3xl p-6 border border-gray-800 relative overflow-hidden">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-neonPink blur-[80px] opacity-10"></div>
-            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-neonBlue blur-[80px] opacity-10"></div>
             <h1 class="text-2xl md:text-3xl font-black mb-2 text-white">أقربلوكو ستور <span class="text-neonBlue">على ذوقك</span> 🚀</h1>
             <p class="text-gray-400 text-xs md:text-sm max-w-md mx-auto">أشيك البراندات.. قيس في بيتك والدفع عند الاستلام.</p>
         </div>
@@ -64,15 +48,12 @@
 
     <section class="container mx-auto px-3 md:px-4 mb-12">
         <div class="relative mb-6">
-            <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="بتدور على إيه؟" 
-                class="w-full bg-gray-900/80 border border-gray-700 text-white rounded-2xl py-3.5 px-11 focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition duration-300">
+            <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="بتدور على إيه؟" class="w-full bg-gray-900/80 border border-gray-700 text-white rounded-2xl py-3.5 px-11 focus:border-neonBlue outline-none transition duration-300">
             <i class="fas fa-search absolute right-4 top-4 text-gray-500"></i>
         </div>
-
         <div class="sticky top-[60px] z-40 bg-[#050505]/95 backdrop-blur-sm py-2 mb-2 border-b border-white/5 -mx-4 px-4">
             <div id="categories-container" class="flex overflow-x-auto gap-2 no-scrollbar pb-1"></div>
         </div>
-
         <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
             <div class="col-span-full text-center py-10 text-gray-500">جاري تحميل الكوليكشن...</div>
         </div>
@@ -87,24 +68,15 @@
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeVariantModal()"></div>
         <div class="bg-[#111] w-full max-w-md rounded-t-3xl md:rounded-3xl border border-white/10 relative animate-slide overflow-hidden flex flex-col max-h-[90vh]">
             <div class="overflow-y-auto custom-scrollbar p-5 pb-24">
-                <div id="modal-images" class="flex overflow-x-auto gap-2 snap-x snap-mandatory mb-4 no-scrollbar">
-                </div>
+                <div id="modal-images" class="flex overflow-x-auto gap-2 snap-x snap-mandatory mb-4 no-scrollbar"></div>
                 <h2 id="modal-title" class="text-2xl font-black text-white mb-1"></h2>
                 <p id="modal-price" class="text-neonBlue font-bold text-xl mb-3"></p>
                 <p id="modal-desc" class="text-gray-300 text-sm leading-relaxed mb-6 border-b border-gray-800 pb-4"></p>
-                <div class="mb-4">
-                    <p class="text-xs text-gray-400 mb-2 font-bold flex justify-between"><span>المقاس:</span> <span id="size-label" class="text-neonPink"></span></p>
-                    <div id="modal-sizes" class="flex flex-wrap gap-2"></div>
-                </div>
-                <div class="mb-2">
-                    <p class="text-xs text-gray-400 mb-2 font-bold flex justify-between"><span>اللون:</span> <span id="color-label" class="text-neonBlue"></span></p>
-                    <div id="modal-colors" class="flex flex-wrap gap-2"></div>
-                </div>
+                <div class="mb-4"><p class="text-xs text-gray-400 mb-2 font-bold flex justify-between"><span>المقاس:</span> <span id="size-label" class="text-neonPink"></span></p><div id="modal-sizes" class="flex flex-wrap gap-2"></div></div>
+                <div class="mb-2"><p class="text-xs text-gray-400 mb-2 font-bold flex justify-between"><span>اللون:</span> <span id="color-label" class="text-neonBlue"></span></p><div id="modal-colors" class="flex flex-wrap gap-2"></div></div>
             </div>
             <div class="absolute bottom-0 w-full p-4 bg-[#111] border-t border-gray-800 z-10">
-                <button id="add-to-cart-btn" onclick="confirmAddToCart()" disabled class="w-full bg-gray-800 text-gray-500 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
-                    <span>اختار المقاس واللون</span> <i class="fas fa-hand-point-up"></i>
-                </button>
+                <button id="add-to-cart-btn" onclick="confirmAddToCart()" disabled class="w-full bg-gray-800 text-gray-500 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"><span>اختار المقاس واللون</span> <i class="fas fa-hand-point-up"></i></button>
             </div>
             <button onclick="closeVariantModal()" class="absolute top-4 left-4 bg-black/60 hover:bg-red-500/80 p-2 rounded-full text-white w-9 h-9 flex items-center justify-center transition z-50 border border-white/10 shadow-lg"><i class="fas fa-times"></i></button>
         </div>
@@ -121,9 +93,7 @@
             <div id="cart-items" class="p-4 overflow-y-auto flex-1 space-y-3 custom-scrollbar min-h-[200px]"></div>
             <div class="p-5 bg-black/40 border-t border-white/10 pb-8">
                 <div class="flex justify-between items-center mb-4 text-lg font-bold"><span>الإجمالي:</span> <span class="text-neonBlue text-xl" id="modal-total-price">0 ج.م</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3.5 rounded-xl flex justify-center items-center gap-2 shadow-lg transition transform active:scale-95">
-                    <i class="fas fa-check-circle"></i> <span>إتمام الشراء</span>
-                </button>
+                <button onclick="openCheckoutModal()" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3.5 rounded-xl flex justify-center items-center gap-2 shadow-lg transition transform active:scale-95"><i class="fas fa-check-circle"></i> <span>إتمام الشراء</span></button>
             </div>
         </div>
     </div>
@@ -145,14 +115,10 @@
     <div id="success-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm"></div>
         <div class="bg-[#111] border border-neonGreen rounded-2xl p-6 text-center relative z-10 max-w-sm w-full shadow-[0_0_30px_rgba(57,255,20,0.3)] animate-slide">
-            <div class="w-20 h-20 bg-neonGreen/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-neonGreen">
-                <i class="fas fa-check text-4xl text-neonGreen"></i>
-            </div>
+            <div class="w-20 h-20 bg-neonGreen/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-neonGreen"><i class="fas fa-check text-4xl text-neonGreen"></i></div>
             <h3 class="text-2xl font-black text-white mb-2">تم الطلب بنجاح!</h3>
-            <p class="text-gray-300 text-xs mb-4">احتفظ بكود التتبع ده عشان تعرف طلبك وصل فين:</p>
-            <div class="bg-white/5 p-4 rounded-xl mb-6 border border-white/10 border-dashed">
-                <span id="success-order-num" class="text-4xl font-mono font-black text-neonGreen tracking-widest select-all"></span>
-            </div>
+            <p class="text-gray-300 text-xs mb-4">كود التتبع:</p>
+            <div class="bg-white/5 p-4 rounded-xl mb-6 border border-white/10 border-dashed"><span id="success-order-num" class="text-4xl font-mono font-black text-neonGreen tracking-widest select-all"></span></div>
             <button onclick="closeSuccessModal()" class="w-full bg-neonGreen hover:bg-green-400 text-black font-bold py-3.5 rounded-xl transition shadow-[0_0_15px_rgba(57,255,20,0.4)]">حسناً 👍</button>
         </div>
     </div>
@@ -162,7 +128,7 @@
         <div class="bg-[#111] w-full max-w-md rounded-2xl border border-white/10 relative animate-slide p-6 text-center">
             <i class="fas fa-search-location text-4xl text-neonBlue mb-4"></i>
             <h2 class="text-xl font-black text-white mb-4">تتبع شحنتك</h2>
-            <input type="number" id="track-input" placeholder="اكتب رقم الطلب هنا" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 mb-4 text-center text-white text-lg font-bold tracking-widest focus:border-neonBlue outline-none">
+            <input type="number" id="track-input" placeholder="رقم الطلب" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 mb-4 text-center text-white text-lg font-bold tracking-widest focus:border-neonBlue outline-none">
             <button onclick="trackOrder()" class="w-full bg-neonBlue text-black font-bold py-3 rounded-xl mb-4">بحث</button>
             <div id="track-result" class="hidden bg-white/5 p-4 rounded-xl border border-white/10"></div>
             <button onclick="closeTrackModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white z-50"><i class="fas fa-times text-xl"></i></button>
@@ -172,10 +138,7 @@
     <div class="fixed bottom-5 left-4 right-4 z-40 max-w-lg mx-auto">
         <button onclick="toggleCart()" class="w-full bg-gray-900 border border-neonPink/50 text-white rounded-2xl shadow-[0_4px_20px_rgba(188,19,254,0.3)] overflow-hidden">
             <div class="bg-gradient-to-r from-neonPink/10 to-purple-900/20 backdrop-blur-md py-3 px-5 flex justify-between items-center h-full">
-                <div class="flex items-center gap-3">
-                    <div class="bg-neonPink text-white font-black w-8 h-8 rounded-lg flex items-center justify-center shadow-lg" id="cart-counter">0</div>
-                    <span class="font-bold text-sm">عربية التسوق</span>
-                </div>
+                <div class="flex items-center gap-3"><div class="bg-neonPink text-white font-black w-8 h-8 rounded-lg flex items-center justify-center shadow-lg" id="cart-counter">0</div><span class="font-bold text-sm">عربية التسوق</span></div>
                 <span class="font-black text-lg text-neonBlue" id="cart-total">0 ج.م</span>
             </div>
         </button>
@@ -189,31 +152,29 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        try { enableIndexedDbPersistence(db).catch(err => { if (err.code == 'failed-precondition') { console.log('Multiple tabs open'); } else if (err.code == 'unimplemented') { console.log('Browser no support'); } }); } catch(e){}
+        // Try offline persistence
+        try { enableIndexedDbPersistence(db).catch(err => console.log('Persistence error:', err.code)); } catch(e){}
 
-        let products = [], cart = JSON.parse(localStorage.getItem('akrabloko_cart')) || [];
-        let selectedProduct = null, selectedSize = null, selectedColor = null;
+        let products=[], cart=JSON.parse(localStorage.getItem('akrabloko_cart'))||[], selectedProduct=null, selectedSize=null, selectedColor=null;
 
         window.fetchCategories = async function() {
-            const container = document.getElementById('categories-container');
-            const defaultHtml = `<button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700">الكل</button>`;
             const cachedCats = localStorage.getItem('akrabloko_cats');
-            if (cachedCats && (Date.now() - localStorage.getItem('akrabloko_cats_time') < 3600000)) { renderCats(JSON.parse(cachedCats), defaultHtml); return; }
+            if (cachedCats && (Date.now() - localStorage.getItem('akrabloko_cats_time') < 3600000)) { renderCats(JSON.parse(cachedCats)); return; }
             try {
                 const q = query(collection(db, "categories"), orderBy("name"));
                 const snapshot = await getDocs(q);
                 let cats = []; snapshot.forEach(doc => cats.push(doc.data()));
                 localStorage.setItem('akrabloko_cats', JSON.stringify(cats)); localStorage.setItem('akrabloko_cats_time', Date.now());
-                renderCats(cats, defaultHtml);
-            } catch(e) { if(cachedCats) renderCats(JSON.parse(cachedCats), defaultHtml); else container.innerHTML = defaultHtml; }
+                renderCats(cats);
+            } catch(e) { if(cachedCats) renderCats(JSON.parse(cachedCats)); }
         };
-        function renderCats(cats, defaultHtml) {
-            let html = defaultHtml; cats.forEach(c => html += `<button onclick="filterProducts('${c.slug}')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700 ml-2"><i class="fas ${c.icon||'fa-tag'} mr-1"></i> ${c.name}</button>`);
+        function renderCats(cats) {
+            let html = `<button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700">الكل</button>`;
+            cats.forEach(c => html += `<button onclick="filterProducts('${c.slug}')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700 ml-2"><i class="fas ${c.icon||'fa-tag'} mr-1"></i> ${c.name}</button>`);
             document.getElementById('categories-container').innerHTML = html;
         }
 
         window.fetchProducts = async function() {
-            const grid = document.getElementById('products-grid');
             const cachedData = localStorage.getItem('akrabloko_products');
             if (cachedData && (Date.now() - localStorage.getItem('akrabloko_time') < 3600000)) { products = JSON.parse(cachedData); renderProducts(products); return; }
             try {
@@ -222,7 +183,7 @@
                 products = []; snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
                 localStorage.setItem('akrabloko_products', JSON.stringify(products)); localStorage.setItem('akrabloko_time', Date.now());
                 renderProducts(products);
-            } catch (error) { if (cachedData) { products = JSON.parse(cachedData); renderProducts(products); } else grid.innerHTML = '<div class="text-center text-red-500">فشل التحميل</div>'; }
+            } catch (error) { if (cachedData) { products = JSON.parse(cachedData); renderProducts(products); } }
         };
         window.renderProducts = (items) => {
             const grid = document.getElementById('products-grid');
@@ -230,7 +191,7 @@
             grid.innerHTML = items.map(p => `
                 <div onclick="openVariantModal('${p.id}')" class="bg-gray-900 rounded-2xl p-3 neon-box flex flex-col justify-between h-full relative overflow-hidden group cursor-pointer">
                     <div class="w-full h-56 rounded-xl bg-gray-800 mb-3 overflow-hidden relative border border-gray-800">
-                        <img src="${p.coverImage || p.icon}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/400x400/111/444?text=No+Image'">
+                        <img src="${p.coverImage || 'https://placehold.co/400?text=No+Image'}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                         <div class="absolute bottom-2 right-2 w-8 h-8 rounded-lg bg-neonPink text-white flex items-center justify-center shadow-lg z-10"><i class="fas fa-plus text-xs"></i></div>
                     </div>
                     <div><h3 class="font-bold text-gray-100 text-sm mb-1 line-clamp-1 text-right">${p.name}</h3><p class="text-[10px] text-gray-400 line-clamp-1 mb-2">${p.desc || 'خامة ممتازة - قطن 100%'}</p><div class="flex items-center justify-between w-full mt-1"><span class="text-neonBlue font-black text-lg">${p.price} <span class="text-[9px] text-gray-400">ج.م</span></span></div></div>
@@ -242,7 +203,7 @@
             document.getElementById('modal-title').innerText = p.name;
             document.getElementById('modal-price').innerText = p.price + ' ج.م';
             document.getElementById('modal-desc').innerText = p.desc || 'لا يوجد وصف.';
-            let imgs = [p.coverImage || p.icon]; if(p.extraImages && Array.isArray(p.extraImages)) imgs = imgs.concat(p.extraImages);
+            let imgs = [p.coverImage]; if(p.extraImages && Array.isArray(p.extraImages)) imgs = imgs.concat(p.extraImages);
             document.getElementById('modal-images').innerHTML = imgs.map(img => `<img src="${img}" class="w-64 h-80 object-cover rounded-xl snap-center border border-gray-800 flex-shrink-0 bg-gray-800">`).join('');
             const sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ['Free Size']; 
             document.getElementById('modal-sizes').innerHTML = sizes.map(s => `<label class="cursor-pointer"><input type="radio" name="size_opt" value="${s}" class="option-input sr-only" onchange="selectSize('${s}')"><div class="bg-gray-800 text-gray-400 border border-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition hover:bg-gray-700 uppercase min-w-[50px] text-center">${s}</div></label>`).join('');
@@ -276,6 +237,7 @@
         };
         window.closeVariantModal = () => document.getElementById('variant-modal').classList.add('hidden');
 
+        // Cart & Checkout
         window.toggleCart = () => document.getElementById('cart-modal').classList.toggle('hidden');
         window.clearCart = () => { cart = []; saveCart(); updateCartUI(); };
         window.saveCart = () => localStorage.setItem('akrabloko_cart', JSON.stringify(cart));
@@ -291,32 +253,44 @@
         window.openCheckoutModal = () => { if(cart.length === 0) return alert('السلة فارغة!'); toggleCart(); document.getElementById('checkout-modal').classList.remove('hidden'); };
         window.closeCheckoutModal = () => document.getElementById('checkout-modal').classList.add('hidden');
         
+        // --- Order Sending (Sanitized) ---
         window.submitOrder = async () => {
             const name = document.getElementById('customer-name').value;
             const phone = document.getElementById('customer-phone').value;
             const address = document.getElementById('customer-address').value;
             const btn = document.querySelector('#checkout-form button');
+            
+            if(!name || !phone || !address) return alert("من فضلك اكتب بياناتك كاملة عشان نقدر نوصلك!");
+
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'; btn.disabled = true;
             try {
-                const sanitizedCart = cart.map(item => ({ cartItemId: item.cartItemId, id: item.id, name: item.name, price: item.price, qty: item.qty }));
+                // Sanitize Data
+                const safeItems = cart.map(i => ({ name: i.name, qty: i.qty, price: i.price, cartItemId: i.cartItemId }));
                 const orderNum = Math.floor(100000 + Math.random() * 900000);
+                
                 await addDoc(collection(db, "orders"), {
-                    orderNum, customer: { name, phone, address }, items: sanitizedCart,
+                    orderNum, 
+                    customer: { name, phone, address }, 
+                    items: safeItems,
                     total: cart.reduce((a, b) => a + (b.price * b.qty), 0),
-                    status: "new", timestamp: serverTimestamp(), date: new Date().toLocaleString('ar-EG')
+                    status: "new", 
+                    timestamp: serverTimestamp(),
+                    date: new Date().toLocaleString('ar-EG')
                 });
+                
                 document.getElementById('success-order-num').innerText = orderNum;
                 document.getElementById('success-modal').classList.remove('hidden');
                 localStorage.setItem('akrabloko_user', JSON.stringify({ name, phone, address }));
-            } catch (error) { console.error(error); alert("⚠️ خطأ في الاتصال بالسيرفر!"); }
-            finally { btn.innerHTML = 'تأكيد الطلب 🚀'; btn.disabled = false; }
+            } catch (error) { 
+                alert("⚠️ مش قادر ابعت الطلب. تأكد من اتصال النت وحاول تاني."); 
+                console.error(error);
+            }
+            finally { 
+                btn.innerHTML = 'تأكيد الطلب 🚀'; btn.disabled = false; 
+            }
         };
 
-        window.closeSuccessModal = () => {
-            document.getElementById('success-modal').classList.add('hidden');
-            clearCart(); 
-            closeCheckoutModal();
-        };
+        window.closeSuccessModal = () => { document.getElementById('success-modal').classList.add('hidden'); clearCart(); closeCheckoutModal(); };
 
         window.openTrackModal = () => { document.getElementById('track-modal').classList.remove('hidden'); document.getElementById('track-result').classList.add('hidden'); };
         window.closeTrackModal = () => document.getElementById('track-modal').classList.add('hidden');
