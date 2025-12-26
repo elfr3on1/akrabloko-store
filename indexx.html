@@ -320,7 +320,7 @@
 
       // --- Init ---
       window.addEventListener('DOMContentLoaded', () => {
-          fetchCategories(); // تم إضافة دالة جلب الأقسام
+          fetchCategories(); // استدعاء دالة الأقسام الجديدة
           fetchProducts();
           updateCartUI();
           checkAppContext();
@@ -333,36 +333,68 @@
           }
       });
 
-      // --- 1. دالة جلب الأقسام الديناميكية (الجديدة) ---
+      // --- 1. دالة جلب الأقسام الذكية (الموفرة مع الكاش) ---
       window.fetchCategories = async function() {
           const container = document.getElementById('categories-container');
           
-          // نبدأ بزرار "الكل" الثابت عشان التصميم ميبوظش
-          let html = `<button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap">الكل</button>`;
+          // الزر الثابت "الكل" عشان التصميم يفضل زي ما هو
+          let defaultHtml = `<button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap">الكل</button>`;
 
+          // 1. شوف الكاش الأول (مدة الحفظ: ساعة)
+          const CACHE_TIME = 60 * 60 * 1000; 
+          const cachedCats = localStorage.getItem('akrabloko_cats');
+          const cachedTime = localStorage.getItem('akrabloko_cats_time');
+
+          if (cachedCats && cachedTime && (Date.now() - cachedTime < CACHE_TIME)) {
+              console.log("تم تحميل الأقسام من الذاكرة (توفير) 💾");
+              const cats = JSON.parse(cachedCats);
+              let html = defaultHtml;
+              cats.forEach(c => {
+                  html += `<button onclick="filterProducts('${c.slug}')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap"><i class="fas ${c.icon} mr-1"></i> ${c.name}</button>`;
+              });
+              container.innerHTML = html;
+              return; // وقف هنا ومتسحبش من فايربيس
+          }
+
+          // 2. لو مفيش كاش، هات من فايربيس
           try {
+              console.log("جاري تحميل الأقسام من السيرفر 🔥");
               const q = query(collection(db, "categories"), orderBy("name"));
               const snapshot = await getDocs(q);
               
+              let html = defaultHtml;
+              let catsToCache = []; // مصفوفة لتخزين البيانات للكاش
+
               if (!snapshot.empty) {
                   snapshot.forEach(doc => {
                       const c = doc.data();
-                      // استخدام نفس كلاسات التصميم بالظبط للحفاظ على الشكل
+                      catsToCache.push(c); // ضيف للمصفوفة
+                      // رسم الزرار بنفس ستايل وتصميم الملف القديم بالظبط
                       html += `<button onclick="filterProducts('${c.slug}')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap"><i class="fas ${c.icon} mr-1"></i> ${c.name}</button>`;
                   });
+                  
+                  // احفظ في الكاش للمرة الجاية
+                  localStorage.setItem('akrabloko_cats', JSON.stringify(catsToCache));
+                  localStorage.setItem('akrabloko_cats_time', Date.now());
               } else {
-                 // لو مفيش أقسام لسه، ممكن نعرض رسالة صغيرة أو نكتفي بزر الكل
                  html += `<span class="text-xs text-gray-500 px-2 py-2">لا توجد أقسام</span>`;
               }
               container.innerHTML = html;
           } catch(e) {
               console.error("Error loading categories:", e);
-              // في حالة الخطأ، يظل زر "الكل" موجود
-              container.innerHTML = html; 
+              // لو النت قاطع، حاول تسترجع القديم من الكاش حتى لو وقته خلص
+              if(cachedCats) {
+                  const cats = JSON.parse(cachedCats);
+                  let html = defaultHtml;
+                  cats.forEach(c => html += `<button onclick="filterProducts('${c.slug}')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap"><i class="fas ${c.icon} mr-1"></i> ${c.name}</button>`);
+                  container.innerHTML = html;
+              } else {
+                  container.innerHTML = defaultHtml; 
+              }
           }
       };
 
-      // --- دالة الجلب الذكية (الموفرة) ---
+      // --- دالة الجلب الذكية للمنتجات (زي ما هي) ---
       window.fetchProducts = async function() {
           const grid = document.getElementById('products-grid');
           grid.innerHTML = '<div class="col-span-full text-center py-10"><div class="loader"></div><p class="text-gray-400">جاري تحميل المنيو...</p></div>';
@@ -573,7 +605,7 @@
                       const order = doc.data();
                       let statusMsg = order.status === 'new' ? 'جاري التجهيز 👨‍🍳' : 'تم التوصيل ✅';
                       let color = order.status === 'new' ? 'text-yellow-400' : 'text-green-500';
-                      resultDiv.innerHTML = `<div class="text-center"><p class="text-gray-400 text-sm mb-1">حالة الطلب ${order.orderNum}</p><h3 class=\"text-2xl font-black ${color} mb-2\">${statusMsg}</h3></div>`;
+                      resultDiv.innerHTML = `<div class="text-center"><p class="text-gray-400 text-sm mb-1">حالة الطلب ${order.orderNum}</p><h3 class="text-2xl font-black ${color} mb-2">${statusMsg}</h3></div>`;
                   });
               }
           } catch (error) { resultDiv.innerHTML = '<p class="text-red-500 text-xs">خطأ نت</p>'; }
