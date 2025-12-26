@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المسؤول | Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- الخط العربي: Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js للرسوم البيانية -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f3f4f6;
+        }
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <div class="flex h-screen overflow-hidden bg-gray-100" x-data="{ sidebarOpen: false }" id="app">
+        
+        <!-- القائمة الجانبية (Sidebar) -->
+        <aside id="sidebar" class="fixed inset-y-0 right-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 translate-x-full">
+            <!-- الشعار -->
+            <div class="flex items-center justify-center h-16 bg-indigo-600 text-white shadow-md">
+                <h1 class="text-2xl font-bold tracking-wider">لوحة الإدارة</h1>
+            </div>
+
+            <!-- روابط التنقل -->
+            <nav class="mt-5 px-4 space-y-2">
+                <a href="#" class="flex items-center px-4 py-3 bg-indigo-50 text-indigo-600 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-home ml-3 text-lg"></i>
+                    <span class="font-medium">الرئيسية</span>
+                </a>
+                
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-users ml-3 text-lg"></i>
+                    <span class="font-medium">المستخدمين</span>
+                </a>
+
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-box-open ml-3 text-lg"></i>
+                    <span class="font-medium">المنتجات</span>
+                </a>
+
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-shopping-cart ml-3 text-lg"></i>
+                    <span class="font-medium">الطلبات</span>
+                    <span class="mr-auto bg-red-100 text-red-600 py-0.5 px-2 rounded-full text-xs font-bold">3</span>
+                </a>
+
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-chart-bar ml-3 text-lg"></i>
+                    <span class="font-medium">التقارير</span>
+                </a>
+
+                <div class="border-t border-gray-200 my-4"></div>
+
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-cog ml-3 text-lg"></i>
+                    <span class="font-medium">الإعدادات</span>
+                </a>
+                
+                <a href="#" class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 mt-auto">
+                    <i class="fas fa-sign-out-alt ml-3 text-lg"></i>
+                    <span class="font-medium">تسجيل الخروج</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- الهيدر (Header) -->
+            <header class="flex items-center justify-between px-6 py-4 bg-white shadow-sm border-b border-gray-200">
+                <div class="flex items-center">
+                    <!-- زر القائمة للموبايل -->
+                    <button id="sidebarToggle" class="text-gray-500 focus:outline-none lg:hidden ml-4">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                    
+                    <!-- حقل البحث -->
+                    <div class="relative mx-4 lg:mx-0">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </span>
+                        <input class="w-full sm:w-64 pr-10 pl-4 py-2 bg-gray-100 border border-transparent rounded-lg focus:outline-none focus:bg-white focus:border-indigo-500 text-sm transition-colors" type="text" placeholder="بحث...">
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <!-- التنبيهات -->
+                    <button class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full mt-2 mr-2"></span>
+                    </button>
+                    
+                    <!-- الملف الشخصي -->
+                    <div class="relative flex items-center cursor-pointer">
+                        <img class="w-10 h-10 rounded-full object-cover border-2 border-indigo-100 shadow-sm" src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin">
+                        <span class="mr-2 font-medium text-gray-700 hidden sm:block">المسؤول العام</span>
+                        <i class="fas fa-chevron-down mr-2 text-xs text-gray-400 hidden sm:block"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- محتوى الصفحة -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+                <div class="container mx-auto">
+                    <h3 class="text-2xl font-bold text-gray-700 mb-6">نظرة عامة</h3>
+
+                    <!-- بطاقات الإحصائيات -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <!-- بطاقة 1 -->
+                        <div class="bg-white rounded-xl shadow-sm p-6 flex items-center border-r-4 border-indigo-500">
+                            <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 ml-4">
+                                <i class="fas fa-users text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="mb-2 text-sm font-medium text-gray-600">إجمالي المستخدمين</p>
+                                <p class="text-2xl font-bold text-gray-800">12,345</p>
+                            </div>
+                        </div>
+
+                        <!-- بطاقة 2 -->
+                        <div class="bg-white rounded-xl shadow-sm p-6 flex items-center border-r-4 border-green-500">
+                            <div class="p-3 rounded-full bg-green-100 text-green-600 ml-4">
+                                <i class="fas fa-wallet text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="mb-2 text-sm font-medium text-gray-600">المبيعات</p>
+                                <p class="text-2xl font-bold text-gray-800">$45,200</p>
+                            </div>
+                        </div>
+
+                        <!-- بطاقة 3 -->
+                        <div class="bg-white rounded-xl shadow-sm p-6 flex items-center border-r-4 border-yellow-500">
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 ml-4">
+                                <i class="fas fa-shopping-bag text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="mb-2 text-sm font-medium text-gray-600">الطلبات الجديدة</p>
+                                <p class="text-2xl font-bold text-gray-800">154</p>
+                            </div>
+                        </div>
+
+                        <!-- بطاقة 4 -->
+                        <div class="bg-white rounded-xl shadow-sm p-6 flex items-center border-r-4 border-red-500">
+                            <div class="p-3 rounded-full bg-red-100 text-red-600 ml-4">
+                                <i class="fas fa-chart-line text-2xl"></i>
+                            </div>
+                            <div>
+                                <p class="mb-2 text-sm font-medium text-gray-600">الزيارات</p>
+                                <p class="text-2xl font-bold text-gray-800">54%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- الرسم البياني والجدول -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <!-- الرسم البياني -->
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h4 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">تحليلات الأداء الشهرية</h4>
+                            <div class="relative h-64">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- جدول أحدث الطلبات -->
+                        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                                <h4 class="text-lg font-bold text-gray-700">أحدث الطلبات</h4>
+                                <button class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">عرض الكل</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-right">
+                                    <thead class="bg-gray-50 text-gray-600 text-sm font-semibold uppercase">
+                                        <tr>
+                                            <th class="px-6 py-3">رقم الطلب</th>
+                                            <th class="px-6 py-3">العميل</th>
+                                            <th class="px-6 py-3">الحالة</th>
+                                            <th class="px-6 py-3">المبلغ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100 text-gray-700 text-sm">
+                                        <tr class="hover:bg-gray-50 transition-colors">
+                                            <td class="px-6 py-4">#1234</td>
+                                            <td class="px-6 py-4 font-medium">أحمد محمد</td>
+                                            <td class="px-6 py-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">مكتمل</span></td>
+                                            <td class="px-6 py-4 font-bold">$120.00</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50 transition-colors">
+                                            <td class="px-6 py-4">#1235</td>
+                                            <td class="px-6 py-4 font-medium">سارة علي</td>
+                                            <td class="px-6 py-4"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-bold">قيد المعالجة</span></td>
+                                            <td class="px-6 py-4 font-bold">$85.50</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50 transition-colors">
+                                            <td class="px-6 py-4">#1236</td>
+                                            <td class="px-6 py-4 font-medium">خالد يوسف</td>
+                                            <td class="px-6 py-4"><span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-bold">ملغي</span></td>
+                                            <td class="px-6 py-4 font-bold">$45.00</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50 transition-colors">
+                                            <td class="px-6 py-4">#1237</td>
+                                            <td class="px-6 py-4 font-medium">منى زكي</td>
+                                            <td class="px-6 py-4"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-bold">مشحون</span></td>
+                                            <td class="px-6 py-4 font-bold">$210.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- قسم إضافي (مثال للمستخدمين الجدد) -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+                        <h4 class="text-lg font-bold text-gray-700 mb-4">المستخدمين المسجلين حديثاً</h4>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center space-x-2 space-x-reverse bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
+                                <img src="https://ui-avatars.com/api/?name=Omar+Ali&background=random" class="w-8 h-8 rounded-full" alt="User">
+                                <span class="text-sm font-medium text-gray-700">عمر علي</span>
+                            </div>
+                            <div class="flex items-center space-x-2 space-x-reverse bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
+                                <img src="https://ui-avatars.com/api/?name=Noura+Saad&background=random" class="w-8 h-8 rounded-full" alt="User">
+                                <span class="text-sm font-medium text-gray-700">نورة سعد</span>
+                            </div>
+                            <div class="flex items-center space-x-2 space-x-reverse bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
+                                <img src="https://ui-avatars.com/api/?name=Fadi+Gamal&background=random" class="w-8 h-8 rounded-full" alt="User">
+                                <span class="text-sm font-medium text-gray-700">فادي جمال</span>
+                            </div>
+                            <div class="flex items-center space-x-2 space-x-reverse bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
+                                <img src="https://ui-avatars.com/api/?name=Hassan+K&background=random" class="w-8 h-8 rounded-full" alt="User">
+                                <span class="text-sm font-medium text-gray-700">حسن كمال</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+        <!-- تراكب الخلفية للموبايل (Overlay) -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+    </div>
+
+    <!-- سكربتات التفاعل والرسوم البيانية -->
+    <script>
+        // 1. التحكم في القائمة الجانبية (Sidebar Toggle)
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        }
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        // 2. إعداد الرسم البياني (Chart.js Configuration)
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line', // نوع الرسم: خطي
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                datasets: [{
+                    label: 'المبيعات ($)',
+                    data: [12000, 19000, 3000, 5000, 2000, 30000],
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)', // لون الخلفية (شفاف)
+                    borderColor: 'rgba(99, 102, 241, 1)', // لون الخط (نيلي)
+                    borderWidth: 2,
+                    tension: 0.4, // انحناء الخط
+                    fill: true // ملء المنطقة تحت الخط
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f3f4f6'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                family: 'Tajawal'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
