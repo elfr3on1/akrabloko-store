@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أقربلوكو فاشون | Fashion Store</title>
+    <title>أقربلوكو ستور | Akrabloko Store</title>
     
     <meta name="theme-color" content="#bc13fe">
     <link rel="icon" href="images/logo.png" type="image/png">
@@ -45,8 +45,7 @@
             <div class="flex items-center gap-2">
                 <div class="text-2xl font-black flex items-center gap-1">
                     <span class="text-white">أقرب</span><span class="text-neonPink">لوكو</span>
-                    <i class="fas fa-tshirt text-neonBlue text-lg animate-pulse ml-1"></i>
-                </div>
+                    <i class="fas fa-rocket text-neonBlue text-lg animate-pulse ml-1"></i> </div>
                 <button onclick="openTrackModal()" class="mr-2 text-[10px] font-bold text-neonBlue border border-neonBlue/30 bg-neonBlue/10 px-3 py-1.5 rounded-full flex items-center gap-1 hover:bg-neonBlue/20 transition">
                     <i class="fas fa-motorcycle"></i> تتبع الطلب
                 </button>
@@ -58,14 +57,14 @@
         <div class="bg-gradient-to-b from-gray-900 to-black rounded-3xl p-6 border border-gray-800 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-40 h-40 bg-neonPink blur-[80px] opacity-10"></div>
             <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-neonBlue blur-[80px] opacity-10"></div>
-            <h1 class="text-2xl md:text-3xl font-black mb-2 text-white">فاشون ستور <span class="text-neonBlue">على ذوقك</span> 👗</h1>
+            <h1 class="text-2xl md:text-3xl font-black mb-2 text-white">أقربلوكو ستور <span class="text-neonBlue">على ذوقك</span> 🚀</h1>
             <p class="text-gray-400 text-xs md:text-sm max-w-md mx-auto">أشيك البراندات.. قيس في بيتك والدفع عند الاستلام.</p>
         </div>
     </header>
 
     <section class="container mx-auto px-3 md:px-4 mb-12">
         <div class="relative mb-6">
-            <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="بتدور على تيشرت، بنطلون، فستان؟" 
+            <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="بتدور على إيه؟" 
                 class="w-full bg-gray-900/80 border border-gray-700 text-white rounded-2xl py-3.5 px-11 focus:border-neonBlue focus:ring-1 focus:ring-neonBlue outline-none transition duration-300">
             <i class="fas fa-search absolute right-4 top-4 text-gray-500"></i>
         </div>
@@ -79,14 +78,17 @@
         </div>
     </section>
 
+    <footer class="container mx-auto px-4 py-6 text-center text-gray-400 text-sm border-t border-white/10">
+        <p>جميع الحقوق محفوظة لـ <span class="text-neonPink font-bold">أقربلوكو ستور</span> © 2025</p>
+        <p class="mt-2 text-xs font-bold dir-ltr">📞 01012345678</p>
+    </footer>
+
     <div id="variant-modal" class="fixed inset-0 z-[70] hidden flex items-end md:items-center justify-center sm:p-4">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeVariantModal()"></div>
         <div class="bg-[#111] w-full max-w-md rounded-t-3xl md:rounded-3xl border border-white/10 relative animate-slide overflow-hidden flex flex-col max-h-[90vh]">
             <div class="overflow-y-auto custom-scrollbar p-5 pb-24">
-                
                 <div id="modal-images" class="flex overflow-x-auto gap-2 snap-x snap-mandatory mb-4 no-scrollbar">
-                    </div>
-                
+                </div>
                 <h2 id="modal-title" class="text-2xl font-black text-white mb-1"></h2>
                 <p id="modal-price" class="text-neonBlue font-bold text-xl mb-3"></p>
                 <p id="modal-desc" class="text-gray-300 text-sm leading-relaxed mb-6 border-b border-gray-800 pb-4"></p>
@@ -187,14 +189,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // محاولة تفعيل الكاش لتقليل اخطاء الاتصال
         try { enableIndexedDbPersistence(db).catch(err => { if (err.code == 'failed-precondition') { console.log('Multiple tabs open'); } else if (err.code == 'unimplemented') { console.log('Browser no support'); } }); } catch(e){}
 
-        // Variables
         let products = [], cart = JSON.parse(localStorage.getItem('akrabloko_cart')) || [];
         let selectedProduct = null, selectedSize = null, selectedColor = null;
 
-        // Fetch Functions
         window.fetchCategories = async function() {
             const container = document.getElementById('categories-container');
             const defaultHtml = `<button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700">الكل</button>`;
@@ -238,25 +237,19 @@
                 </div>`).join('');
         };
 
-        // Modal Logic
         window.openVariantModal = (pid) => {
             const p = products.find(x => x.id === pid); selectedProduct = p; selectedSize = null; selectedColor = null;
             document.getElementById('modal-title').innerText = p.name;
             document.getElementById('modal-price').innerText = p.price + ' ج.م';
             document.getElementById('modal-desc').innerText = p.desc || 'لا يوجد وصف.';
-            
-            // Render Images (هنا تظهر الصور المصغرة/الصور الاضافية)
             let imgs = [p.coverImage || p.icon]; if(p.extraImages && Array.isArray(p.extraImages)) imgs = imgs.concat(p.extraImages);
             document.getElementById('modal-images').innerHTML = imgs.map(img => `<img src="${img}" class="w-64 h-80 object-cover rounded-xl snap-center border border-gray-800 flex-shrink-0 bg-gray-800">`).join('');
-            
             const sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ['Free Size']; 
             document.getElementById('modal-sizes').innerHTML = sizes.map(s => `<label class="cursor-pointer"><input type="radio" name="size_opt" value="${s}" class="option-input sr-only" onchange="selectSize('${s}')"><div class="bg-gray-800 text-gray-400 border border-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition hover:bg-gray-700 uppercase min-w-[50px] text-center">${s}</div></label>`).join('');
             document.getElementById('size-label').innerText = '';
-            
             const colors = (p.colors && p.colors.length > 0) ? p.colors : ['Standard'];
             document.getElementById('modal-colors').innerHTML = colors.map(c => `<label class="cursor-pointer"><input type="radio" name="color_opt" value="${c}" class="option-input color-input sr-only" onchange="selectColor('${c}')"><div class="bg-gray-800 text-gray-400 border border-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition hover:bg-gray-700 min-w-[60px] text-center">${c}</div></label>`).join('');
             document.getElementById('color-label').innerText = '';
-            
             const btn = document.getElementById('add-to-cart-btn');
             btn.innerHTML = `<span>اختار المقاس واللون</span> <i class="fas fa-hand-point-up"></i>`; btn.className = "w-full bg-gray-800 text-gray-500 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-not-allowed"; btn.disabled = true;
             document.getElementById('variant-modal').classList.remove('hidden');
@@ -283,7 +276,6 @@
         };
         window.closeVariantModal = () => document.getElementById('variant-modal').classList.add('hidden');
 
-        // Cart & Checkout
         window.toggleCart = () => document.getElementById('cart-modal').classList.toggle('hidden');
         window.clearCart = () => { cart = []; saveCart(); updateCartUI(); };
         window.saveCart = () => localStorage.setItem('akrabloko_cart', JSON.stringify(cart));
@@ -299,39 +291,25 @@
         window.openCheckoutModal = () => { if(cart.length === 0) return alert('السلة فارغة!'); toggleCart(); document.getElementById('checkout-modal').classList.remove('hidden'); };
         window.closeCheckoutModal = () => document.getElementById('checkout-modal').classList.add('hidden');
         
-        // --- Order Submission (Fixed Crash Issue) ---
         window.submitOrder = async () => {
             const name = document.getElementById('customer-name').value;
             const phone = document.getElementById('customer-phone').value;
             const address = document.getElementById('customer-address').value;
             const btn = document.querySelector('#checkout-form button');
-            
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'; btn.disabled = true;
             try {
-                // 1. Sanitize Data (منع البيانات الغريبة)
-                const sanitizedCart = cart.map(item => ({
-                    cartItemId: item.cartItemId, id: item.id, name: item.name, price: item.price, qty: item.qty
-                }));
-
+                const sanitizedCart = cart.map(item => ({ cartItemId: item.cartItemId, id: item.id, name: item.name, price: item.price, qty: item.qty }));
                 const orderNum = Math.floor(100000 + Math.random() * 900000);
-                
-                // 2. Timeout Protection (لو النت بطيء)
                 await addDoc(collection(db, "orders"), {
                     orderNum, customer: { name, phone, address }, items: sanitizedCart,
                     total: cart.reduce((a, b) => a + (b.price * b.qty), 0),
                     status: "new", timestamp: serverTimestamp(), date: new Date().toLocaleString('ar-EG')
                 });
-                
                 document.getElementById('success-order-num').innerText = orderNum;
                 document.getElementById('success-modal').classList.remove('hidden');
                 localStorage.setItem('akrabloko_user', JSON.stringify({ name, phone, address }));
-            } catch (error) { 
-                console.error(error);
-                alert("⚠️ خطأ في الاتصال بالسيرفر!\nيرجى التأكد من الإنترنت والمحاولة مرة أخرى."); 
-            }
-            finally { 
-                btn.innerHTML = 'تأكيد الطلب 🚀'; btn.disabled = false; 
-            }
+            } catch (error) { console.error(error); alert("⚠️ خطأ في الاتصال بالسيرفر!"); }
+            finally { btn.innerHTML = 'تأكيد الطلب 🚀'; btn.disabled = false; }
         };
 
         window.closeSuccessModal = () => {
