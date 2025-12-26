@@ -69,9 +69,10 @@
                     خروج <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
-            <div class="container mx-auto flex gap-2">
-                <button onclick="switchView('orders')" id="btn-view-orders" class="nav-switch active flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition"><i class="fas fa-receipt"></i> الطلبات</button>
-                <button onclick="switchView('products')" id="btn-view-products" class="nav-switch flex-1 py-2 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition"><i class="fas fa-boxes"></i> المنتجات</button>
+            <div class="container mx-auto flex gap-2 overflow-x-auto pb-1">
+                <button onclick="switchView('orders')" id="btn-view-orders" class="nav-switch active flex-1 py-2 px-4 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition whitespace-nowrap"><i class="fas fa-receipt"></i> الطلبات</button>
+                <button onclick="switchView('products')" id="btn-view-products" class="nav-switch flex-1 py-2 px-4 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition whitespace-nowrap"><i class="fas fa-boxes"></i> المنتجات</button>
+                <button onclick="switchView('categories')" id="btn-view-categories" class="nav-switch flex-1 py-2 px-4 rounded-lg font-bold text-gray-400 bg-gray-900 border border-gray-800 transition whitespace-nowrap"><i class="fas fa-tags"></i> الأقسام</button>
             </div>
         </nav>
 
@@ -190,10 +191,7 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <select id="p-category" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
-                            <option value="grocery">بقالة 🧺</option>
-                            <option value="snacks">نقنقة 🍫</option>
-                            <option value="drinks">مشروبات 🥤</option>
-                            <option value="mood">المزاج 🚬</option>
+                            <option value="">جارِ تحميل الأقسام...</option>
                         </select>
                         <input type="text" id="p-desc" placeholder="وصف (مثلاً: 1 لتر)" class="w-full bg-black border border-gray-700 rounded-xl py-3 px-3 text-white focus:border-neonBlue outline-none text-sm">
                     </div>
@@ -216,6 +214,30 @@
 
             <h3 class="font-bold text-white mb-3">المنتجات الحالية:</h3>
             <div id="products-list-admin" class="grid grid-cols-1 gap-3"></div>
+        </div>
+
+        <div id="view-categories" class="hidden container mx-auto px-4 mt-6 pb-20 max-w-3xl">
+            <div class="bg-[#111] p-5 rounded-2xl border border-gray-800 mb-6 border-l-4 border-l-neonPink relative overflow-hidden shadow-lg">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-neonPink blur-[50px] opacity-10"></div>
+                <h3 class="font-bold text-lg mb-4 text-neonPink flex items-center gap-2"><i class="fas fa-tags"></i> إدارة الأقسام</h3>
+                
+                <form onsubmit="event.preventDefault(); saveCategory();" id="category-form" class="space-y-3">
+                    <input type="hidden" id="c-id">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="c-name" placeholder="اسم القسم (مثلاً: بقالة)" class="w-full bg-black border border-gray-700 rounded-xl p-3 text-white text-sm focus:border-neonPink outline-none" required>
+                        <input type="text" id="c-slug" placeholder="كود بالانجليزي (grocery)" class="w-full bg-black border border-gray-700 rounded-xl p-3 text-white text-sm focus:border-neonPink outline-none" required>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="c-icon" placeholder="أيقونة القسم (fa-shopping-basket)" class="w-full bg-black border border-gray-700 rounded-xl p-3 text-white text-sm focus:border-neonPink outline-none" required>
+                        <a href="https://fontawesome.com/search?o=r&m=free" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-white px-3 rounded-xl flex items-center text-xs transition border border-gray-700">بحث أيقونات</a>
+                    </div>
+                    
+                    <button type="submit" id="cat-btn" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition shadow-lg">حفظ القسم ✨</button>
+                </form>
+            </div>
+            
+            <h3 class="text-white font-bold mb-3 flex items-center gap-2"><i class="fas fa-layer-group text-neonPink"></i> الأقسام الحالية:</h3>
+            <div id="categories-list-admin" class="grid grid-cols-1 gap-3"></div>
         </div>
 
     </div>
@@ -241,6 +263,7 @@
         let currentFilter = 'new';
         let unsubscribeOrders = null;
         let allProductsCache = {};
+        let allCategories = []; // تخزين الأقسام
 
         // --- دوال تحديث الأيقونة والألوان ---
         window.updateIcon = (val) => {
@@ -273,6 +296,7 @@
                 document.getElementById('login-screen').classList.add('hidden-force');
                 document.getElementById('dashboard-screen').classList.remove('hidden-force');
                 startListening();
+                loadCategories(); // تشغيل دالة جلب الأقسام
                 loadProductsAdmin();
             } else {
                 document.getElementById('login-screen').classList.remove('hidden-force');
@@ -299,14 +323,77 @@
         window.logout = () => { if(confirm("خروج؟")) signOut(auth); };
 
         window.switchView = (view) => {
-            document.getElementById('view-orders').classList.add('hidden');
-            document.getElementById('view-products').classList.add('hidden');
-            document.getElementById('btn-view-orders').classList.remove('active', 'bg-white/10', 'text-white', 'border-neonPink');
-            document.getElementById('btn-view-products').classList.remove('active', 'bg-white/10', 'text-white', 'border-neonPink');
+            // إخفاء الكل
+            ['orders', 'products', 'categories'].forEach(v => {
+                document.getElementById('view-' + v).classList.add('hidden');
+                document.getElementById('btn-view-' + v).classList.remove('active', 'bg-white/10', 'text-white', 'border-neonPink');
+            });
             
+            // إظهار المطلوب
             document.getElementById('view-' + view).classList.remove('hidden');
             const btn = document.getElementById('btn-view-' + view);
             btn.classList.add('active');
+        };
+
+        // --- 1. إدارة الأقسام (الجديد) ---
+        function loadCategories() {
+            // الاستماع لتغييرات الأقسام في قاعدة البيانات
+            onSnapshot(query(collection(db, "categories"), orderBy("createdAt", "desc")), (snap) => {
+                let html = '';
+                let optionsHtml = '<option value="">اختر القسم...</option>';
+                allCategories = [];
+
+                snap.forEach(doc => {
+                    const c = doc.data();
+                    allCategories.push({id: doc.id, ...c});
+                    
+                    // 1. رسم القائمة في صفحة إدارة الأقسام
+                    html += `
+                        <div class="bg-gray-900 border border-gray-800 p-3 rounded-xl flex justify-between items-center group hover:border-neonPink transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-black rounded-full flex items-center justify-center border border-gray-700 text-neonPink">
+                                    <i class="fas ${c.icon}"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">${c.name}</h4>
+                                    <p class="text-[10px] text-gray-500 font-mono">${c.slug}</p>
+                                </div>
+                            </div>
+                            <button onclick="deleteCategory('${doc.id}')" class="text-red-500 bg-red-500/10 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                        </div>`;
+                    
+                    // 2. تحديث القائمة المنسدلة في صفحة إضافة المنتج
+                    optionsHtml += `<option value="${c.slug}">${c.name}</option>`;
+                });
+
+                document.getElementById('categories-list-admin').innerHTML = html || '<p class="text-center text-gray-500">لا توجد أقسام حالياً.</p>';
+                document.getElementById('p-category').innerHTML = optionsHtml;
+            });
+        }
+
+        window.saveCategory = async () => {
+            const name = document.getElementById('c-name').value;
+            const slug = document.getElementById('c-slug').value.toLowerCase().replace(/\s+/g, '-'); // تحويل لكود إنجليزي
+            const icon = document.getElementById('c-icon').value;
+            const btn = document.getElementById('cat-btn');
+
+            if(!name || !slug || !icon) return alert("من فضلك أكمل جميع البيانات");
+            btn.innerHTML = 'جاري الحفظ... <i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "categories"), { name, slug, icon, createdAt: serverTimestamp() });
+                document.getElementById('category-form').reset();
+                alert("تم إضافة القسم بنجاح ✅");
+            } catch(e) { 
+                alert("خطأ: " + e.message); 
+            }
+            btn.innerHTML = 'حفظ القسم ✨'; btn.disabled = false;
+        };
+
+        window.deleteCategory = async (id) => {
+            if(confirm("⚠️ هل أنت متأكد من مسح هذا القسم؟\n(تحذير: المنتجات التابعة له ستظل موجودة لكن بدون قسم)")) {
+                await deleteDoc(doc(db, "categories", id));
+            }
         };
 
         function startListening() {
