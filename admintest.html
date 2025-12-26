@@ -7,7 +7,7 @@
     <link rel="icon" href="images/logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -23,18 +23,60 @@
     </script>
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; overflow-x: hidden; }
-        .active-tab { background-color: #bc13fe; color: white; border-color: #bc13fe; box-shadow: 0 0 15px rgba(188,19,254,0.4); }
-        .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; box-shadow: 0 0 10px rgba(0,243,255,0.4); }
         
-        /* Inputs */
-        input, select, textarea { background-color: #111; border: 1px solid #333; color: white; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; }
-        input:focus, select:focus, textarea:focus { border-color: #bc13fe; box-shadow: 0 0 8px rgba(188,19,254,0.2); }
+        /* Tabs Style */
+        .active-tab { background-color: #bc13fe; color: white; border-color: #bc13fe; box-shadow: 0 0 20px rgba(188,19,254,0.4); }
+        .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; box-shadow: 0 0 15px rgba(0,243,255,0.4); }
         
-        /* Neon Card Style */
+        /* --- New Pro Input Style (الخانات الشيك) --- */
+        .pro-input {
+            background-color: rgba(255, 255, 255, 0.05); /* شفاف */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 14px 16px;
+            border-radius: 16px;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* تأثير عند الضغط */
+        .pro-input:focus {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-color: #bc13fe;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.25);
+            transform: translateY(-1px);
+        }
+
+        /* تحسين شكل القائمة المنسدلة (Dropdown) */
+        select.pro-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bc13fe' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 1rem center;
+            background-size: 1em;
+            cursor: pointer;
+        }
+
+        /* Login Inputs Specifics */
+        .login-input {
+            text-align: center;
+            letter-spacing: 1px;
+            font-size: 16px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 243, 255, 0.3);
+        }
+        .login-input:focus {
+            border-color: #00f3ff;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        /* Neon Card */
         .neon-card { border: 1px solid rgba(255,255,255,0.08); background: #0a0a0a; transition: all 0.3s; }
         .neon-card:hover { border-color: #00f3ff; box-shadow: 0 0 20px rgba(0,243,255,0.15); }
-
-        /* Login Screen Animation */
+        
         #login-screen { backdrop-filter: blur(15px); }
     </style>
 </head>
@@ -48,17 +90,19 @@
                 <i class="fas fa-lock text-3xl text-neonPink"></i>
             </div>
             
-            <h2 class="text-2xl font-black text-white mb-2">تسجيل دخول <span class="text-neonBlue">الأدمن</span></h2>
-            <p class="text-gray-500 text-xs mb-6">لوحة التحكم محمية بـ Firebase Auth</p>
+            <h2 class="text-2xl font-black text-white mb-2">أهلاً يا <span class="text-neonBlue">باشا</span></h2>
+            <p class="text-gray-500 text-xs mb-6">سجل دخول عشان تتابع الشغل</p>
             
             <form onsubmit="event.preventDefault(); login();">
-                <input type="email" id="admin-email" placeholder="البريد الإلكتروني" class="mb-3 text-right" required>
-                <input type="password" id="admin-pass" placeholder="كلمة المرور" class="mb-6 text-right" required>
-                <button type="submit" id="login-btn" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg transition transform hover:scale-105">
-                    دخول 🚀
+                <div class="space-y-4">
+                    <input type="email" id="admin-email" name="email" autocomplete="username" placeholder="البريد الإلكتروني" class="pro-input login-input" required>
+                    <input type="password" id="admin-pass" name="password" autocomplete="current-password" placeholder="كلمة المرور" class="pro-input login-input" required>
+                </div>
+                <button type="submit" id="login-btn" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3.5 mt-6 rounded-xl shadow-lg transition transform hover:scale-105">
+                    دخول للوحة 🚀
                 </button>
             </form>
-            <p id="login-msg" class="text-red-500 text-xs mt-4 hidden font-bold"></p>
+            <p id="login-msg" class="text-red-500 text-xs mt-4 hidden font-bold animate-pulse"></p>
         </div>
     </div>
 
@@ -95,32 +139,49 @@
     </section>
 
     <section id="products-tab" class="tab-content hidden max-w-3xl mx-auto">
+        
         <div class="bg-gray-900/80 p-6 rounded-2xl border border-neonPink/30 shadow-[0_0_20px_rgba(188,19,254,0.1)] mb-8 relative">
             <h2 class="text-xl font-bold mb-4 text-white flex justify-between">
                 <span id="form-title"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</span>
                 <button onclick="resetForm()" id="cancel-edit" class="hidden text-xs text-red-400 border border-red-900 px-2 py-1 rounded hover:bg-red-900/20">إلغاء التعديل ❌</button>
             </h2>
+            
             <div class="space-y-4">
                 <input type="hidden" id="p-id">
-                <input type="text" id="p-name" placeholder="اسم المنتج">
+                <input type="text" id="p-name" placeholder="اسم المنتج" class="pro-input">
+                
                 <div class="flex gap-2">
-                    <input type="number" id="p-price" placeholder="السعر">
-                    <select id="p-category" class="bg-gray-800"><option value="" disabled selected>تحميل الأقسام...</option></select>
+                    <input type="number" id="p-price" placeholder="السعر" class="pro-input">
+                    <select id="p-category" class="pro-input text-gray-300">
+                        <option value="" disabled selected>تحميل الأقسام...</option>
+                    </select>
                 </div>
-                <input type="text" id="p-desc" placeholder="وصف المنتج">
+                
+                <input type="text" id="p-desc" placeholder="وصف المنتج (خامة، تقفيل..)" class="pro-input">
+
                 <div class="bg-black/40 p-4 rounded-xl border border-gray-700">
                     <label class="text-xs text-neonPink font-bold block mb-2">📸 1. رابط صورة الغلاف:</label>
-                    <input type="text" id="p-cover" placeholder="https://..." class="mb-3 text-left font-mono text-sm border-gray-600 text-neonBlue" dir="ltr">
+                    <input type="text" id="p-cover" placeholder="https://..." class="pro-input mb-3 text-left font-mono text-neonBlue" dir="ltr">
+                    
                     <label class="text-xs text-gray-400 font-bold block mb-2">📸 2. روابط إضافية:</label>
-                    <textarea id="p-gallery" placeholder="Link1, Link2" class="h-20 text-left font-mono text-sm border-gray-600" dir="ltr"></textarea>
+                    <textarea id="p-gallery" placeholder="Link1, Link2" class="pro-input h-24 text-left font-mono" dir="ltr"></textarea>
                 </div>
+
                 <div class="flex gap-2">
-                    <div class="w-1/2"><label class="text-xs text-gray-400 mb-1 block">المقاسات:</label><input type="text" id="p-sizes" value="S, M, L, XL, XXL" class="text-center text-neonPink font-bold"></div>
-                    <div class="w-1/2"><label class="text-xs text-gray-400 mb-1 block">الألوان:</label><input type="text" id="p-colors" value="أحمر, أسود, أبيض, كحلي" class="text-center text-neonBlue font-bold"></div>
+                    <div class="w-1/2">
+                        <label class="text-xs text-gray-400 mb-1 block">المقاسات:</label>
+                        <input type="text" id="p-sizes" value="S, M, L, XL, XXL" class="pro-input text-center text-neonPink">
+                    </div>
+                    <div class="w-1/2">
+                        <label class="text-xs text-gray-400 mb-1 block">الألوان:</label>
+                        <input type="text" id="p-colors" value="أحمر, أسود, أبيض, كحلي" class="pro-input text-center text-neonBlue">
+                    </div>
                 </div>
-                <button onclick="saveProduct()" id="save-btn" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg transition transform hover:scale-[1.01]">نشر المنتج 🚀</button>
+
+                <button onclick="saveProduct()" id="save-btn" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition transform hover:scale-[1.01]">نشر المنتج 🚀</button>
             </div>
         </div>
+
         <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-800 pb-2">📦 المنتجات (<span id="p-count">0</span>)</h3>
         <div id="products-list" class="space-y-3"><p class="text-center text-gray-500">جاري التحميل...</p></div>
     </section>
@@ -129,8 +190,8 @@
         <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 mb-8 shadow-lg neon-card">
             <h2 class="text-xl font-bold mb-4 text-white"><i class="fas fa-tags text-neonGreen"></i> تعريف قسم جديد</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-                <div><label class="text-xs text-gray-400 mb-1 block">اسم القسم</label><input type="text" id="cat-name" placeholder="مثال: أحذية" class="border-gray-600 focus:border-neonGreen"></div>
-                <div><label class="text-xs text-gray-400 mb-1 block">الأيقونة (FontAwesome)</label><div class="relative"><input type="text" id="cat-icon" placeholder="fa-tag" class="border-gray-600 focus:border-neonGreen text-left pl-10" dir="ltr"><i class="fas fa-icons absolute left-3 top-3.5 text-gray-500"></i></div></div>
+                <div><label class="text-xs text-gray-400 mb-1 block">اسم القسم</label><input type="text" id="cat-name" placeholder="مثال: أحذية" class="pro-input"></div>
+                <div><label class="text-xs text-gray-400 mb-1 block">الأيقونة (FontAwesome)</label><div class="relative"><input type="text" id="cat-icon" placeholder="fa-tag" class="pro-input text-left pl-10" dir="ltr"><i class="fas fa-icons absolute left-3 top-4 text-gray-500"></i></div></div>
             </div>
             <button onclick="addCategory()" class="w-full bg-neonGreen hover:bg-green-500 text-black font-bold py-3 rounded-xl transition">إضافة القسم ✅</button>
         </div>
@@ -140,23 +201,18 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        // إضافة مكتبة التوثيق (Auth)
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, writeBatch, getDocs, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg", authDomain: "akrabloko.firebaseapp.com", projectId: "akrabloko", storageBucket: "akrabloko.firebasestorage.app", messagingSenderId: "846428093028", appId: "1:846428093028:web:29f31599b90125c2673d71" };
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app); // تشغيل Auth
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- 1. Auth Logic (دخول حقيقي) ---
-        // مراقب حالة الدخول (لو مسجل يخفي الشاشة، لو لا يظهرها)
+        // --- Auth Logic ---
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('login-screen').classList.add('hidden'); // اخفاء شاشة القفل
-            } else {
-                document.getElementById('login-screen').classList.remove('hidden'); // اظهار شاشة القفل
-            }
+            if (user) document.getElementById('login-screen').classList.add('hidden');
+            else document.getElementById('login-screen').classList.remove('hidden');
         });
 
         window.login = () => {
@@ -168,20 +224,15 @@
             btn.innerHTML = 'جاري التحقق... ⏳'; btn.disabled = true; msg.classList.add('hidden');
 
             signInWithEmailAndPassword(auth, email, pass)
-                .then(() => {
-                    // الـ onAuthStateChanged هيتصرف ويفتح الصفحة
-                    btn.innerHTML = 'تم بنجاح ✅';
-                })
+                .then(() => { btn.innerHTML = 'تم بنجاح ✅'; })
                 .catch((error) => {
                     btn.innerHTML = 'دخول 🚀'; btn.disabled = false;
-                    msg.innerHTML = `خطأ: ${error.code === 'auth/invalid-credential' ? 'الإيميل أو الباسورد غلط' : error.message}`;
+                    msg.innerHTML = `خطأ: ${error.code === 'auth/invalid-credential' ? 'بيانات الدخول غلط' : error.message}`;
                     msg.classList.remove('hidden');
                 });
         };
 
-        window.logout = () => {
-            if(confirm("عايز تخرج؟")) signOut(auth); // هيطلعك وشاشة القفل هتظهر لوحدها
-        };
+        window.logout = () => { if(confirm("عايز تخرج؟")) signOut(auth); };
 
         // --- Tabs ---
         window.switchTab = (id) => {
@@ -267,7 +318,8 @@
         onSnapshot(query(collection(db, "products"), orderBy("timestamp", "desc")), (snap) => {
             allProducts = []; snap.forEach(doc => allProducts.push({id: doc.id, ...doc.data()})); renderProductsList();
             onSnapshot(query(collection(db, "categories"), orderBy("name")), (cSnap) => {
-                const s = document.getElementById('p-category'); if(s) s.innerHTML = '<option value="" disabled selected>اختر القسم</option>' + cSnap.docs.map(d=>`<option value="${d.data().slug}">${d.data().name}</option>`).join('');
+                const s = document.getElementById('p-category'); 
+                if(s) s.innerHTML = '<option value="" disabled selected>اختر القسم</option>' + cSnap.docs.map(d=>`<option value="${d.data().slug}">${d.data().name}</option>`).join('');
                 renderCatsList(cSnap);
             });
         });
