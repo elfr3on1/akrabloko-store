@@ -41,7 +41,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #bc13fe; border-radius: 4px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Radio Chips Animation (Selection Logic) */
+        /* Radio Chips Animation */
         .option-input:checked + div { background: #bc13fe; color: white; border-color: #bc13fe; box-shadow: 0 0 10px rgba(188, 19, 254, 0.5); transform: scale(1.05); }
         .color-input:checked + div { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
         
@@ -91,7 +91,7 @@
 
         <div class="sticky top-[60px] z-40 bg-[#050505]/95 backdrop-blur-sm py-2 mb-2 border-b border-white/5 -mx-4 px-4">
             <div id="categories-container" class="flex overflow-x-auto gap-2 no-scrollbar pb-1">
-                <button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap">الكل</button>
+                <button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700">الكل</button>
                 <span class="text-gray-500 text-xs flex items-center">جاري التحميل...</span>
             </div>
         </div>
@@ -129,7 +129,9 @@
                 </button>
             </div>
             
-            <button onclick="closeVariantModal()" class="absolute top-4 left-4 bg-black/50 hover:bg-red-500/80 p-2 rounded-full text-white w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button>
+            <button onclick="closeVariantModal()" class="absolute top-4 left-4 bg-black/60 hover:bg-red-500/80 p-2 rounded-full text-white w-9 h-9 flex items-center justify-center transition z-50 border border-white/10 shadow-lg cursor-pointer">
+                <i class="fas fa-times text-lg"></i>
+            </button>
         </div>
     </div>
 
@@ -162,7 +164,7 @@
                 <textarea id="customer-address" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 mb-4 text-white focus:border-neonBlue outline-none resize-none h-20" placeholder="العنوان بالتفصيل.." required></textarea>
                 <button type="submit" class="w-full bg-gradient-to-r from-neonPink to-purple-800 text-white font-bold py-3 rounded-xl shadow-lg">تأكيد الطلب 🚀</button>
             </form>
-            <button onclick="closeCheckoutModal()" class="absolute top-4 left-4 text-gray-400"><i class="fas fa-times"></i></button>
+            <button onclick="closeCheckoutModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white z-50"><i class="fas fa-times text-xl"></i></button>
         </div>
     </div>
 
@@ -174,7 +176,7 @@
             <input type="number" id="track-input" placeholder="اكتب رقم الطلب هنا" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 mb-4 text-center text-white text-lg font-bold tracking-widest focus:border-neonBlue outline-none">
             <button onclick="trackOrder()" class="w-full bg-neonBlue text-black font-bold py-3 rounded-xl mb-4">بحث</button>
             <div id="track-result" class="hidden bg-white/5 p-4 rounded-xl border border-white/10"></div>
-            <button onclick="closeTrackModal()" class="absolute top-4 left-4 text-gray-400"><i class="fas fa-times"></i></button>
+            <button onclick="closeTrackModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white z-50"><i class="fas fa-times text-xl"></i></button>
         </div>
     </div>
 
@@ -203,132 +205,87 @@
         let cart = JSON.parse(localStorage.getItem('akrabloko_cart')) || [];
         let selectedProduct = null, selectedSize = null, selectedColor = null;
 
-        // --- 1. Fetch Categories (With Cache) ---
+        // --- Fetch Functions (Cache Optimized) ---
         window.fetchCategories = async function() {
             const container = document.getElementById('categories-container');
             const defaultHtml = `<button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700">الكل</button>`;
             
-            const CACHE_TIME = 3600000; // 1 Hour
             const cachedCats = localStorage.getItem('akrabloko_cats');
             const cachedTime = localStorage.getItem('akrabloko_cats_time');
-
-            if (cachedCats && cachedTime && (Date.now() - cachedTime < CACHE_TIME)) {
-                renderCats(JSON.parse(cachedCats), defaultHtml);
-                return;
-            }
+            if (cachedCats && cachedTime && (Date.now() - cachedTime < 3600000)) { renderCats(JSON.parse(cachedCats), defaultHtml); return; }
 
             try {
                 const q = query(collection(db, "categories"), orderBy("name"));
                 const snapshot = await getDocs(q);
-                let cats = [];
-                snapshot.forEach(doc => cats.push(doc.data()));
-                localStorage.setItem('akrabloko_cats', JSON.stringify(cats));
-                localStorage.setItem('akrabloko_cats_time', Date.now());
+                let cats = []; snapshot.forEach(doc => cats.push(doc.data()));
+                localStorage.setItem('akrabloko_cats', JSON.stringify(cats)); localStorage.setItem('akrabloko_cats_time', Date.now());
                 renderCats(cats, defaultHtml);
-            } catch(e) {
-                if(cachedCats) renderCats(JSON.parse(cachedCats), defaultHtml);
-                else container.innerHTML = defaultHtml;
-            }
+            } catch(e) { if(cachedCats) renderCats(JSON.parse(cachedCats), defaultHtml); else container.innerHTML = defaultHtml; }
         };
 
         function renderCats(cats, defaultHtml) {
             let html = defaultHtml;
-            cats.forEach(c => {
-                html += `<button onclick="filterProducts('${c.slug}')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700 ml-2"><i class="fas ${c.icon || 'fa-tag'} mr-1"></i> ${c.name}</button>`;
-            });
+            cats.forEach(c => html += `<button onclick="filterProducts('${c.slug}')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap hover:bg-gray-700 ml-2"><i class="fas ${c.icon || 'fa-tag'} mr-1"></i> ${c.name}</button>`);
             document.getElementById('categories-container').innerHTML = html;
         }
 
-        // --- 2. Fetch Products (With Cache) ---
         window.fetchProducts = async function() {
             const grid = document.getElementById('products-grid');
-            const CACHE_TIME = 3600000;
             const cachedData = localStorage.getItem('akrabloko_products');
-            const cachedTimestamp = localStorage.getItem('akrabloko_time');
-
-            if (cachedData && cachedTimestamp && (Date.now() - cachedTimestamp < CACHE_TIME)) {
-                products = JSON.parse(cachedData);
-                renderProducts(products);
-                return;
-            }
+            const cachedTime = localStorage.getItem('akrabloko_time');
+            if (cachedData && cachedTime && (Date.now() - cachedTime < 3600000)) { products = JSON.parse(cachedData); renderProducts(products); return; }
 
             try {
                 const q = query(collection(db, "products"), orderBy("category"));
                 const snapshot = await getDocs(q);
-                products = [];
-                snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
-                localStorage.setItem('akrabloko_products', JSON.stringify(products));
-                localStorage.setItem('akrabloko_time', Date.now());
+                products = []; snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+                localStorage.setItem('akrabloko_products', JSON.stringify(products)); localStorage.setItem('akrabloko_time', Date.now());
                 renderProducts(products);
-            } catch (error) {
-                if (cachedData) { products = JSON.parse(cachedData); renderProducts(products); }
-                else grid.innerHTML = '<div class="col-span-full text-center text-red-500">فشل التحميل. تأكد من الإنترنت.</div>';
-            }
+            } catch (error) { if (cachedData) { products = JSON.parse(cachedData); renderProducts(products); } else grid.innerHTML = '<div class="text-center text-red-500">فشل التحميل</div>'; }
         };
 
-        // --- 3. Render Products (Clothing Style) ---
         window.renderProducts = (items) => {
             const grid = document.getElementById('products-grid');
-            if(items.length === 0) return grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10">لا توجد منتجات في هذا القسم.</div>';
-            
+            if(items.length === 0) return grid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10">لا توجد منتجات.</div>';
             grid.innerHTML = items.map(p => `
                 <div onclick="openVariantModal('${p.id}')" class="bg-gray-900 rounded-2xl p-3 neon-box flex flex-col justify-between h-full relative overflow-hidden group cursor-pointer">
                     <div class="w-full h-56 rounded-xl bg-gray-800 mb-3 overflow-hidden relative border border-gray-800">
                         <img src="${p.coverImage || p.icon}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/400x400/111/444?text=No+Image'">
-                        <div class="absolute bottom-2 right-2 w-8 h-8 rounded-lg bg-neonPink text-white flex items-center justify-center hover:bg-purple-500 transition shadow-lg z-10">
-                            <i class="fas fa-plus text-xs"></i>
-                        </div>
+                        <div class="absolute bottom-2 right-2 w-8 h-8 rounded-lg bg-neonPink text-white flex items-center justify-center shadow-lg z-10"><i class="fas fa-plus text-xs"></i></div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-gray-100 text-sm mb-1 line-clamp-1 text-right">${p.name}</h3>
-                        <p class="text-[10px] text-gray-400 line-clamp-1 mb-2">${p.desc || 'خامة ممتازة - قطن 100%'}</p>
-                        <div class="flex items-center justify-between w-full mt-1">
-                            <span class="text-neonBlue font-black text-lg">${p.price} <span class="text-[9px] text-gray-400">ج.م</span></span>
-                        </div>
-                    </div>
+                    <div><h3 class="font-bold text-gray-100 text-sm mb-1 line-clamp-1 text-right">${p.name}</h3><p class="text-[10px] text-gray-400 line-clamp-1 mb-2">${p.desc || 'خامة ممتازة - قطن 100%'}</p><div class="flex items-center justify-between w-full mt-1"><span class="text-neonBlue font-black text-lg">${p.price} <span class="text-[9px] text-gray-400">ج.م</span></span></div></div>
                 </div>
             `).join('');
         };
 
-        // --- 4. Product Modal Logic (The Logic) ---
+        // --- Modal & Cart Logic (Fixed) ---
         window.openVariantModal = (pid) => {
             const p = products.find(x => x.id === pid);
             selectedProduct = p; selectedSize = null; selectedColor = null;
             
             document.getElementById('modal-title').innerText = p.name;
             document.getElementById('modal-price').innerText = p.price + ' ج.م';
-            document.getElementById('modal-desc').innerText = p.desc || 'لا يوجد وصف تفصيلي لهذا المنتج.';
+            document.getElementById('modal-desc').innerText = p.desc || 'لا يوجد وصف.';
             
-            // Images Slider
             let imgs = [p.coverImage || p.icon];
             if(p.extraImages && Array.isArray(p.extraImages)) imgs = imgs.concat(p.extraImages);
-            else if(p.extraImages && typeof p.extraImages === 'string') imgs.push(p.extraImages);
 
-            document.getElementById('modal-images').innerHTML = imgs.map(img => `
-                <img src="${img}" class="w-64 h-80 object-cover rounded-xl snap-center border border-gray-800 flex-shrink-0 bg-gray-800">
-            `).join('');
+            document.getElementById('modal-images').innerHTML = imgs.map(img => `<img src="${img}" class="w-64 h-80 object-cover rounded-xl snap-center border border-gray-800 flex-shrink-0 bg-gray-800">`).join('');
 
-            // Sizes
-            const sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ['One Size']; 
-            document.getElementById('modal-sizes').innerHTML = sizes.map(s => `
-                <label class="cursor-pointer">
-                    <input type="radio" name="size_opt" value="${s}" class="option-input sr-only" onchange="selectSize('${s}')">
-                    <div class="bg-gray-800 text-gray-400 border border-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition hover:bg-gray-700 uppercase min-w-[50px] text-center">${s}</div>
-                </label>
-            `).join('');
+            const sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ['Free Size']; 
+            document.getElementById('modal-sizes').innerHTML = sizes.map(s => `<label class="cursor-pointer"><input type="radio" name="size_opt" value="${s}" class="option-input sr-only" onchange="selectSize('${s}')"><div class="bg-gray-800 text-gray-400 border border-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition hover:bg-gray-700 uppercase min-w-[50px] text-center">${s}</div></label>`).join('');
             document.getElementById('size-label').innerText = '';
 
-            // Colors
             const colors = (p.colors && p.colors.length > 0) ? p.colors : ['Standard'];
-            document.getElementById('modal-colors').innerHTML = colors.map(c => `
-                <label class="cursor-pointer">
-                    <input type="radio" name="color_opt" value="${c}" class="option-input color-input sr-only" onchange="selectColor('${c}')">
-                    <div class="bg-gray-800 text-gray-400 border border-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition hover:bg-gray-700 min-w-[60px] text-center">${c}</div>
-                </label>
-            `).join('');
+            document.getElementById('modal-colors').innerHTML = colors.map(c => `<label class="cursor-pointer"><input type="radio" name="color_opt" value="${c}" class="option-input color-input sr-only" onchange="selectColor('${c}')"><div class="bg-gray-800 text-gray-400 border border-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition hover:bg-gray-700 min-w-[60px] text-center">${c}</div></label>`).join('');
             document.getElementById('color-label').innerText = '';
 
-            checkBtnState();
+            // Reset Button State
+            const btn = document.getElementById('add-to-cart-btn');
+            btn.innerHTML = `<span>اختار المقاس واللون</span> <i class="fas fa-hand-point-up"></i>`;
+            btn.className = "w-full bg-gray-800 text-gray-500 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-not-allowed";
+            btn.disabled = true;
+
             document.getElementById('variant-modal').classList.remove('hidden');
         };
 
@@ -339,17 +296,12 @@
             const btn = document.getElementById('add-to-cart-btn');
             if(selectedSize && selectedColor) {
                 btn.disabled = false;
-                btn.classList.remove('bg-gray-800', 'text-gray-500');
-                btn.classList.add('bg-neonPink', 'text-white', 'hover:bg-purple-600');
+                btn.className = "w-full bg-neonPink text-white font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 hover:bg-purple-600";
                 btn.innerHTML = `<span>إضافة للسلة</span> <i class="fas fa-cart-plus"></i>`;
-            } else {
-                btn.disabled = true;
-                btn.classList.add('bg-gray-800', 'text-gray-500');
-                btn.classList.remove('bg-neonPink', 'text-white', 'hover:bg-purple-600');
-                btn.innerHTML = `<span>اختار المقاس واللون</span> <i class="fas fa-hand-point-up"></i>`;
             }
         };
 
+        // --- دالة الإضافة مع التصليح (Visual Feedback) ---
         window.confirmAddToCart = () => {
             const cartItemId = `${selectedProduct.id}-${selectedSize}-${selectedColor}`;
             const displayName = `${selectedProduct.name} (${selectedSize} | ${selectedColor})`;
@@ -358,17 +310,22 @@
             if(exists) exists.qty++;
             else cart.push({ cartItemId, id: selectedProduct.id, name: displayName, price: selectedProduct.price, qty: 1, image: selectedProduct.coverImage || selectedProduct.icon });
             
-            saveCart(); updateCartUI(); closeVariantModal();
-            // Show toast or feedback
+            saveCart(); updateCartUI();
+            
+            // Effect: زرار أخضر ونجاح
             const btn = document.getElementById('add-to-cart-btn');
-            btn.innerHTML = 'تمت الإضافة ✅';
+            btn.className = "w-full bg-green-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2";
+            btn.innerHTML = `<span>تمت الإضافة بنجاح ✅</span>`;
+            
+            setTimeout(() => { closeVariantModal(); }, 1000);
         };
 
-        // --- 5. Cart Functions ---
+        window.closeVariantModal = () => document.getElementById('variant-modal').classList.add('hidden');
+        
+        // --- Cart & Checkout Helpers ---
         window.toggleCart = () => document.getElementById('cart-modal').classList.toggle('hidden');
         window.clearCart = () => { cart = []; saveCart(); updateCartUI(); };
         window.saveCart = () => localStorage.setItem('akrabloko_cart', JSON.stringify(cart));
-        
         window.updateCartUI = () => {
             const count = cart.reduce((a, b) => a + b.qty, 0);
             const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
@@ -377,30 +334,14 @@
             document.getElementById('modal-total-price').innerText = total + ' ج.م';
             
             const container = document.getElementById('cart-items');
-            if(cart.length === 0) {
-                container.innerHTML = `<div class="text-center text-gray-500 py-10 flex flex-col items-center"><i class="fas fa-shopping-bag text-4xl mb-3 opacity-20"></i>السلة فارغة</div>`;
-            } else {
-                container.innerHTML = cart.map(item => `
-                    <div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl border border-gray-800">
-                        <div class="flex flex-col">
-                            <h4 class="font-bold text-white text-xs mb-1 line-clamp-1">${item.name}</h4>
-                            <span class="text-[10px] text-neonBlue font-bold">${item.price} ج.م</span>
-                        </div>
-                        <div class="flex items-center gap-2 bg-black rounded-lg px-2 py-1">
-                            <button onclick="changeQty('${item.cartItemId}', -1)" class="text-gray-400 hover:text-white px-1 font-bold">-</button>
-                            <span class="font-bold text-xs w-4 text-center text-white">${item.qty}</span>
-                            <button onclick="changeQty('${item.cartItemId}', 1)" class="text-green-400 hover:text-white px-1 font-bold">+</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
+            if(cart.length === 0) container.innerHTML = `<div class="text-center text-gray-500 py-10 flex flex-col items-center"><i class="fas fa-shopping-bag text-4xl mb-3 opacity-20"></i>السلة فارغة</div>`;
+            else container.innerHTML = cart.map(item => `<div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl border border-gray-800"><div class="flex flex-col"><h4 class="font-bold text-white text-xs mb-1 line-clamp-1">${item.name}</h4><span class="text-[10px] text-neonBlue font-bold">${item.price} ج.م</span></div><div class="flex items-center gap-2 bg-black rounded-lg px-2 py-1"><button onclick="changeQty('${item.cartItemId}', -1)" class="text-gray-400 hover:text-white px-1 font-bold">-</button><span class="font-bold text-xs w-4 text-center text-white">${item.qty}</span><button onclick="changeQty('${item.cartItemId}', 1)" class="text-green-400 hover:text-white px-1 font-bold">+</button></div></div>`).join('');
         };
         window.changeQty = (id, delta) => {
             const item = cart.find(i => i.cartItemId === id);
             if(item) { item.qty += delta; if(item.qty <= 0) cart = cart.filter(i => i.cartItemId !== id); saveCart(); updateCartUI(); }
         };
 
-        // --- 6. Checkout & Tracking ---
         window.openCheckoutModal = () => { if(cart.length === 0) return alert('السلة فارغة!'); toggleCart(); document.getElementById('checkout-modal').classList.remove('hidden'); };
         window.closeCheckoutModal = () => document.getElementById('checkout-modal').classList.add('hidden');
         
@@ -408,79 +349,53 @@
             const name = document.getElementById('customer-name').value;
             const phone = document.getElementById('customer-phone').value;
             const address = document.getElementById('customer-address').value;
-            
             const btn = document.querySelector('#checkout-form button');
-            const originalText = btn.innerHTML;
+            
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'; btn.disabled = true;
-
-            const orderNum = Math.floor(100000 + Math.random() * 900000);
             try {
+                const orderNum = Math.floor(100000 + Math.random() * 900000);
                 await addDoc(collection(db, "orders"), {
                     orderNum, customer: { name, phone, address }, items: cart,
                     total: cart.reduce((a, b) => a + (b.price * b.qty), 0),
                     status: "new", timestamp: serverTimestamp(), date: new Date().toLocaleString('ar-EG')
                 });
-                alert(`✅ تم طلبك بنجاح!\nرقم الطلب: ${orderNum}\nاحتفظ بيه عشان التتبع.`);
+                alert(`✅ تم طلبك بنجاح!\nرقم الطلب: ${orderNum}`);
                 clearCart(); closeCheckoutModal();
                 localStorage.setItem('akrabloko_user', JSON.stringify({ name, phone, address }));
-            } catch (error) { alert("خطأ في النت! حاول تاني."); }
-            finally { btn.innerHTML = originalText; btn.disabled = false; }
+            } catch (error) { alert("خطأ في الاتصال"); }
+            finally { btn.innerHTML = 'تأكيد الطلب 🚀'; btn.disabled = false; }
         };
 
         window.openTrackModal = () => { document.getElementById('track-modal').classList.remove('hidden'); document.getElementById('track-result').classList.add('hidden'); };
         window.closeTrackModal = () => document.getElementById('track-modal').classList.add('hidden');
-        
         window.trackOrder = async () => {
             const input = document.getElementById('track-input').value;
             const resultDiv = document.getElementById('track-result');
             if(!input) return;
-            
             resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin text-neonBlue"></i>'; resultDiv.classList.remove('hidden');
-            
             try {
                 const q = query(collection(db, "orders"), where("orderNum", "==", parseInt(input)));
-                const snapshot = await getDocs(q);
-                if (snapshot.empty) {
-                    resultDiv.innerHTML = '<p class="text-red-500 font-bold">❌ رقم طلب غير موجود</p>';
-                } else {
-                    snapshot.forEach((doc) => {
-                        const o = doc.data();
-                        let msg = '', color = '';
-                        // Tracking Logic Update
-                        if(o.status === 'new') { msg = 'جاري التجهيز 👔'; color = 'text-yellow-400'; }
-                        else if(o.status === 'shipping') { msg = 'خرج للتوصيل (في السكة) 🛵'; color = 'text-neonBlue'; }
-                        else { msg = 'تم التوصيل ✅'; color = 'text-green-500'; }
-                        
-                        resultDiv.innerHTML = `<div class="text-center"><p class="text-gray-400 text-sm mb-1">حالة الطلب #${o.orderNum}</p><h3 class="text-2xl font-black ${color}">${msg}</h3></div>`;
-                    });
-                }
-            } catch (e) { resultDiv.innerHTML = '<p class="text-red-500">خطأ في الاتصال</p>'; }
+                const s = await getDocs(q);
+                if (s.empty) resultDiv.innerHTML = '<p class="text-red-500">❌ رقم خطأ</p>';
+                else s.forEach((doc) => {
+                    const o = doc.data();
+                    let msg='', color='';
+                    if(o.status==='new') {msg='جاري التجهيز 👔'; color='text-yellow-400';}
+                    else if(o.status==='shipping') {msg='خرج للتوصيل 🛵'; color='text-neonBlue';}
+                    else {msg='تم التوصيل ✅'; color='text-green-500';}
+                    resultDiv.innerHTML = `<div class="text-center"><p class="text-gray-400 text-sm mb-1">حالة الطلب #${o.orderNum}</p><h3 class="text-2xl font-black ${color}">${msg}</h3></div>`;
+                });
+            } catch (e) { resultDiv.innerHTML = '<p class="text-red-500">خطأ نت</p>'; }
         };
 
-        // --- Global Helpers ---
         window.filterProducts = (cat) => {
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             if(event && event.currentTarget) event.currentTarget.classList.add('active');
-            if(cat === 'all') renderProducts(products);
-            else renderProducts(products.filter(p => p.category === cat));
+            if(cat === 'all') renderProducts(products); else renderProducts(products.filter(p => p.category === cat));
         };
-        window.searchProducts = () => {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
-        };
+        window.searchProducts = () => { renderProducts(products.filter(p => p.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); };
 
-        // Init
-        window.addEventListener('DOMContentLoaded', () => { 
-            fetchCategories(); 
-            fetchProducts(); 
-            updateCartUI();
-            const u = JSON.parse(localStorage.getItem('akrabloko_user'));
-            if(u) {
-                document.getElementById('customer-name').value = u.name || '';
-                document.getElementById('customer-phone').value = u.phone || '';
-                document.getElementById('customer-address').value = u.address || '';
-            }
-        });
+        window.addEventListener('DOMContentLoaded', () => { fetchCategories(); fetchProducts(); updateCartUI(); const u=JSON.parse(localStorage.getItem('akrabloko_user')); if(u){document.getElementById('customer-name').value=u.name||'';document.getElementById('customer-phone').value=u.phone||'';document.getElementById('customer-address').value=u.address||'';} });
     </script>
 </body>
 </html>
