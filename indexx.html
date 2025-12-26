@@ -284,7 +284,7 @@
                     
                     <p id="modal-desc" class="text-gray-400 text-sm leading-relaxed mb-6 border-b border-white/5 pb-4"></p>
                     
-                    <div class="space-y-5">
+                    <div class="space-y-4">
                         <div class="bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:border-white/10 transition">
                             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-3 flex justify-between items-center">
                                 <span><i class="fas fa-ruler-combined mr-1"></i> اختر المقاس</span>
@@ -299,6 +299,18 @@
                                 <span id="color-label" class="text-neonBlue"></span>
                             </p>
                             <div id="modal-colors" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <!-- Quantity Selector -->
+                        <div class="bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:border-white/10 transition">
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-3 flex justify-between items-center">
+                                <span><i class="fas fa-calculator mr-1"></i> الكمية المطلوبة</span>
+                            </p>
+                            <div class="flex items-center justify-center gap-4 bg-black/40 rounded-lg p-2 border border-white/5">
+                                <button onclick="updateModalQty(-1)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold border border-white/10 text-lg transition shadow-lg">-</button>
+                                <span id="modal-qty-display" class="font-black text-xl w-10 text-center text-neonBlue">1</span>
+                                <button onclick="updateModalQty(1)" class="w-10 h-10 rounded-lg bg-neonBlue/10 hover:bg-neonBlue/20 text-neonBlue font-bold border border-neonBlue/30 text-lg transition shadow-lg shadow-neonBlue/10">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -430,6 +442,7 @@
 
         let products=[], cart=JSON.parse(localStorage.getItem('akrabloko_cart'))||[], selectedProduct=null, selectedSize=null, selectedColor=null;
         let activeCategory = 'all';
+        let modalQty = 1; // متغير جديد للكمية
 
         // --- Categories Logic ---
         window.fetchCategories = async function() {
@@ -510,6 +523,9 @@
         // --- NEW SLIDER LOGIC ---
         window.openVariantModal = (pid) => {
             const p = products.find(x => x.id === pid); selectedProduct = p; selectedSize = null; selectedColor = null;
+            modalQty = 1; // Reset Qty
+            document.getElementById('modal-qty-display').innerText = '1';
+            
             document.getElementById('modal-title').innerText = p.name;
             document.getElementById('modal-price').innerText = p.price + ' ج.م';
             document.getElementById('modal-desc').innerText = p.desc || 'خامة ممتازة وتقفيل عالي الجودة.';
@@ -568,6 +584,12 @@
             container.scrollBy({ left: container.clientWidth * dir, behavior: 'smooth' });
         };
 
+        window.updateModalQty = (change) => {
+            modalQty += change;
+            if(modalQty < 1) modalQty = 1;
+            document.getElementById('modal-qty-display').innerText = modalQty;
+        };
+
         window.selectSize = (s) => { selectedSize = s; document.getElementById('size-label').innerText = s; checkBtnState(); }
         window.selectColor = (c) => { selectedColor = c; document.getElementById('color-label').innerText = c; checkBtnState(); }
         window.checkBtnState = () => {
@@ -581,7 +603,10 @@
         window.confirmAddToCart = () => {
             const cartItemId = `${selectedProduct.id}-${selectedSize}-${selectedColor}`;
             const exists = cart.find(i => i.cartItemId === cartItemId);
-            if(exists) exists.qty++; else cart.push({ cartItemId, id: selectedProduct.id, name: `${selectedProduct.name} (${selectedSize}|${selectedColor})`, price: selectedProduct.price, qty: 1, image: selectedProduct.coverImage });
+            // استخدم modalQty بدلاً من زيادة 1
+            if(exists) exists.qty += modalQty; 
+            else cart.push({ cartItemId, id: selectedProduct.id, name: `${selectedProduct.name} (${selectedSize}|${selectedColor})`, price: selectedProduct.price, qty: modalQty, image: selectedProduct.coverImage });
+            
             saveCart(); updateCartUI();
             const btn = document.getElementById('add-to-cart-btn');
             btn.className = "w-full bg-green-500 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.4)] flex items-center justify-center gap-2";
@@ -617,7 +642,15 @@
                 document.getElementById('success-order-num').innerText = orderNum; document.getElementById('success-modal').classList.remove('hidden'); localStorage.setItem('akrabloko_user', JSON.stringify({ name, phone, address }));
             } catch (error) { alert("⚠️ خطأ في الاتصال"); } finally { btn.innerHTML = originalText; btn.disabled = false; }
         };
-        window.closeSuccessModal = () => { document.getElementById('success-modal').classList.add('hidden'); clearCart(); closeCheckoutModal(); };
+        
+        // تعديل الدالة لعدم إظهار رسالة تأكيد عند إغلاق المودال
+        window.closeSuccessModal = () => { 
+            document.getElementById('success-modal').classList.add('hidden'); 
+            cart = []; // مسح السلة مباشرة
+            saveCart(); 
+            updateCartUI();
+            closeCheckoutModal(); 
+        };
 
         window.openTrackModal = () => { document.getElementById('track-modal').classList.remove('hidden'); document.getElementById('track-result').classList.add('hidden'); document.getElementById('track-input').value = ''; };
         window.closeTrackModal = () => document.getElementById('track-modal').classList.add('hidden');
