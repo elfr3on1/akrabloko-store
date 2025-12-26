@@ -146,10 +146,12 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"; // Added Auth
         import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg", authDomain: "akrabloko.firebaseapp.com", projectId: "akrabloko", storageBucket: "akrabloko.firebasestorage.app", messagingSenderId: "846428093028", appId: "1:846428093028:web:29f31599b90125c2673d71" };
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app); // Init Auth
         const db = getFirestore(app);
 
         try { enableIndexedDbPersistence(db).catch(err => console.log('Persistence error:', err.code)); } catch(e){}
@@ -227,7 +229,9 @@
         window.confirmAddToCart = () => {
             const cartItemId = `${selectedProduct.id}-${selectedSize}-${selectedColor}`;
             const exists = cart.find(i => i.cartItemId === cartItemId);
-            if(exists) exists.qty++; else cart.push({ cartItemId, id: selectedProduct.id, name: `${selectedProduct.name} (${selectedSize}|${selectedColor})`, price: selectedProduct.price, qty: 1, image: selectedProduct.coverImage });
+            // FIX: Added image property here clearly
+            if(exists) exists.qty++; 
+            else cart.push({ cartItemId, id: selectedProduct.id, name: `${selectedProduct.name} (${selectedSize}|${selectedColor})`, price: selectedProduct.price, qty: 1, image: selectedProduct.coverImage });
             saveCart(); updateCartUI();
             const btn = document.getElementById('add-to-cart-btn');
             btn.className = "w-full bg-green-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2";
@@ -252,7 +256,7 @@
         window.openCheckoutModal = () => { if(cart.length === 0) return alert('السلة فارغة!'); toggleCart(); document.getElementById('checkout-modal').classList.remove('hidden'); };
         window.closeCheckoutModal = () => document.getElementById('checkout-modal').classList.add('hidden');
         
-        // --- Order Sending (Safe Mode) ---
+        // --- Order Sending (Sanitized & Fixed Image) ---
         window.submitOrder = async () => {
             const name = document.getElementById('customer-name').value;
             const phone = document.getElementById('customer-phone').value;
@@ -263,11 +267,10 @@
 
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'; btn.disabled = true;
             try {
-                // Sanitize Data
-                const safeItems = cart.map(i => ({ name: i.name, qty: i.qty, price: i.price, cartItemId: i.cartItemId }));
+                // FIX: Added 'image' to the map function so it sends to Firebase
+                const safeItems = cart.map(i => ({ name: i.name, qty: i.qty, price: i.price, cartItemId: i.cartItemId, image: i.image }));
                 const orderNum = Math.floor(100000 + Math.random() * 900000);
                 
-                // Saving with consistent customer structure
                 await addDoc(collection(db, "orders"), {
                     orderNum, 
                     customer: { name, phone, address }, 
