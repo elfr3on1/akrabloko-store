@@ -5,7 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>أقربلوكو ستور | Akrabloko Store</title>
     <meta name="theme-color" content="#bc13fe">
+    
+    <!-- PWA & Icons Links -->
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" href="images/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/logo.png">
+
+    <!-- SEO & Social Media (Meta Tags) -->
+    <meta name="description" content="أقربلوكو ستور - وجهتك الأولى لأحدث صيحات الموضة الشبابية. تسوق الآن أروع الهوديز والتيشرتات بخامات عالية الجودة وأسعار تنافسية. خدمة توصيل سريعة ودفع عند الاستلام.">
+    
+    <meta property="og:image" content="https://akrabloko.vercel.app/images/banner.jpg">
+    <meta property="og:title" content="أقربلوكو ستور - استايلك على مزاجك">
+    <meta property="og:description" content="اكتشف كوليكشن الموسم الجديد من أقربلوكو! هوديز، تيشرتات، وملابس كاجوال بأعلى جودة. اطلب اونلاين وقيس قبل ما تستلم، وتوصلك لحد باب البيت.">
+    <meta property="og:url" content="https://akrabloko.vercel.app">
+    <meta property="og:type" content="website">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -284,7 +297,7 @@
                     
                     <p id="modal-desc" class="text-gray-400 text-sm leading-relaxed mb-6 border-b border-white/5 pb-4"></p>
                     
-                    <div class="space-y-5">
+                    <div class="space-y-4">
                         <div class="bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:border-white/10 transition">
                             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-3 flex justify-between items-center">
                                 <span><i class="fas fa-ruler-combined mr-1"></i> اختر المقاس</span>
@@ -299,6 +312,18 @@
                                 <span id="color-label" class="text-neonBlue"></span>
                             </p>
                             <div id="modal-colors" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <!-- Quantity Selector -->
+                        <div class="bg-white/[0.03] p-4 rounded-xl border border-white/5 hover:border-white/10 transition">
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-3 flex justify-between items-center">
+                                <span><i class="fas fa-calculator mr-1"></i> الكمية المطلوبة</span>
+                            </p>
+                            <div class="flex items-center justify-center gap-4 bg-black/40 rounded-lg p-2 border border-white/5">
+                                <button onclick="updateModalQty(-1)" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold border border-white/10 text-lg transition shadow-lg">-</button>
+                                <span id="modal-qty-display" class="font-black text-xl w-10 text-center text-neonBlue">1</span>
+                                <button onclick="updateModalQty(1)" class="w-10 h-10 rounded-lg bg-neonBlue/10 hover:bg-neonBlue/20 text-neonBlue font-bold border border-neonBlue/30 text-lg transition shadow-lg shadow-neonBlue/10">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -430,6 +455,7 @@
 
         let products=[], cart=JSON.parse(localStorage.getItem('akrabloko_cart'))||[], selectedProduct=null, selectedSize=null, selectedColor=null;
         let activeCategory = 'all';
+        let modalQty = 1; 
 
         // --- Categories Logic ---
         window.fetchCategories = async function() {
@@ -510,42 +536,37 @@
         // --- NEW SLIDER LOGIC ---
         window.openVariantModal = (pid) => {
             const p = products.find(x => x.id === pid); selectedProduct = p; selectedSize = null; selectedColor = null;
+            modalQty = 1; 
+            document.getElementById('modal-qty-display').innerText = '1';
+            
             document.getElementById('modal-title').innerText = p.name;
             document.getElementById('modal-price').innerText = p.price + ' ج.م';
             document.getElementById('modal-desc').innerText = p.desc || 'خامة ممتازة وتقفيل عالي الجودة.';
             
-            // Prepare Images
             let imgs = [p.coverImage]; if(p.extraImages && Array.isArray(p.extraImages)) imgs = imgs.concat(p.extraImages);
             
-            // 1. Render Images (LTR forced for slider)
             document.getElementById('modal-images').innerHTML = imgs.map(img => `
                 <img src="${img}" class="w-full h-full object-cover flex-shrink-0 snap-center">
             `).join('');
 
-            // 2. Render Dots & Counter
             const dotsContainer = document.getElementById('slider-dots');
             dotsContainer.innerHTML = imgs.map((_, i) => `<div class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i===0?'bg-white scale-125':'bg-white/30'}"></div>`).join('');
             document.getElementById('image-counter').innerText = `1 / ${imgs.length}`;
 
-            // 3. Show/Hide Arrows
             const hasMultiple = imgs.length > 1;
             document.getElementById('slider-prev').style.display = hasMultiple ? 'flex' : 'none';
             document.getElementById('slider-next').style.display = hasMultiple ? 'flex' : 'none';
 
-            // 4. Reset Scroll & Listeners
             const slider = document.getElementById('modal-images');
             slider.scrollLeft = 0;
             slider.onscroll = () => {
                 const index = Math.round(slider.scrollLeft / slider.clientWidth);
-                // Update Counter
                 document.getElementById('image-counter').innerText = `${index + 1} / ${imgs.length}`;
-                // Update Dots
                 Array.from(dotsContainer.children).forEach((dot, i) => {
                     dot.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === index ? 'bg-white scale-125' : 'bg-white/30'}`;
                 });
             };
 
-            // Options
             const sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ['Free Size']; 
             document.getElementById('modal-sizes').innerHTML = sizes.map(s => `
                 <label class="cursor-pointer"><input type="radio" name="size_opt" value="${s}" class="option-input sr-only" onchange="selectSize('${s}')"><div class="bg-black border border-gray-700 px-4 py-2 rounded-lg text-xs font-bold transition hover:border-gray-500 uppercase min-w-[50px] text-center text-gray-300">${s}</div></label>`).join('');
@@ -568,6 +589,12 @@
             container.scrollBy({ left: container.clientWidth * dir, behavior: 'smooth' });
         };
 
+        window.updateModalQty = (change) => {
+            modalQty += change;
+            if(modalQty < 1) modalQty = 1;
+            document.getElementById('modal-qty-display').innerText = modalQty;
+        };
+
         window.selectSize = (s) => { selectedSize = s; document.getElementById('size-label').innerText = s; checkBtnState(); }
         window.selectColor = (c) => { selectedColor = c; document.getElementById('color-label').innerText = c; checkBtnState(); }
         window.checkBtnState = () => {
@@ -581,7 +608,9 @@
         window.confirmAddToCart = () => {
             const cartItemId = `${selectedProduct.id}-${selectedSize}-${selectedColor}`;
             const exists = cart.find(i => i.cartItemId === cartItemId);
-            if(exists) exists.qty++; else cart.push({ cartItemId, id: selectedProduct.id, name: `${selectedProduct.name} (${selectedSize}|${selectedColor})`, price: selectedProduct.price, qty: 1, image: selectedProduct.coverImage });
+            if(exists) exists.qty += modalQty; 
+            else cart.push({ cartItemId, id: selectedProduct.id, name: `${selectedProduct.name} (${selectedSize}|${selectedColor})`, price: selectedProduct.price, qty: modalQty, image: selectedProduct.coverImage });
+            
             saveCart(); updateCartUI();
             const btn = document.getElementById('add-to-cart-btn');
             btn.className = "w-full bg-green-500 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.4)] flex items-center justify-center gap-2";
@@ -617,21 +646,71 @@
                 document.getElementById('success-order-num').innerText = orderNum; document.getElementById('success-modal').classList.remove('hidden'); localStorage.setItem('akrabloko_user', JSON.stringify({ name, phone, address }));
             } catch (error) { alert("⚠️ خطأ في الاتصال"); } finally { btn.innerHTML = originalText; btn.disabled = false; }
         };
-        window.closeSuccessModal = () => { document.getElementById('success-modal').classList.add('hidden'); clearCart(); closeCheckoutModal(); };
+        
+        window.closeSuccessModal = () => { 
+            document.getElementById('success-modal').classList.add('hidden'); 
+            cart = []; 
+            saveCart(); 
+            updateCartUI();
+            closeCheckoutModal(); 
+        };
 
         window.openTrackModal = () => { document.getElementById('track-modal').classList.remove('hidden'); document.getElementById('track-result').classList.add('hidden'); document.getElementById('track-input').value = ''; };
         window.closeTrackModal = () => document.getElementById('track-modal').classList.add('hidden');
+        
         window.trackOrder = async () => {
-            const input = document.getElementById('track-input').value; const resultDiv = document.getElementById('track-result'); if(!input) return; 
-            resultDiv.innerHTML = '<div class="flex justify-center py-4"><i class="fas fa-spinner fa-spin text-neonBlue text-xl"></i></div>'; resultDiv.classList.remove('hidden');
+            const input = document.getElementById('track-input').value; 
+            const resultDiv = document.getElementById('track-result'); 
+            
+            if(!input) return; 
+            resultDiv.innerHTML = '<div class="flex justify-center py-4"><i class="fas fa-spinner fa-spin text-neonBlue text-xl"></i></div>'; 
+            resultDiv.classList.remove('hidden');
+            
             try {
-                const q = query(collection(db, "orders"), where("orderNum", "==", parseInt(input))); const s = await getDocs(q);
-                if (s.empty) { resultDiv.innerHTML = '<p class="text-red-400 font-bold py-2">رقم الطلب غير صحيح</p>'; } 
-                else { s.forEach((doc) => { const o = doc.data(); let msg='', color=''; if(o.status==='new') { msg='جاري التجهيز'; color='text-yellow-400'; } else if(o.status==='shipping') { msg='خرج للتوصيل'; color='text-neonBlue'; } else { msg='تم التوصيل'; color='text-green-500'; } resultDiv.innerHTML = `<div class="text-center py-2"><h3 class="text-xl font-black text-white mb-1">${msg}</h3><p class="text-gray-500 text-xs">الإجمالي: ${o.total} ج.م</p></div>`; }); }
+                const q = query(collection(db, "orders"), where("orderNum", "==", parseInt(input))); 
+                const s = await getDocs(q);
+                
+                if (s.empty) {
+                    resultDiv.innerHTML = '<p class="text-red-400 font-bold py-2"><i class="fas fa-times-circle"></i> رقم الطلب غير صحيح</p>';
+                } else {
+                    s.forEach((doc) => { 
+                        const o = doc.data(); 
+                        let msg='', color='', icon=''; 
+                        
+                        if(o.status==='new') { msg='جاري التجهيز'; color='text-yellow-400'; icon='fa-box-open'; } 
+                        else if(o.status==='shipping') { msg='خرج للتوصيل'; color='text-neonBlue'; icon='fa-motorcycle'; } 
+                        else { msg='تم التوصيل بنجاح'; color='text-green-500'; icon='fa-check-double'; } 
+                        
+                        resultDiv.innerHTML = `
+                            <div class="text-center py-2 animate-slide-up">
+                                <div class="w-16 h-16 rounded-full border border-gray-700 bg-black flex items-center justify-center mx-auto mb-3 shadow-lg ${color.replace('text-', 'shadow-').replace('-400','/50').replace('-500','/50')}">
+                                    <i class="fas ${icon} text-2xl ${color}"></i>
+                                </div>
+                                <h3 class="text-xl font-black text-white mb-1">${msg}</h3>
+                                <p class="text-gray-500 text-xs">إجمالي الطلب: ${o.total} ج.م</p>
+                            </div>`; 
+                    });
+                }
             } catch (e) { resultDiv.innerHTML = '<p class="text-red-500">مشكلة في الاتصال!</p>'; }
         };
+
         window.searchProducts = () => { renderProducts(products.filter(p => p.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); };
-        window.addEventListener('DOMContentLoaded', () => { fetchCategories(); fetchProducts(); updateCartUI(); });
+        
+        // Register SW & Init
+        window.addEventListener('DOMContentLoaded', () => { 
+            fetchCategories(); 
+            fetchProducts(); 
+            updateCartUI();
+            
+            // Service Worker Registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('SW Registered'))
+                    .catch(() => console.log('SW Failed'));
+            }
+        });
     </script>
 </body>
 </html>
+
+
