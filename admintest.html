@@ -4,138 +4,310 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم | Akrabloko Admin</title>
+    
+    <link rel="icon" href="images/logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
     <script>
-        tailwind.config = { theme: { extend: { colors: { neonBlue: '#00f3ff', neonPink: '#bc13fe', darkBg: '#050505' } } } }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonBlue: '#00f3ff', neonPink: '#bc13fe', neonGreen: '#39ff14', darkBg: '#050505',
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
     </script>
-    <style>body { background-color: #050505; color: white; font-family: sans-serif; }</style>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; }
+        .neon-border { border: 1px solid rgba(188,19,254,0.3); box-shadow: 0 0 10px rgba(188,19,254,0.1); }
+        .active-tab { background-color: #bc13fe; color: white; box-shadow: 0 0 15px rgba(188,19,254,0.4); border-color: #bc13fe; }
+        .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; }
+        /* Inputs styling */
+        input, textarea, select { background-color: #111; border: 1px solid #333; color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; transition: 0.3s; }
+        input:focus, textarea:focus, select:focus { border-color: #bc13fe; box-shadow: 0 0 5px rgba(188,19,254,0.3); }
+    </style>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-8 pb-32">
 
-    <h1 class="text-3xl font-bold text-center mb-6 text-neonPink">Admin Control 👔</h1>
+    <header class="text-center mb-8">
+        <h1 class="text-3xl font-black text-white">لوحة القيادة 👮‍♂️ <span class="text-neonPink">أقربلوكو</span></h1>
+        <p class="text-gray-400 text-xs mt-1">إدارة الطلبات والمنتجات والأقسام</p>
+    </header>
 
-    <div class="bg-gray-900 p-6 rounded-2xl border border-gray-800 mb-8 max-w-2xl mx-auto">
-        <h2 class="text-xl font-bold mb-4 text-white"><i class="fas fa-tshirt text-neonBlue"></i> إضافة منتج جديد</h2>
-        <div class="space-y-4">
-            <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: تيشرت بولو)" class="w-full bg-black border border-gray-700 p-3 rounded-lg text-white">
-            <input type="number" id="p-price" placeholder="السعر" class="w-full bg-black border border-gray-700 p-3 rounded-lg text-white">
-            <input type="text" id="p-category" placeholder="القسم (رجالي، حريمي..)" class="w-full bg-black border border-gray-700 p-3 rounded-lg text-white">
-            <textarea id="p-desc" placeholder="وصف المنتج (خامة، تقفيل..)" class="w-full bg-black border border-gray-700 p-3 rounded-lg text-white h-20"></textarea>
+    <div class="flex justify-center gap-4 mb-8 border-b border-gray-800 pb-4">
+        <button onclick="switchTab('products-tab')" id="btn-products" class="tab-btn active-tab px-6 py-2 rounded-xl border border-gray-700 transition">👕 المنتجات</button>
+        <button onclick="switchTab('orders-tab')" id="btn-orders" class="tab-btn px-6 py-2 rounded-xl border border-gray-700 transition">📦 الطلبات</button>
+        <button onclick="switchTab('cats-tab')" id="btn-cats" class="tab-btn px-6 py-2 rounded-xl border border-gray-700 transition">🏷️ الأقسام</button>
+    </div>
+
+    <section id="products-tab" class="tab-content max-w-3xl mx-auto animate-fade">
+        <div class="bg-gray-900/50 p-6 rounded-2xl neon-border">
+            <h2 class="text-xl font-bold mb-4 text-white flex items-center gap-2"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</h2>
             
-            <div class="p-3 bg-black/50 rounded-lg border border-gray-700">
-                <label class="text-xs text-neonBlue block mb-2">📸 الصور (روابط خارجية ImgBB):</label>
-                <input type="text" id="p-cover" placeholder="رابط صورة الغلاف (الرئيسية)" class="w-full bg-[#111] border border-gray-600 p-2 rounded mb-2 text-left" dir="ltr">
-                <textarea id="p-gallery" placeholder="روابط صور إضافية (افصل بينهم بفاصلة ,)" class="w-full bg-[#111] border border-gray-600 p-2 rounded h-20 text-left" dir="ltr"></textarea>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <input type="text" id="p-name" placeholder="اسم المنتج (مثلاً: تيشرت بولو)">
+                <input type="number" id="p-price" placeholder="السعر (ج.م)">
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <select id="p-category" class="cursor-pointer">
+                    <option value="" disabled selected>اختر القسم</option>
+                    </select>
+                <input type="text" id="p-desc" placeholder="وصف مختصر (خامة، تقفيل..)">
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="bg-black/40 p-4 rounded-xl border border-gray-700 mb-4">
+                <label class="text-xs text-neonBlue font-bold block mb-2">📸 صور المنتج (روابط مباشرة):</label>
+                <input type="text" id="p-cover" placeholder="رابط صورة الغلاف (الرئيسية)" class="mb-2 text-left" dir="ltr">
+                <textarea id="p-gallery" placeholder="روابط صور إضافية (افصل بينهم بفاصلة ,)" class="h-20 text-left" dir="ltr"></textarea>
+                <p class="text-[10px] text-gray-500 mt-1">ارفع الصور على ImgBB وانسخ الروابط المباشرة هنا.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <label class="text-xs text-gray-400">المقاسات المتاحة (افصل بفاصلة)</label>
-                    <input type="text" id="p-sizes" value="S,M,L,XL,XXL" class="w-full bg-black border border-gray-700 p-2 rounded text-center">
+                    <label class="text-xs text-gray-400 mb-1 block">المقاسات (افصل بفاصلة)</label>
+                    <input type="text" id="p-sizes" value="S,M,L,XL,XXL" class="text-center font-bold text-neonPink">
                 </div>
                 <div>
-                    <label class="text-xs text-gray-400">الألوان المتاحة (افصل بفاصلة)</label>
-                    <input type="text" id="p-colors" value="أحمر,أسود,أبيض" class="w-full bg-black border border-gray-700 p-2 rounded text-center">
+                    <label class="text-xs text-gray-400 mb-1 block">الألوان (افصل بفاصلة)</label>
+                    <input type="text" id="p-colors" value="أحمر,أسود,أبيض" class="text-center font-bold text-neonBlue">
                 </div>
             </div>
 
-            <button onclick="addProduct()" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-lg transition">نشر المنتج 🚀</button>
+            <button onclick="addProduct()" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition shadow-lg">نشر المنتج 🚀</button>
         </div>
-    </div>
+    </section>
 
-    <div class="max-w-4xl mx-auto">
-        <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
-            <button onclick="filterOrders('new')" class="flex-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/50 py-2 px-4 rounded-lg font-bold hover:bg-yellow-500 hover:text-black transition">🔥 جديدة</button>
-            <button onclick="filterOrders('shipping')" class="flex-1 bg-blue-500/10 text-blue-500 border border-blue-500/50 py-2 px-4 rounded-lg font-bold hover:bg-blue-500 hover:text-black transition">🛵 في السكة</button>
-            <button onclick="filterOrders('done')" class="flex-1 bg-green-500/10 text-green-500 border border-green-500/50 py-2 px-4 rounded-lg font-bold hover:bg-green-500 hover:text-black transition">✅ مكتملة</button>
+    <section id="orders-tab" class="tab-content hidden max-w-4xl mx-auto">
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+            <button onclick="filterOrders('new')" class="sub-tab-btn active-sub-tab px-4 py-2 rounded-lg border border-gray-700 text-sm transition">🔥 جديدة</button>
+            <button onclick="filterOrders('shipping')" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">🛵 في السكة</button>
+            <button onclick="filterOrders('done')" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">✅ مكتملة</button>
+            <button onclick="filterOrders('all')" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">📂 الكل</button>
         </div>
 
-        <div id="orders-list" class="space-y-3"></div>
-    </div>
+        <div id="orders-container" class="space-y-4">
+            </div>
+
+        <div id="delete-all-wrapper" class="hidden mt-8 text-center border-t border-gray-800 pt-6">
+            <button onclick="deleteAllCompleted()" class="bg-red-900/30 text-red-500 border border-red-900 hover:bg-red-900 hover:text-white px-6 py-3 rounded-xl font-bold transition">
+                <i class="fas fa-trash-alt mr-2"></i> حذف جميع الطلبات المكتملة
+            </button>
+        </div>
+    </section>
+
+    <section id="cats-tab" class="tab-content hidden max-w-2xl mx-auto">
+        <div class="bg-gray-900/50 p-6 rounded-2xl neon-border mb-6">
+            <h2 class="text-xl font-bold mb-4 text-white">إضافة قسم جديد</h2>
+            <div class="flex gap-2">
+                <input type="text" id="cat-name" placeholder="اسم القسم (مثلاً: رجالي)">
+                <input type="text" id="cat-slug" placeholder="Slug (men)" class="hidden"> <button onclick="addCategory()" class="bg-neonBlue text-black font-bold px-6 rounded-lg hover:bg-cyan-400">إضافة</button>
+            </div>
+            <p class="text-[10px] text-gray-500 mt-2">الأقسام بتظهر في الشريط العلوي عند الزبون.</p>
+        </div>
+
+        <div id="cats-list" class="space-y-2">
+            </div>
+    </section>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, writeBatch, getDocs, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg", authDomain: "akrabloko.firebaseapp.com", projectId: "akrabloko", storageBucket: "akrabloko.firebasestorage.app", messagingSenderId: "846428093028", appId: "1:846428093028:web:29f31599b90125c2673d71" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // إضافة منتج
+        // --- Tabs Logic ---
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active-tab'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Highlight Button
+            if(tabId === 'products-tab') document.getElementById('btn-products').classList.add('active-tab');
+            if(tabId === 'orders-tab') document.getElementById('btn-orders').classList.add('active-tab');
+            if(tabId === 'cats-tab') document.getElementById('btn-cats').classList.add('active-tab');
+        };
+
+        // --- 1. Products Logic ---
+        // Load Categories into Select
+        onSnapshot(query(collection(db, "categories"), orderBy("name")), (snap) => {
+            const select = document.getElementById('p-category');
+            const list = document.getElementById('cats-list');
+            
+            let options = '<option value="" disabled selected>اختر القسم</option>';
+            let listHtml = '';
+            
+            snap.forEach(doc => {
+                const c = doc.data();
+                options += `<option value="${c.slug}">${c.name}</option>`;
+                listHtml += `
+                    <div class="flex justify-between items-center bg-gray-800 p-3 rounded-lg border border-gray-700">
+                        <span class="font-bold">${c.name}</span>
+                        <button onclick="deleteCategory('${doc.id}')" class="text-red-500 hover:text-red-400"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+            });
+            select.innerHTML = options;
+            list.innerHTML = listHtml;
+        });
+
         window.addProduct = async () => {
             const name = document.getElementById('p-name').value;
             const price = Number(document.getElementById('p-price').value);
+            const cat = document.getElementById('p-category').value;
+            const desc = document.getElementById('p-desc').value;
             const cover = document.getElementById('p-cover').value;
             const extra = document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s);
             const sizes = document.getElementById('p-sizes').value.split(',').map(s=>s.trim());
             const colors = document.getElementById('p-colors').value.split(',').map(s=>s.trim());
-            const desc = document.getElementById('p-desc').value;
-            const cat = document.getElementById('p-category').value;
 
-            if(!name || !price || !cover) return alert("البيانات ناقصة!");
+            if(!name || !price || !cat || !cover) return alert("⚠️ بيانات المنتج ناقصة! (الاسم، السعر، القسم، وصورة الغلاف مطلوبين)");
 
-            await addDoc(collection(db, "products"), {
-                name, price, category: cat, desc, 
-                coverImage: cover, extraImages: extra,
-                sizes, colors,
-                timestamp: serverTimestamp()
-            });
-            alert("تم النشر ✅");
-            location.reload();
+            const btn = event.target;
+            btn.innerHTML = 'جاري النشر... ⏳'; btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "products"), {
+                    name, price, category: cat, desc, 
+                    coverImage: cover, extraImages: extra,
+                    sizes, colors,
+                    timestamp: serverTimestamp()
+                });
+                alert("تم النشر بنجاح ✅");
+                // Reset inputs
+                document.getElementById('p-name').value = '';
+                document.getElementById('p-gallery').value = '';
+                document.getElementById('p-cover').value = '';
+            } catch(e) { alert("خطأ في النشر"); console.error(e); }
+            finally { btn.innerHTML = 'نشر المنتج 🚀'; btn.disabled = false; }
         };
 
-        // عرض الطلبات
+        // --- 2. Orders Logic ---
         let allOrders = [];
+        let currentFilter = 'new';
+
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
             allOrders = [];
             snap.forEach(doc => allOrders.push({id: doc.id, ...doc.data()}));
-            filterOrders('new'); // الافتراضي
+            filterOrders(currentFilter);
         });
 
         window.filterOrders = (status) => {
-            const container = document.getElementById('orders-list');
-            const filtered = allOrders.filter(o => o.status === status);
+            currentFilter = status;
             
-            if(filtered.length === 0) return container.innerHTML = '<p class="text-center text-gray-500">مفيش طلبات هنا.</p>';
+            // UI Toggle
+            document.querySelectorAll('.sub-tab-btn').forEach(b => {
+                b.classList.remove('active-sub-tab', 'bg-neonBlue', 'text-black');
+                b.classList.add('bg-gray-800', 'text-white');
+            });
+            const activeBtn = event ? event.target : document.querySelector(`button[onclick="filterOrders('${status}')"]`);
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-gray-800', 'text-white');
+                activeBtn.classList.add('active-sub-tab', 'bg-neonBlue', 'text-black');
+            }
+
+            // Filter
+            const container = document.getElementById('orders-container');
+            const deleteWrapper = document.getElementById('delete-all-wrapper');
+            
+            let filtered = [];
+            if(status === 'all') filtered = allOrders;
+            else filtered = allOrders.filter(o => o.status === status);
+
+            // Show Delete All button only in 'Done' tab
+            if(status === 'done' && filtered.length > 0) deleteWrapper.classList.remove('hidden');
+            else deleteWrapper.classList.add('hidden');
+
+            if(filtered.length === 0) return container.innerHTML = '<p class="text-center text-gray-500 py-10">مفيش طلبات في القائمة دي حالياً.</p>';
 
             container.innerHTML = filtered.map(o => `
-                <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl flex flex-col gap-3">
-                    <div class="flex justify-between items-start border-b border-gray-800 pb-2">
+                <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl flex flex-col gap-3 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full ${getStatusColor(o.status)}"></div>
+                    
+                    <div class="flex justify-between items-start border-b border-gray-800 pb-2 pl-3">
                         <div>
                             <h3 class="font-bold text-white text-lg">#${o.orderNum} <span class="text-sm text-gray-400">(${o.customer.name})</span></h3>
-                            <p class="text-neonBlue font-bold">${o.total} ج.م</p>
+                            <p class="text-[10px] text-gray-400 mt-1">${o.date || ''}</p>
                         </div>
-                        <a href="tel:${o.customer.phone}" class="bg-green-600 px-3 py-1 rounded text-sm font-bold"><i class="fas fa-phone"></i> اتصل</a>
+                        <div class="text-left">
+                            <p class="text-neonBlue font-bold text-lg">${o.total} ج.م</p>
+                            <a href="tel:${o.customer.phone}" class="text-green-400 text-xs font-bold border border-green-900 bg-green-900/20 px-2 py-1 rounded mt-1 inline-block"><i class="fas fa-phone"></i> اتصل</a>
+                        </div>
                     </div>
                     
-                    <div class="text-sm text-gray-300">
-                        ${o.items.map(i => `<div>• ${i.name} (x${i.qty})</div>`).join('')}
+                    <div class="bg-black/30 p-3 rounded-lg text-sm text-gray-300">
+                        <p class="text-xs text-gray-500 mb-1">العنوان: ${o.customer.address}</p>
+                        <hr class="border-gray-800 mb-2">
+                        ${o.items.map(i => `
+                            <div class="flex justify-between mb-1">
+                                <span>• ${i.name}</span>
+                                <span class="font-bold text-white">x${i.qty}</span>
+                            </div>
+                        `).join('')}
                     </div>
 
-                    <div class="flex gap-2 mt-2">
+                    <div class="flex gap-2 mt-1">
                         ${getActionBtn(o)}
                     </div>
                 </div>
             `).join('');
         };
 
-        // أزرار التحكم في الحالة
+        function getStatusColor(s) {
+            if(s === 'new') return 'bg-yellow-500';
+            if(s === 'shipping') return 'bg-neonBlue';
+            return 'bg-green-500';
+        }
+
         window.getActionBtn = (order) => {
             if(order.status === 'new') {
-                return `<button onclick="setStatus('${order.id}', 'shipping')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold">تسليم للطيار 🛵</button>`;
+                return `<button onclick="updateStatus('${order.id}', 'shipping')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold shadow-lg transition">تسليم للطيار 🛵</button>`;
             } else if(order.status === 'shipping') {
-                return `<button onclick="setStatus('${order.id}', 'done')" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-bold">تم التحصيل ✅</button>`;
+                return `<button onclick="updateStatus('${order.id}', 'done')" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-bold shadow-lg transition">تم التحصيل ✅</button>`;
             } else {
-                return `<span class="text-green-500 font-bold w-full text-center">مكتمل</span>`;
+                return `<span class="text-green-500 font-bold w-full text-center py-2 border border-green-900/50 bg-green-900/10 rounded-lg">مكتمل</span>`;
             }
         };
 
-        window.setStatus = async (id, status) => {
-            if(confirm("تغيير حالة الطلب؟")) {
+        window.updateStatus = async (id, status) => {
+            if(confirm("تأكيد تغيير حالة الطلب؟")) {
                 await updateDoc(doc(db, "orders", id), { status: status });
             }
         };
+
+        window.deleteAllCompleted = async () => {
+            if(confirm("❗ تحذير: هتمسح كل الطلبات المكتملة من الأرشيف نهائياً. متأكد؟")) {
+                const batch = writeBatch(db);
+                const q = query(collection(db, "orders"), where("status", "==", "done"));
+                const snapshot = await getDocs(q);
+                
+                snapshot.forEach((doc) => { batch.delete(doc.ref); });
+                await batch.commit();
+                alert("تم تنظيف الأرشيف 🗑️");
+            }
+        };
+
+        // --- 3. Categories Logic ---
+        window.addCategory = async () => {
+            const name = document.getElementById('cat-name').value;
+            if(!name) return alert("اكتب اسم القسم");
+            const slug = name.toLowerCase().replace(/\s+/g, '-');
+            
+            await addDoc(collection(db, "categories"), { name, slug, icon: 'fa-tag' });
+            document.getElementById('cat-name').value = '';
+        };
+
+        window.deleteCategory = async (id) => {
+            if(confirm("حذف القسم؟")) await deleteDoc(doc(db, "categories", id));
+        };
+
     </script>
 </body>
 </html>
