@@ -28,7 +28,7 @@
         .active-tab { background-color: #bc13fe; color: white; box-shadow: 0 0 15px rgba(188,19,254,0.4); border-color: #bc13fe; }
         .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; box-shadow: 0 0 10px rgba(0,243,255,0.4); }
         
-        /* تصميم الحقول وصندوق الروابط الجديد */
+        /* تصميم الحقول وصندوق الروابط */
         input, select { background-color: #111; border: 1px solid #333; color: white; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; }
         input:focus, select:focus { border-color: #bc13fe; }
         
@@ -57,12 +57,31 @@
     </header>
 
     <div class="flex justify-center gap-4 mb-8 border-b border-gray-800 pb-4">
-        <button onclick="switchTab('products-tab')" id="btn-products" class="tab-btn active-tab px-6 py-2 rounded-xl border border-gray-700 transition">👕 المنتجات</button>
-        <button onclick="switchTab('orders-tab')" id="btn-orders" class="tab-btn px-6 py-2 rounded-xl border border-gray-700 transition">📦 الطلبات</button>
+        <button onclick="switchTab('orders-tab')" id="btn-orders" class="tab-btn active-tab px-6 py-2 rounded-xl border border-gray-700 transition">📦 الطلبات</button>
+        <button onclick="switchTab('products-tab')" id="btn-products" class="tab-btn px-6 py-2 rounded-xl border border-gray-700 transition">👕 المنتجات</button>
         <button onclick="switchTab('cats-tab')" id="btn-cats" class="tab-btn px-6 py-2 rounded-xl border border-gray-700 transition">🏷️ الأقسام</button>
     </div>
 
-    <section id="products-tab" class="tab-content max-w-3xl mx-auto animate-fade">
+    <section id="orders-tab" class="tab-content max-w-4xl mx-auto animate-fade">
+        <div class="flex flex-wrap justify-center gap-2 mb-6 sticky top-0 bg-black/80 backdrop-blur-sm p-2 z-10 rounded-xl">
+            <button onclick="setFilter('new')" id="filter-new" class="sub-tab-btn active-sub-tab px-4 py-2 rounded-lg border border-gray-700 text-sm transition">🔥 جديدة</button>
+            <button onclick="setFilter('shipping')" id="filter-shipping" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">🛵 في السكة</button>
+            <button onclick="setFilter('done')" id="filter-done" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">✅ مكتملة</button>
+            <button onclick="setFilter('all')" id="filter-all" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">📂 الكل</button>
+        </div>
+
+        <div id="orders-container" class="space-y-4">
+            <p class="text-center text-gray-500 py-4">جاري تحميل الطلبات...</p>
+        </div>
+
+        <div id="delete-all-wrapper" class="hidden mt-8 text-center border-t border-gray-800 pt-6">
+            <button onclick="deleteAllCompleted()" class="bg-red-900/30 text-red-500 border border-red-900 hover:bg-red-900 hover:text-white px-6 py-3 rounded-xl font-bold transition">
+                <i class="fas fa-trash-alt mr-2"></i> حذف جميع الطلبات المكتملة
+            </button>
+        </div>
+    </section>
+
+    <section id="products-tab" class="tab-content hidden max-w-3xl mx-auto">
         <div class="bg-gray-900/50 p-6 rounded-2xl neon-border">
             <h2 class="text-xl font-bold mb-4 text-white flex items-center gap-2"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</h2>
             
@@ -100,24 +119,6 @@
         </div>
     </section>
 
-    <section id="orders-tab" class="tab-content hidden max-w-4xl mx-auto">
-        <div class="flex flex-wrap justify-center gap-2 mb-6 sticky top-0 bg-black/80 backdrop-blur-sm p-2 z-10 rounded-xl">
-            <button onclick="setFilter('new')" id="filter-new" class="sub-tab-btn active-sub-tab px-4 py-2 rounded-lg border border-gray-700 text-sm transition">🔥 جديدة</button>
-            <button onclick="setFilter('shipping')" id="filter-shipping" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">🛵 في السكة</button>
-            <button onclick="setFilter('done')" id="filter-done" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">✅ مكتملة</button>
-            <button onclick="setFilter('all')" id="filter-all" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-sm transition bg-gray-800">📂 الكل</button>
-        </div>
-
-        <div id="orders-container" class="space-y-4">
-            </div>
-
-        <div id="delete-all-wrapper" class="hidden mt-8 text-center border-t border-gray-800 pt-6">
-            <button onclick="deleteAllCompleted()" class="bg-red-900/30 text-red-500 border border-red-900 hover:bg-red-900 hover:text-white px-6 py-3 rounded-xl font-bold transition">
-                <i class="fas fa-trash-alt mr-2"></i> حذف جميع الطلبات المكتملة
-            </button>
-        </div>
-    </section>
-
     <section id="cats-tab" class="tab-content hidden max-w-2xl mx-auto">
         <div class="bg-gray-900/50 p-6 rounded-2xl neon-border mb-6">
             <h2 class="text-xl font-bold mb-4 text-white">إضافة قسم جديد</h2>
@@ -149,48 +150,17 @@
             if(tabId === 'cats-tab') document.getElementById('btn-cats').classList.add('active-tab');
         };
 
-        // --- 1. Products Logic ---
-        onSnapshot(query(collection(db, "categories"), orderBy("name")), (snap) => {
-            const select = document.getElementById('p-category');
-            const list = document.getElementById('cats-list');
-            let options = '<option value="" disabled selected>اختر القسم</option>';
-            let listHtml = '';
-            snap.forEach(doc => {
-                const c = doc.data();
-                options += `<option value="${c.slug}">${c.name}</option>`;
-                listHtml += `<div class="flex justify-between items-center bg-gray-800 p-3 rounded-lg border border-gray-700"><span class="font-bold">${c.name}</span><button onclick="deleteCategory('${doc.id}')" class="text-red-500 hover:text-red-400"><i class="fas fa-trash"></i></button></div>`;
-            });
-            select.innerHTML = options;
-            list.innerHTML = listHtml;
-        });
-
-        window.addProduct = async () => {
-            const name = document.getElementById('p-name').value;
-            const price = Number(document.getElementById('p-price').value);
-            const cat = document.getElementById('p-category').value;
-            const desc = document.getElementById('p-desc').value;
-            const cover = document.getElementById('p-cover').value;
-            const extra = document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s);
-            const sizes = document.getElementById('p-sizes').value.split(',').map(s=>s.trim());
-            const colors = document.getElementById('p-colors').value.split(',').map(s=>s.trim());
-
-            if(!name || !price || !cat || !cover) return alert("⚠️ بيانات ناقصة! (الاسم، السعر، القسم، الغلاف)");
-            const btn = event.target; btn.innerHTML = 'جاري النشر...'; btn.disabled = true;
-            try {
-                await addDoc(collection(db, "products"), { name, price, category: cat, desc, coverImage: cover, extraImages: extra, sizes, colors, timestamp: serverTimestamp() });
-                alert("تم النشر بنجاح ✅");
-                document.getElementById('p-name').value = ''; document.getElementById('p-gallery').value = ''; document.getElementById('p-cover').value = '';
-            } catch(e) { alert("خطأ في النشر"); } finally { btn.innerHTML = 'نشر المنتج 🚀'; btn.disabled = false; }
-        };
-
-        // --- 2. Orders Logic (Fixed State Issue) ---
+        // --- 1. Orders Logic (Optimized & Fixed) ---
         let allOrders = [];
-        let currentFilter = 'new'; // Global variable to hold current state
+        let currentFilter = 'new'; // تثبيت الحالة
 
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
             allOrders = [];
-            snap.forEach(doc => allOrders.push({id: doc.id, ...doc.data()}));
-            // Always re-render based on the CURRENT filter, not reset to 'new'
+            snap.forEach(doc => {
+                // حماية من البيانات الناقصة
+                const data = doc.data();
+                if(data.customer) allOrders.push({id: doc.id, ...data});
+            });
             renderOrdersList();
         });
 
@@ -200,7 +170,7 @@
         }
 
         function renderOrdersList() {
-            // Update UI Buttons
+            // Update UI Tabs Styles
             document.querySelectorAll('.sub-tab-btn').forEach(b => {
                 b.classList.remove('active-sub-tab', 'bg-neonBlue', 'text-black');
                 b.classList.add('bg-gray-800', 'text-white');
@@ -211,7 +181,6 @@
                 activeBtn.classList.add('active-sub-tab', 'bg-neonBlue', 'text-black');
             }
 
-            // Filter Data
             const container = document.getElementById('orders-container');
             const deleteWrapper = document.getElementById('delete-all-wrapper');
             
@@ -231,19 +200,19 @@
                     <div class="flex justify-between items-start border-b border-gray-800 pb-3">
                         <div>
                             <h3 class="font-bold text-white text-xl">#${o.orderNum}</h3>
-                            <p class="text-gray-400 text-sm mt-1 font-bold">${o.customer.name}</p>
-                            <p class="text-neonBlue font-mono text-xl mt-1 tracking-wider select-all">${o.customer.phone}</p>
+                            <p class="text-gray-400 text-sm mt-1 font-bold">${o.customer?.name || 'غير معروف'}</p>
+                            <p class="text-neonBlue font-mono text-xl mt-1 tracking-wider select-all cursor-text">${o.customer?.phone || ''}</p>
                         </div>
                         <div class="text-left flex flex-col items-end">
                             <p class="text-white font-black text-2xl">${o.total} <span class="text-xs text-gray-400">ج.م</span></p>
-                            <a href="tel:${o.customer.phone}" class="text-black bg-neonBlue hover:bg-cyan-300 text-xs font-bold px-3 py-1.5 rounded-full mt-2 transition flex items-center gap-1">
+                            <a href="tel:${o.customer?.phone}" class="text-black bg-neonBlue hover:bg-cyan-300 text-xs font-bold px-3 py-1.5 rounded-full mt-2 transition flex items-center gap-1">
                                 <i class="fas fa-phone-alt"></i> اتصل
                             </a>
                         </div>
                     </div>
                     
                     <div class="bg-black/30 p-3 rounded-lg text-sm text-gray-300 border border-white/5">
-                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> ${o.customer.address}</p>
+                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> ${o.customer?.address || 'لا يوجد عنوان'}</p>
                         <hr class="border-gray-800 mb-2">
                         ${o.items.map(i => `
                             <div class="flex justify-between mb-1">
@@ -277,9 +246,9 @@
         };
 
         window.updateStatus = async (id, status) => {
-            if(confirm("تغيير حالة الطلب؟")) {
-                // مش هنغير الفلتر هنا، هنسيبه زي ما هو عشان القائمة متتغيرش فجأة
+            if(confirm("تأكيد تغيير حالة الطلب؟")) {
                 await updateDoc(doc(db, "orders", id), { status: status });
+                // لن نقوم بتغيير currentFilter هنا، سيظل كما هو
             }
         };
 
@@ -292,6 +261,40 @@
                 await batch.commit();
                 alert("تم تنظيف الأرشيف 🗑️");
             }
+        };
+
+        // --- 2. Products Logic ---
+        onSnapshot(query(collection(db, "categories"), orderBy("name")), (snap) => {
+            const select = document.getElementById('p-category');
+            const list = document.getElementById('cats-list');
+            let options = '<option value="" disabled selected>اختر القسم</option>';
+            let listHtml = '';
+            snap.forEach(doc => {
+                const c = doc.data();
+                options += `<option value="${c.slug}">${c.name}</option>`;
+                listHtml += `<div class="flex justify-between items-center bg-gray-800 p-3 rounded-lg border border-gray-700"><span class="font-bold">${c.name}</span><button onclick="deleteCategory('${doc.id}')" class="text-red-500 hover:text-red-400"><i class="fas fa-trash"></i></button></div>`;
+            });
+            if(select) select.innerHTML = options;
+            if(list) list.innerHTML = listHtml;
+        });
+
+        window.addProduct = async () => {
+            const name = document.getElementById('p-name').value;
+            const price = Number(document.getElementById('p-price').value);
+            const cat = document.getElementById('p-category').value;
+            const desc = document.getElementById('p-desc').value;
+            const cover = document.getElementById('p-cover').value;
+            const extra = document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s);
+            const sizes = document.getElementById('p-sizes').value.split(',').map(s=>s.trim());
+            const colors = document.getElementById('p-colors').value.split(',').map(s=>s.trim());
+
+            if(!name || !price || !cat || !cover) return alert("⚠️ بيانات ناقصة! (الاسم، السعر، القسم، الغلاف)");
+            const btn = event.target; btn.innerHTML = 'جاري النشر...'; btn.disabled = true;
+            try {
+                await addDoc(collection(db, "products"), { name, price, category: cat, desc, coverImage: cover, extraImages: extra, sizes, colors, timestamp: serverTimestamp() });
+                alert("تم النشر بنجاح ✅");
+                document.getElementById('p-name').value = ''; document.getElementById('p-gallery').value = ''; document.getElementById('p-cover').value = '';
+            } catch(e) { alert("خطأ في النشر"); } finally { btn.innerHTML = 'نشر المنتج 🚀'; btn.disabled = false; }
         };
 
         // --- 3. Categories Logic ---
