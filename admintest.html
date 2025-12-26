@@ -2,49 +2,105 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة القيادة | Akrabloko Admin</title>
-    <link rel="icon" href="images/logo.png" type="image/png">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        neonBlue: '#00f3ff', neonPink: '#bc13fe', neonGreen: '#39ff14', darkBg: '#050505',
+                        neonBlue: '#00f3ff', 
+                        neonPink: '#bc13fe', 
+                        neonGreen: '#39ff14', 
+                        darkBg: '#050505',
+                        cardBg: '#121212',
+                        surface: '#1E1E1E'
                     },
-                    fontFamily: { cairo: ['Cairo', 'sans-serif'] }
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s ease-out forwards',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        pulseGlow: { '0%, 100%': { boxShadow: '0 0 5px rgba(188, 19, 254, 0.2)' }, '50%': { boxShadow: '0 0 20px rgba(188, 19, 254, 0.6)' } }
+                    }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; overflow-x: hidden; }
+        :root {
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(18, 18, 18, 0.7);
+        }
+
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #050505; 
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.05) 0%, transparent 20%);
+            color: #e0e0e0; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #bc13fe; }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+        }
         
-        /* --- 1. استرجاع تصميم الخانات (Edit Box) الأصلي --- */
-        .custom-input {
-            background-color: #000; /* أسود صريح */
+        .glass-input {
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid #333;
             color: #fff;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: #bc13fe;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+        }
+
+        /* Custom Inputs (Original Feel + Modern Touch) */
+        .custom-input {
+            background-color: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            color: #fff;
             padding: 12px 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             width: 100%;
             outline: none;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 14px;
             font-weight: 600;
         }
-        
-        /* التوهج عند الكتابة */
         .custom-input:focus {
             border-color: #bc13fe;
-            box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
+            box-shadow: 0 4px 20px -5px rgba(188, 19, 254, 0.4);
+            transform: translateY(-1px);
         }
 
-        /* القوائم المنسدلة */
+        /* Select styling */
         select.custom-input {
             cursor: pointer;
             appearance: none;
@@ -54,182 +110,358 @@
             background-size: 1em;
         }
 
-        /* --- 2. استرجاع الأزرار (Buttons) الأصلية --- */
+        /* Buttons */
         .solid-btn {
-            background-color: #bc13fe; /* بنفسجي مسمط */
+            background: linear-gradient(135deg, #bc13fe 0%, #8a0cba 100%);
             color: white;
             font-weight: 800;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             width: 100%;
             text-align: center;
-            transition: transform 0.1s;
-            box-shadow: 0 4px 0px #8a0cba; /* تأثير زرار ضاغط */
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(188, 19, 254, 0.3);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .solid-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #8a0cba;
+            transform: scale(0.98);
         }
-        .solid-btn:hover { background-color: #d946ff; }
+        .solid-btn:hover { 
+            filter: brightness(1.2);
+            box-shadow: 0 6px 20px rgba(188, 19, 254, 0.5);
+        }
 
-        /* Tabs Styles */
-        .active-tab { background-color: #bc13fe; color: white; border-color: #bc13fe; box-shadow: 0 0 15px rgba(188,19,254,0.4); }
-        .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; box-shadow: 0 0 10px rgba(0,243,255,0.4); }
-        
-        /* Login Screen */
-        #login-screen { backdrop-filter: blur(20px); }
-        
-        /* كارت الطلب */
-        .order-card { background: #111; border: 1px solid #333; border-right: 4px solid #bc13fe; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        /* Tabs Navigation */
+        .nav-wrapper {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+        }
+        .tab-btn {
+            position: relative;
+            color: #888;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: #bc13fe;
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+        .active-tab {
+            color: #fff;
+            background: rgba(255,255,255,0.03);
+        }
+        .active-tab::after { width: 100%; }
+        .active-tab i { color: #bc13fe; filter: drop-shadow(0 0 5px #bc13fe); }
+
+        /* Filter Pills */
+        .filter-pill {
+            transition: all 0.3s;
+            border: 1px solid #333;
+        }
+        .active-sub-tab {
+            background: #00f3ff !important;
+            color: black !important;
+            border-color: #00f3ff !important;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            font-weight: 800;
+        }
+
+        /* Order Cards */
+        .order-card {
+            background: linear-gradient(145deg, #111, #0d0d0d);
+            border: 1px solid #222;
+            border-right: 4px solid #bc13fe;
+            transition: transform 0.2s;
+        }
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.8);
+            border-color: #333;
+            border-right-color: #d946ff;
+        }
+
+        /* Login Screen Animation */
+        #login-screen { 
+            backdrop-filter: blur(25px); 
+            background: rgba(0,0,0,0.8);
+        }
+
+        /* Animations */
+        .animate-enter { animation: slideUp 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="p-4 md:p-8 pb-32">
+<body class="pb-32 antialiased selection:bg-neonPink selection:text-white">
 
-    <div id="login-screen" class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4">
-        <div class="bg-black p-8 rounded-2xl border border-gray-800 shadow-[0_0_50px_rgba(188,19,254,0.2)] w-full max-w-sm text-center">
-            <div class="w-20 h-20 rounded-full border-2 border-neonPink flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(188,19,254,0.3)]">
-                <i class="fas fa-fingerprint text-4xl text-neonPink"></i>
+    <!-- Login Screen -->
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="glass-panel p-8 rounded-3xl w-full max-w-sm text-center shadow-[0_0_80px_-20px_rgba(188,19,254,0.3)] relative overflow-hidden">
+            <!-- Decorative Glow -->
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-neonBlue/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-neonPink/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <div class="w-24 h-24 rounded-full border-2 border-neonPink/50 bg-black/50 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(188,19,254,0.2)] animate-pulse-glow">
+                    <i class="fas fa-shield-alt text-4xl text-neonPink"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-1">تسجيل الدخول</h2>
+                <p class="text-gray-400 text-sm mb-6 font-medium">لوحة تحكم المشرفين</p>
+                
+                <form onsubmit="event.preventDefault(); login();" class="space-y-4">
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute right-4 top-4 text-gray-500"></i>
+                        <input type="email" id="admin-email" autocomplete="username" placeholder="البريد الإلكتروني" class="custom-input pr-10 text-center" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-key absolute right-4 top-4 text-gray-500"></i>
+                        <input type="password" id="admin-pass" autocomplete="current-password" placeholder="كلمة المرور" class="custom-input pr-10 text-center" required>
+                    </div>
+                    <button type="submit" id="login-btn" class="solid-btn group relative overflow-hidden">
+                        <span class="relative z-10 flex items-center justify-center gap-2">
+                            <i class="fas fa-unlock-alt"></i> فتح السيستم
+                        </span>
+                        <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    </button>
+                </form>
+                <p id="login-msg" class="text-red-400 text-sm mt-4 hidden font-bold bg-red-900/20 py-2 rounded border border-red-900/50 animate-pulse"></p>
             </div>
-            <div class="bg-blue-900/30 text-blue-400 px-4 py-1 rounded inline-block mb-6 font-bold text-sm border border-blue-800">منطقة الإدارة 🛡️</div>
-            
-            <form onsubmit="event.preventDefault(); login();">
-                <input type="email" id="admin-email" autocomplete="username" placeholder="البريد الإلكتروني" class="custom-input mb-4 text-center" required>
-                <input type="password" id="admin-pass" autocomplete="current-password" placeholder="كلمة المرور" class="custom-input mb-6 text-center" required>
-                <button type="submit" id="login-btn" class="solid-btn"><i class="fas fa-lock-open mr-2"></i> فتح السيستم</button>
-            </form>
-            <p id="login-msg" class="text-red-500 text-xs mt-4 hidden font-bold"></p>
         </div>
     </div>
 
-    <header class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-black text-white">لوحة القيادة <span class="text-neonPink">أقربلوكو</span></h1>
-        <button onclick="logout()" class="bg-red-900/20 text-red-500 border border-red-900 px-4 py-2 rounded-lg text-xs font-bold transition hover:bg-red-900 hover:text-white">خروج</button>
+    <!-- Header -->
+    <header class="pt-6 pb-4 px-4 md:px-8">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">
+                    لوحة القيادة <span class="text-neonPink drop-shadow-[0_0_10px_rgba(188,19,254,0.5)]">أقربلوكو</span>
+                </h1>
+                <p class="text-xs text-gray-500 font-bold mt-1 tracking-wide">SYSTEM V2.0</p>
+            </div>
+            <button onclick="logout()" class="group bg-red-500/10 text-red-500 border border-red-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:bg-red-500 hover:text-white hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+                <i class="fas fa-power-off mr-1 group-hover:rotate-180 transition-transform duration-500"></i> خروج
+            </button>
+        </div>
     </header>
 
-    <div class="flex justify-center gap-2 mb-6 border-b border-gray-800 pb-4 sticky top-0 bg-black/95 z-20 pt-2">
-        <button onclick="switchTab('orders-tab')" id="btn-orders" class="tab-btn active-tab px-4 py-2 rounded-lg border border-gray-700 transition text-sm font-bold flex-1">📦 الطلبات</button>
-        <button onclick="switchTab('products-tab')" id="btn-products" class="tab-btn px-4 py-2 rounded-lg border border-gray-700 transition text-sm font-bold flex-1">👕 المنتجات</button>
-        <button onclick="switchTab('cats-tab')" id="btn-cats" class="tab-btn px-4 py-2 rounded-lg border border-gray-700 transition text-sm font-bold flex-1">🏷️ الأقسام</button>
+    <!-- Sticky Navigation -->
+    <div class="sticky top-0 z-50 nav-wrapper px-4 pt-2">
+        <div class="flex justify-center gap-2 max-w-4xl mx-auto pb-2">
+            <button onclick="switchTab('orders-tab')" id="btn-orders" class="tab-btn active-tab flex-1 py-3 rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+                <i class="fas fa-box-open text-lg"></i> <span class="hidden md:inline">الطلبات</span>
+            </button>
+            <button onclick="switchTab('products-tab')" id="btn-products" class="tab-btn flex-1 py-3 rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+                <i class="fas fa-tshirt text-lg"></i> <span class="hidden md:inline">المنتجات</span>
+            </button>
+            <button onclick="switchTab('cats-tab')" id="btn-cats" class="tab-btn flex-1 py-3 rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+                <i class="fas fa-tags text-lg"></i> <span class="hidden md:inline">الأقسام</span>
+            </button>
+        </div>
     </div>
 
-    <section id="orders-tab" class="tab-content max-w-4xl mx-auto">
-        <div class="flex flex-wrap justify-center gap-2 mb-4">
-            <button onclick="setFilter('new')" id="filter-new" class="sub-tab-btn active-sub-tab px-4 py-2 rounded-lg border border-gray-700 text-xs transition">🔥 جديدة</button>
-            <button onclick="setFilter('shipping')" id="filter-shipping" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-xs transition bg-gray-800">🛵 في السكة</button>
-            <button onclick="setFilter('done')" id="filter-done" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-xs transition bg-gray-800">✅ مكتملة</button>
-            <button onclick="setFilter('all')" id="filter-all" class="sub-tab-btn px-4 py-2 rounded-lg border border-gray-700 text-xs transition bg-gray-800">📂 الكل</button>
-        </div>
-        <div id="orders-container" class="space-y-4 min-h-[200px]"></div>
-        <div id="delete-all-wrapper" class="hidden mt-8 text-center border-t border-gray-800 pt-6">
-            <button onclick="deleteAllCompleted()" class="bg-red-900/30 text-red-500 border border-red-900 px-6 py-3 rounded-lg font-bold">🗑️ تنظيف الأرشيف</button>
-        </div>
-    </section>
-
-    <section id="products-tab" class="tab-content hidden max-w-3xl mx-auto">
+    <!-- Main Content Area -->
+    <main class="p-4 md:p-8 max-w-5xl mx-auto min-h-[60vh]">
         
-        <div class="bg-black p-6 rounded-2xl border border-gray-800 shadow-lg mb-8 relative">
-            <h2 class="text-xl font-bold mb-4 text-white flex justify-between items-center">
-                <span id="form-title" class="flex items-center gap-2"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</span>
-                <button onclick="resetForm()" id="cancel-edit" class="hidden text-xs text-red-400 border border-red-900 px-3 py-1 rounded hover:bg-red-900/20">إلغاء التعديل ❌</button>
-            </h2>
+        <!-- Orders Section -->
+        <section id="orders-tab" class="tab-content animate-enter">
+            <!-- Filter Bar -->
+            <div class="flex flex-wrap justify-center gap-2 mb-8 bg-[#0a0a0a] p-2 rounded-xl border border-[#222] inline-flex w-full md:w-auto mx-auto shadow-lg">
+                <button onclick="setFilter('new')" id="filter-new" class="filter-pill active-sub-tab px-6 py-2 rounded-lg text-xs font-bold flex-1 md:flex-none">🔥 جديدة</button>
+                <button onclick="setFilter('shipping')" id="filter-shipping" class="filter-pill bg-transparent text-gray-400 border-transparent hover:bg-gray-800 px-6 py-2 rounded-lg text-xs font-bold flex-1 md:flex-none">🛵 جارية</button>
+                <button onclick="setFilter('done')" id="filter-done" class="filter-pill bg-transparent text-gray-400 border-transparent hover:bg-gray-800 px-6 py-2 rounded-lg text-xs font-bold flex-1 md:flex-none">✅ مكتملة</button>
+                <button onclick="setFilter('all')" id="filter-all" class="filter-pill bg-transparent text-gray-400 border-transparent hover:bg-gray-800 px-6 py-2 rounded-lg text-xs font-bold flex-1 md:flex-none">📂 الكل</button>
+            </div>
+
+            <div id="orders-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Orders will be injected here -->
+            </div>
+
+            <div id="delete-all-wrapper" class="hidden mt-12 text-center border-t border-dashed border-gray-800 pt-8">
+                <button onclick="deleteAllCompleted()" class="bg-red-900/10 hover:bg-red-900/30 text-red-500 border border-red-900/50 px-8 py-3 rounded-xl font-bold transition-all hover:scale-105">
+                    <i class="fas fa-trash-alt mr-2"></i> تنظيف الأرشيف المكتمل
+                </button>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products-tab" class="tab-content hidden animate-enter">
             
-            <div class="space-y-4">
-                <input type="hidden" id="p-id">
-                <input type="text" id="p-name" placeholder="اسم المنتج" class="custom-input">
+            <!-- Add Product Form -->
+            <div class="glass-panel p-6 md:p-8 rounded-2xl mb-8 shadow-2xl relative overflow-hidden group">
+                <!-- Border Gradient Animation -->
+                <div class="absolute inset-0 border-2 border-transparent rounded-2xl bg-gradient-to-r from-neonBlue/20 to-neonPink/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+
+                <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-3">
+                        <span id="form-title" class="flex items-center gap-2"><div class="w-8 h-8 rounded bg-neonBlue/20 flex items-center justify-center text-neonBlue"><i class="fas fa-plus"></i></div> منتج جديد</span>
+                    </h2>
+                    <button onclick="resetForm()" id="cancel-edit" class="hidden text-xs bg-red-500/10 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition">إلغاء التعديل ✕</button>
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input type="number" id="p-price" placeholder="السعر" class="custom-input">
-                    <div class="grid grid-cols-2 gap-2">
-                        <select id="p-category" onchange="updateSubCatsDropdown()" class="custom-input text-neonBlue font-bold">
-                            <option value="" disabled selected>الرئيسي</option>
-                        </select>
-                        <select id="p-sub-category" class="custom-input text-gray-400 text-xs">
-                            <option value="" disabled selected>الفرعي</option>
-                        </select>
+                <div class="space-y-5 relative z-10">
+                    <input type="hidden" id="p-id">
+                    
+                    <div>
+                        <label class="text-xs text-gray-500 font-bold mb-1 block mr-1">اسم المنتج</label>
+                        <input type="text" id="p-name" placeholder="مثال: تيشرت أوفر سايز" class="custom-input">
                     </div>
-                </div>
-                
-                <input type="text" id="p-desc" placeholder="وصف المنتج" class="custom-input">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs text-gray-500 font-bold mb-1 block mr-1">السعر (ج.م)</label>
+                            <input type="number" id="p-price" placeholder="00" class="custom-input">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-xs text-neonBlue font-bold mb-1 block mr-1">القسم الرئيسي</label>
+                                <select id="p-category" onchange="updateSubCatsDropdown()" class="custom-input text-neonBlue font-bold h-[48px]">
+                                    <option value="" disabled selected>اختر...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 font-bold mb-1 block mr-1">القسم الفرعي</label>
+                                <select id="p-sub-category" class="custom-input text-gray-300 text-xs h-[48px]">
+                                    <option value="" disabled selected>الفرعي</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs text-gray-500 font-bold mb-1 block mr-1">الوصف</label>
+                        <textarea id="p-desc" placeholder="وصف خامة وتفاصيل المنتج..." class="custom-input h-24 resize-none"></textarea>
+                    </div>
 
-                <div class="bg-[#111] p-4 rounded-xl border border-gray-800">
-                    <label class="text-xs text-neonPink font-bold block mb-2">رابط صورة الغلاف:</label>
-                    <input type="text" id="p-cover" placeholder="https://..." class="custom-input mb-3 text-left font-mono text-neonBlue" dir="ltr">
-                    <label class="text-xs text-gray-400 font-bold block mb-2">روابط إضافية:</label>
-                    <textarea id="p-gallery" placeholder="Link1, Link2" class="custom-input h-20 text-left font-mono" dir="ltr"></textarea>
-                </div>
+                    <div class="bg-[#0f0f0f] p-4 rounded-xl border border-dashed border-gray-700">
+                        <label class="text-xs text-neonPink font-bold block mb-2 flex items-center gap-2"><i class="fas fa-image"></i> رابط صورة الغلاف:</label>
+                        <input type="text" id="p-cover" placeholder="https://..." class="custom-input mb-4 text-left font-mono text-neonBlue text-sm" dir="ltr">
+                        
+                        <label class="text-xs text-gray-400 font-bold block mb-2">صور إضافية (فواصل ,):</label>
+                        <textarea id="p-gallery" placeholder="Link1, Link2, Link3" class="custom-input h-16 text-left font-mono text-xs text-gray-400" dir="ltr"></textarea>
+                    </div>
 
-                <div class="flex gap-2">
-                    <div class="w-1/2"><label class="text-xs text-gray-400 mb-1 block">المقاسات:</label><input type="text" id="p-sizes" value="S, M, L, XL, XXL" class="custom-input text-center text-neonPink"></div>
-                    <div class="w-1/2"><label class="text-xs text-gray-400 mb-1 block">الألوان:</label><input type="text" id="p-colors" value="أحمر, أسود, أبيض" class="custom-input text-center text-neonBlue"></div>
-                </div>
+                    <div class="flex gap-3">
+                        <div class="w-1/2">
+                            <label class="text-xs text-gray-400 mb-1 block mr-1">المقاسات</label>
+                            <input type="text" id="p-sizes" value="S, M, L, XL, XXL" class="custom-input text-center text-neonPink font-mono text-sm">
+                        </div>
+                        <div class="w-1/2">
+                            <label class="text-xs text-gray-400 mb-1 block mr-1">الألوان</label>
+                            <input type="text" id="p-colors" value="أحمر, أسود, أبيض" class="custom-input text-center text-neonBlue font-mono text-sm">
+                        </div>
+                    </div>
 
-                <button onclick="saveProduct()" id="save-btn" class="solid-btn">نشر المنتج 🚀</button>
+                    <button onclick="saveProduct()" id="save-btn" class="solid-btn mt-2 text-lg shadow-[0_4px_20px_rgba(188,19,254,0.4)]">
+                        <i class="fas fa-rocket mr-2"></i> نشر المنتج
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-800 pb-2">📦 المنتجات (<span id="p-count">0</span>)</h3>
-        <div id="products-list" class="space-y-3"><p class="text-center text-gray-500">جاري التحميل...</p></div>
-    </section>
-
-    <section id="cats-tab" class="tab-content hidden max-w-2xl mx-auto">
-        <div class="flex justify-center gap-4 mb-6">
-            <button onclick="showCatSection('main')" id="btn-cat-main" class="px-4 py-2 rounded-lg bg-neonBlue text-black font-bold text-xs shadow-[0_0_10px_cyan]">الأقسام الرئيسية</button>
-            <button onclick="showCatSection('sub')" id="btn-cat-sub" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-400 font-bold text-xs border border-gray-700">الأقسام الفرعية</button>
-        </div>
-
-        <div id="cat-main-section" class="cat-sub-section">
-            <div class="bg-black p-6 rounded-2xl border border-gray-800 mb-6 shadow-lg">
-                <h2 class="text-lg font-bold mb-3 text-white flex justify-between">
-                    <span>إضافة قسم رئيسي</span>
-                    <button onclick="resetCatForm()" id="cat-cancel" class="hidden text-xs text-red-500">إلغاء</button>
-                </h2>
-                <input type="hidden" id="cat-id">
-                <div class="flex gap-2 mb-3">
-                    <input type="text" id="cat-name" placeholder="الاسم (مثال: رجالي)" class="custom-input">
-                    <input type="text" id="cat-icon" placeholder="fa-tag" class="custom-input w-1/3 text-left" dir="ltr">
-                </div>
-                <button onclick="saveCategory()" id="cat-btn" class="solid-btn bg-neonGreen hover:bg-green-600 text-black">حفظ القسم ✅</button>
+            <!-- Products List -->
+            <div class="flex items-center justify-between mb-4 px-2">
+                <h3 class="text-xl font-bold text-white">📦 المخزون الحالي</h3>
+                <span class="bg-gray-800 text-white px-3 py-1 rounded-full text-xs font-bold border border-gray-700" id="p-count">0</span>
             </div>
-            <div id="cats-list" class="space-y-2"></div>
-        </div>
+            
+            <div id="products-list" class="grid grid-cols-1 gap-3">
+                <p class="text-center text-gray-500 py-10">جاري تحميل البيانات...</p>
+            </div>
+        </section>
 
-        <div id="cat-sub-section" class="cat-sub-section hidden">
-            <div class="bg-black p-6 rounded-2xl border border-gray-800 mb-6 shadow-lg">
-                <h2 class="text-lg font-bold mb-3 text-white flex justify-between">
-                    <span>إضافة قسم فرعي</span>
-                    <button onclick="resetSubForm()" id="sub-cancel" class="hidden text-xs text-red-500">إلغاء</button>
-                </h2>
-                <input type="hidden" id="sub-id">
-                <div class="space-y-3 mb-3">
-                    <select id="sub-parent" class="custom-input text-neonBlue font-bold">
-                        <option value="" disabled selected>تابع لأي قسم رئيسي؟</option>
+        <!-- Categories Section -->
+        <section id="cats-tab" class="tab-content hidden animate-enter max-w-3xl mx-auto">
+            <div class="flex justify-center gap-4 mb-8">
+                <button onclick="showCatSection('main')" id="btn-cat-main" class="px-6 py-3 rounded-xl bg-neonBlue text-black font-bold text-sm shadow-[0_0_15px_rgba(0,243,255,0.3)] transition transform hover:scale-105">الأقسام الرئيسية</button>
+                <button onclick="showCatSection('sub')" id="btn-cat-sub" class="px-6 py-3 rounded-xl bg-[#1a1a1a] text-gray-400 font-bold text-sm border border-gray-800 hover:bg-gray-800 transition">الأقسام الفرعية</button>
+            </div>
+
+            <div id="cat-main-section" class="cat-sub-section animate-enter">
+                <div class="glass-panel p-6 rounded-2xl mb-6 shadow-lg border border-neonGreen/20">
+                    <h2 class="text-lg font-bold mb-4 text-white flex justify-between items-center">
+                        <span class="text-neonGreen"><i class="fas fa-layer-group mr-2"></i> إضافة قسم رئيسي</span>
+                        <button onclick="resetCatForm()" id="cat-cancel" class="hidden text-xs text-red-400 hover:text-red-300">إلغاء</button>
+                    </h2>
+                    <input type="hidden" id="cat-id">
+                    <div class="flex gap-3 mb-4">
+                        <input type="text" id="cat-name" placeholder="الاسم (مثال: رجالي)" class="custom-input flex-2">
+                        <input type="text" id="cat-icon" placeholder="Icon (fa-tag)" class="custom-input w-1/3 text-left font-mono text-sm" dir="ltr">
+                    </div>
+                    <button onclick="saveCategory()" id="cat-btn" class="solid-btn !bg-none !bg-neonGreen hover:!bg-green-500 text-black shadow-[0_0_15px_rgba(57,255,20,0.3)]">حفظ القسم ✅</button>
+                </div>
+                <div id="cats-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            </div>
+
+            <div id="cat-sub-section" class="cat-sub-section hidden animate-enter">
+                <div class="glass-panel p-6 rounded-2xl mb-6 shadow-lg border border-purple-500/20">
+                    <h2 class="text-lg font-bold mb-4 text-white flex justify-between items-center">
+                        <span class="text-purple-400"><i class="fas fa-code-branch mr-2"></i> إضافة قسم فرعي</span>
+                        <button onclick="resetSubForm()" id="sub-cancel" class="hidden text-xs text-red-400 hover:text-red-300">إلغاء</button>
+                    </h2>
+                    <input type="hidden" id="sub-id">
+                    <div class="space-y-4 mb-4">
+                        <select id="sub-parent" class="custom-input text-neonBlue font-bold">
+                            <option value="" disabled selected>تابع لأي قسم رئيسي؟</option>
                         </select>
-                    <input type="text" id="sub-name" placeholder="الاسم الفرعي (مثال: تيشرتات)" class="custom-input">
+                        <input type="text" id="sub-name" placeholder="الاسم الفرعي (مثال: هوديز)" class="custom-input">
+                    </div>
+                    <button onclick="saveSubCategory()" id="sub-btn" class="solid-btn bg-purple-600 hover:bg-purple-500">حفظ الفرعي ➕</button>
                 </div>
-                <button onclick="saveSubCategory()" id="sub-btn" class="solid-btn bg-purple-600 hover:bg-purple-500">حفظ الفرعي ➕</button>
+                <div id="sub-cats-list" class="grid grid-cols-1 gap-2"></div>
             </div>
-            <div id="sub-cats-list" class="space-y-2"></div>
-        </div>
-    </section>
+        </section>
+
+    </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, writeBatch, getDocs, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // نفس إعدادات Firebase
         const firebaseConfig = { apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg", authDomain: "akrabloko.firebaseapp.com", projectId: "akrabloko", storageBucket: "akrabloko.firebasestorage.app", messagingSenderId: "846428093028", appId: "1:846428093028:web:29f31599b90125c2673d71" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Auth
-        onAuthStateChanged(auth, u => document.getElementById('login-screen').classList.toggle('hidden', !!u));
+        // Auth Logic
+        onAuthStateChanged(auth, u => {
+            const screen = document.getElementById('login-screen');
+            if(u) {
+                screen.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => screen.classList.add('hidden'), 300);
+            } else {
+                screen.classList.remove('hidden');
+                setTimeout(() => screen.classList.remove('opacity-0', 'pointer-events-none'), 10);
+            }
+        });
+
         window.login = () => {
-            const btn = document.getElementById('login-btn'); btn.innerHTML = '...'; btn.disabled = true;
+            const btn = document.getElementById('login-btn'); 
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> جاري التحقق...'; 
+            btn.disabled = true;
+            
             signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value)
-            .then(() => btn.innerHTML = 'تم ✅').catch(e => { document.getElementById('login-msg').innerText = 'خطأ!'; document.getElementById('login-msg').classList.remove('hidden'); btn.innerHTML = 'دخول 🚀'; btn.disabled = false; });
+            .then(() => {
+                btn.innerHTML = 'تم بنجاح ✅';
+                setTimeout(() => { btn.innerHTML = originalContent; btn.disabled = false; }, 1000);
+            })
+            .catch(e => { 
+                const msg = document.getElementById('login-msg');
+                msg.innerText = '⚠️ بيانات الدخول غير صحيحة'; 
+                msg.classList.remove('hidden'); 
+                btn.innerHTML = originalContent; 
+                btn.disabled = false;
+                setTimeout(() => msg.classList.add('hidden'), 3000);
+            });
         };
-        window.logout = () => confirm("خروج؟") && signOut(auth);
+        window.logout = () => confirm("هل تريد تسجيل الخروج؟") && signOut(auth);
 
         // Global Data
         let mainCats = [], subCats = [];
@@ -252,29 +484,51 @@
             if(subParentSel) subParentSel.innerHTML = '<option value="" disabled selected>تابع للقسم...</option>' + mainCats.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
         }
 
-        // Tabs
+        // Tabs Logic
         window.switchTab = (id) => {
-            document.querySelectorAll('.tab-content').forEach(e => e.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active-tab'));
-            document.getElementById(id).classList.remove('hidden');
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(e => {
+                e.classList.add('hidden');
+                e.classList.remove('animate-enter');
+            });
+            
+            // Remove active classes
+            document.querySelectorAll('.tab-btn').forEach(e => {
+                e.classList.remove('active-tab');
+                e.querySelector('i').classList.remove('text-neonPink');
+            });
+
+            // Show selected tab with animation
+            const selectedSection = document.getElementById(id);
+            selectedSection.classList.remove('hidden');
+            setTimeout(() => selectedSection.classList.add('animate-enter'), 10);
+
+            // Set active btn state
             if(id.includes('orders')) document.getElementById('btn-orders').classList.add('active-tab');
             if(id.includes('products')) document.getElementById('btn-products').classList.add('active-tab');
             if(id.includes('cats')) document.getElementById('btn-cats').classList.add('active-tab');
         };
 
         window.showCatSection = (type) => {
-            document.querySelectorAll('.cat-sub-section').forEach(e => e.classList.add('hidden'));
-            document.getElementById(`cat-${type}-section`).classList.remove('hidden');
+            document.querySelectorAll('.cat-sub-section').forEach(e => {
+                e.classList.add('hidden');
+                e.classList.remove('animate-enter');
+            });
+            
+            const target = document.getElementById(`cat-${type}-section`);
+            target.classList.remove('hidden');
+            setTimeout(() => target.classList.add('animate-enter'), 10);
+
             if(type === 'main') {
-                document.getElementById('btn-cat-main').className = "px-4 py-2 rounded-lg bg-neonBlue text-black font-bold text-xs shadow-[0_0_10px_cyan]";
-                document.getElementById('btn-cat-sub').className = "px-4 py-2 rounded-lg bg-gray-800 text-gray-400 font-bold text-xs border border-gray-700";
+                document.getElementById('btn-cat-main').className = "px-6 py-3 rounded-xl bg-neonBlue text-black font-bold text-sm shadow-[0_0_15px_rgba(0,243,255,0.3)] transition transform scale-105";
+                document.getElementById('btn-cat-sub').className = "px-6 py-3 rounded-xl bg-[#1a1a1a] text-gray-400 font-bold text-sm border border-gray-800 hover:bg-gray-800 transition";
             } else {
-                document.getElementById('btn-cat-sub').className = "px-4 py-2 rounded-lg bg-purple-600 text-white font-bold text-xs shadow-[0_0_10px_purple]";
-                document.getElementById('btn-cat-main').className = "px-4 py-2 rounded-lg bg-gray-800 text-gray-400 font-bold text-xs border border-gray-700";
+                document.getElementById('btn-cat-sub').className = "px-6 py-3 rounded-xl bg-purple-600 text-white font-bold text-sm shadow-[0_0_15px_purple] transition transform scale-105";
+                document.getElementById('btn-cat-main').className = "px-6 py-3 rounded-xl bg-[#1a1a1a] text-gray-400 font-bold text-sm border border-gray-800 hover:bg-gray-800 transition";
             }
         };
 
-        // --- Orders Logic (Cards Restored) ---
+        // --- Orders Logic (Enhanced Cards) ---
         let allOrders = [], currentFilter = 'new';
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
             allOrders = [];
@@ -289,39 +543,48 @@
         window.setFilter = (f) => { currentFilter = f; renderOrders(); };
 
         function renderOrders() {
-            document.querySelectorAll('.sub-tab-btn').forEach(b => { b.classList.remove('active-sub-tab', 'bg-neonBlue', 'text-black'); b.classList.add('bg-gray-800', 'text-white'); });
+            document.querySelectorAll('.filter-pill').forEach(b => { 
+                b.className = 'filter-pill bg-transparent text-gray-400 border-transparent hover:bg-gray-800 px-6 py-2 rounded-lg text-xs font-bold flex-1 md:flex-none';
+            });
             const btn = document.getElementById(`filter-${currentFilter}`);
-            if(btn) { btn.classList.remove('bg-gray-800', 'text-white'); btn.classList.add('active-sub-tab', 'bg-neonBlue', 'text-black'); }
+            if(btn) { 
+                btn.className = 'filter-pill active-sub-tab px-6 py-2 rounded-lg text-xs font-bold flex-1 md:flex-none transform scale-105';
+            }
 
             const container = document.getElementById('orders-container');
             const filtered = currentFilter === 'all' ? allOrders : allOrders.filter(o => o.status === currentFilter);
             document.getElementById('delete-all-wrapper').classList.toggle('hidden', currentFilter !== 'done' || filtered.length === 0);
 
-            if(filtered.length === 0) return container.innerHTML = '<div class="text-center text-gray-500 py-10">لا توجد طلبات.</div>';
+            if(filtered.length === 0) return container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-10 flex flex-col items-center justify-center gap-4"><i class="fas fa-box-open text-4xl opacity-20"></i><p>لا توجد طلبات في هذه القائمة.</p></div>';
 
             container.innerHTML = filtered.map(o => `
-                <div class="order-card p-4 rounded-lg relative mb-3">
-                    <div class="flex justify-between items-start border-b border-gray-800 pb-2 mb-2 pl-3">
-                        <div>
-                            <h3 class="font-bold text-white text-lg">#${o.orderNum}</h3>
-                            <p class="text-gray-400 text-sm font-bold">${o.customer.name}</p>
-                            <a href="tel:${o.customer.phone}" class="text-neonBlue font-mono text-lg block mt-1 hover:underline">${o.customer.phone}</a>
+                <div class="order-card p-5 rounded-2xl relative flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex justify-between items-start border-b border-gray-800 pb-3 mb-3 pl-2">
+                            <div>
+                                <h3 class="font-black text-white text-xl tracking-wider">#${o.orderNum}</h3>
+                                <p class="text-gray-300 text-sm font-bold flex items-center gap-2 mt-1"><i class="fas fa-user text-neonPink text-xs"></i> ${o.customer.name}</p>
+                            </div>
+                            <div class="text-left">
+                                <p class="font-black text-2xl text-neonBlue" style="text-shadow: 0 0 10px rgba(0,243,255,0.3)">${o.total} <span class="text-xs text-gray-400">ج.م</span></p>
+                                <span class="text-[10px] text-gray-500 font-mono">${o.date || ''}</span>
+                            </div>
                         </div>
-                        <div class="text-left">
-                            <p class="font-black text-xl text-white">${o.total} <span class="text-xs text-gray-500">ج.م</span></p>
-                            <span class="text-[10px] text-gray-500">${o.date || ''}</span>
-                        </div>
-                    </div>
-                    <div class="text-gray-300 text-sm mb-2">
-                        <p class="mb-2 text-xs"><i class="fas fa-map-marker-alt text-gray-500 ml-1"></i> ${o.customer.address}</p>
-                        <div class="bg-[#222] p-2 rounded border border-gray-700 space-y-2">
+                        
+                        <a href="tel:${o.customer.phone}" class="bg-[#1a1a1a] hover:bg-[#222] border border-gray-800 text-gray-300 font-mono text-center block py-2 rounded-lg mb-3 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-phone-alt text-xs"></i> ${o.customer.phone}
+                        </a>
+
+                        <p class="mb-3 text-xs text-gray-400 bg-[#111] p-2 rounded border border-gray-800/50"><i class="fas fa-map-marker-alt text-red-500 ml-1"></i> ${o.customer.address}</p>
+                        
+                        <div class="space-y-2 mb-4">
                             ${(o.items || []).map(i => `
-                                <div class="flex items-center gap-3 border-b border-gray-800 pb-2 last:border-0 last:pb-0">
-                                    <img src="${i.image || 'https://placehold.co/50'}" class="w-12 h-12 rounded object-cover border border-gray-600 bg-gray-800">
+                                <div class="flex items-center gap-3 bg-[#0a0a0a] p-2 rounded border border-gray-800">
+                                    <img src="${i.image || 'https://placehold.co/50'}" class="w-10 h-10 rounded object-cover border border-gray-700">
                                     <div class="flex-1">
                                         <div class="flex justify-between">
-                                            <span class="text-xs font-bold text-white">${i.name}</span>
-                                            <span class="text-neonPink font-bold text-xs">x${i.qty}</span>
+                                            <span class="text-xs font-bold text-white line-clamp-1">${i.name}</span>
+                                            <span class="text-neonPink font-bold text-xs bg-neonPink/10 px-2 py-0.5 rounded">x${i.qty}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -334,12 +597,13 @@
         }
 
         function getActionBtn(o) {
-            if(o.status === 'new') return `<button onclick="setStatus('${o.id}', 'shipping')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg font-bold">تسليم للطيار 🛵</button>`;
-            if(o.status === 'shipping') return `<button onclick="setStatus('${o.id}', 'done')" class="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded-lg font-bold">تم التحصيل ✅</button>`;
-            return `<div class="text-center text-green-500 font-bold bg-green-900/10 py-2 rounded-lg border border-green-900/50">مكتمل</div>`;
+            if(o.status === 'new') return `<button onclick="setStatus('${o.id}', 'shipping')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition-all hover:scale-[1.02]"><i class="fas fa-shipping-fast ml-2"></i> تسليم للطيار</button>`;
+            if(o.status === 'shipping') return `<button onclick="setStatus('${o.id}', 'done')" class="w-full bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-900/20 transition-all hover:scale-[1.02]"><i class="fas fa-check-circle ml-2"></i> تم التحصيل</button>`;
+            return `<div class="text-center text-green-500 font-bold bg-green-900/10 py-3 rounded-xl border border-green-900/50 cursor-default"><i class="fas fa-check-double"></i> مكتمل</div>`;
         }
-        window.setStatus = async (id, s) => { if(confirm("تغيير الحالة؟")) await updateDoc(doc(db, "orders", id), {status: s}); };
-        window.deleteAllCompleted = async () => { if(confirm("حذف كل المكتمل؟")) { const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach(d => b.delete(d.ref)); await b.commit(); alert("تم!"); } };
+        
+        window.setStatus = async (id, s) => { if(confirm("تأكيد تغيير الحالة؟")) await updateDoc(doc(db, "orders", id), {status: s}); };
+        window.deleteAllCompleted = async () => { if(confirm("هل أنت متأكد من حذف جميع الطلبات المكتملة؟ لا يمكن التراجع.")) { const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach(d => b.delete(d.ref)); await b.commit(); alert("تم تنظيف الأرشيف!"); } };
 
         // --- Products Logic ---
         let allProducts = [];
@@ -368,38 +632,139 @@
             const cat = document.getElementById('p-category').value;
             const subCat = document.getElementById('p-sub-category').value || '';
             const cover = document.getElementById('p-cover').value;
-            if (!name || !price || !cat || !cover) return alert("❌ بيانات ناقصة");
-            const data = { name, price, category: cat, subCategory: subCat, desc: document.getElementById('p-desc').value, coverImage: cover, extraImages: document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s), sizes: document.getElementById('p-sizes').value.split(',').map(s=>s.trim()), colors: document.getElementById('p-colors').value.split(',').map(s=>s.trim()), timestamp: serverTimestamp() };
-            const btn = document.getElementById('save-btn'); btn.innerHTML = '⏳...'; btn.disabled = true;
-            try { if(id) { await updateDoc(doc(db, "products", id), data); alert("✅ تم التعديل!"); resetForm(); } else { await addDoc(collection(db, "products"), data); alert("✅ تم النشر!"); resetForm(); } } catch (e) { alert("⛔ خطأ"); } finally { btn.innerHTML = 'نشر المنتج 🚀'; btn.disabled = false; }
+            
+            if (!name || !price || !cat || !cover) return alert("❌ بيانات ناقصة! يرجى ملء الحقول الأساسية.");
+            
+            const data = { 
+                name, price, category: cat, subCategory: subCat, 
+                desc: document.getElementById('p-desc').value, 
+                coverImage: cover, 
+                extraImages: document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s), 
+                sizes: document.getElementById('p-sizes').value.split(',').map(s=>s.trim()), 
+                colors: document.getElementById('p-colors').value.split(',').map(s=>s.trim()), 
+                timestamp: serverTimestamp() 
+            };
+            
+            const btn = document.getElementById('save-btn'); 
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ جاري الحفظ...'; 
+            btn.disabled = true;
+            
+            try { 
+                if(id) { await updateDoc(doc(db, "products", id), data); alert("✅ تم تعديل المنتج بنجاح!"); resetForm(); } 
+                else { await addDoc(collection(db, "products"), data); alert("✅ تم نشر المنتج بنجاح!"); resetForm(); } 
+            } catch (e) { alert("⛔ حدث خطأ أثناء الحفظ"); console.error(e); } 
+            finally { btn.innerHTML = originalText; btn.disabled = false; }
         };
+        
         window.editProduct = (id) => {
             const p = allProducts.find(x => x.id === id); if(!p) return;
-            document.getElementById('p-id').value = id; document.getElementById('p-name').value = p.name; document.getElementById('p-price').value = p.price; document.getElementById('p-category').value = p.category; 
-            updateSubCatsDropdown(); setTimeout(() => { if(p.subCategory) document.getElementById('p-sub-category').value = p.subCategory; }, 100);
-            document.getElementById('p-desc').value = p.desc; document.getElementById('p-cover').value = p.coverImage; document.getElementById('p-gallery').value = (p.extraImages || []).join(', '); document.getElementById('p-sizes').value = (p.sizes || []).join(', '); document.getElementById('p-colors').value = (p.colors || []).join(', ');
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-yellow-500"></i> تعديل المنتج'; document.getElementById('save-btn').innerHTML = 'تحديث البيانات 🔄'; document.getElementById('save-btn').classList.replace('bg-neonPink', 'bg-yellow-600'); document.getElementById('cancel-edit').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('p-id').value = id; 
+            document.getElementById('p-name').value = p.name; 
+            document.getElementById('p-price').value = p.price; 
+            document.getElementById('p-category').value = p.category; 
+            updateSubCatsDropdown(); 
+            setTimeout(() => { if(p.subCategory) document.getElementById('p-sub-category').value = p.subCategory; }, 100);
+            document.getElementById('p-desc').value = p.desc; 
+            document.getElementById('p-cover').value = p.coverImage; 
+            document.getElementById('p-gallery').value = (p.extraImages || []).join(', '); 
+            document.getElementById('p-sizes').value = (p.sizes || []).join(', '); 
+            document.getElementById('p-colors').value = (p.colors || []).join(', ');
+            
+            document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-yellow-500 mr-2"></i> وضع التعديل'; 
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> تحديث البيانات'; 
+            saveBtn.classList.add('!bg-yellow-600'); // Using tailwind important modifier
+            saveBtn.style.background = '#ca8a04'; // Fallback
+            
+            document.getElementById('cancel-edit').classList.remove('hidden'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
+        
         window.resetForm = () => {
-            document.getElementById('p-id').value = ''; document.getElementById('p-name').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-desc').value = ''; document.getElementById('p-cover').value = ''; document.getElementById('p-gallery').value = '';
-            document.getElementById('form-title').innerHTML = '<i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد'; document.getElementById('save-btn').innerHTML = 'نشر المنتج 🚀'; document.getElementById('save-btn').classList.replace('bg-yellow-600', 'bg-neonPink'); document.getElementById('cancel-edit').classList.add('hidden');
+            document.getElementById('p-id').value = ''; 
+            document.querySelectorAll('input:not([type=hidden]), textarea').forEach(i => {
+                if(i.id === 'p-sizes') i.value = 'S, M, L, XL, XXL';
+                else if(i.id === 'p-colors') i.value = 'أحمر, أسود, أبيض';
+                else i.value = '';
+            });
+            document.getElementById('p-category').selectedIndex = 0;
+            document.getElementById('p-sub-category').innerHTML = '<option value="" disabled selected>الفرعي</option>';
+            
+            document.getElementById('form-title').innerHTML = '<div class="w-8 h-8 rounded bg-neonBlue/20 flex items-center justify-center text-neonBlue"><i class="fas fa-plus"></i></div> منتج جديد'; 
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.innerHTML = '<i class="fas fa-rocket mr-2"></i> نشر المنتج'; 
+            saveBtn.classList.remove('!bg-yellow-600');
+            saveBtn.style.background = ''; // Reset inline style
+            
+            document.getElementById('cancel-edit').classList.add('hidden');
         };
-        window.deleteProduct = async (id) => { if(confirm("مسح؟")) await deleteDoc(doc(db, "products", id)); };
-        function renderProductsList() { document.getElementById('products-list').innerHTML = allProducts.map(p => `<div class="flex gap-3 bg-gray-900 border border-gray-800 p-3 rounded-lg items-center"><img src="${p.coverImage}" class="w-16 h-16 rounded-lg object-cover bg-gray-800"><div class="flex-1"><h4 class="font-bold text-white line-clamp-1">${p.name}</h4><div class="flex gap-2 text-xs text-gray-400 mt-1"><span class="text-neonBlue font-bold">${p.price} ج.م</span><span class="bg-gray-800 px-2 rounded">${p.category} > ${p.subCategory||'-'}</span></div></div><div class="flex flex-col gap-2"><button onclick="editProduct('${p.id}')" class="text-blue-400"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${p.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></div></div>`).join(''); document.getElementById('p-count').innerText=allProducts.length; }
+        
+        window.deleteProduct = async (id) => { if(confirm("هل أنت متأكد من مسح هذا المنتج؟")) await deleteDoc(doc(db, "products", id)); };
+        
+        function renderProductsList() { 
+            document.getElementById('products-list').innerHTML = allProducts.map(p => `
+                <div class="flex gap-4 bg-[#111] hover:bg-[#161616] border border-gray-800 p-4 rounded-xl items-center transition group">
+                    <img src="${p.coverImage}" class="w-20 h-20 rounded-lg object-cover bg-gray-800 border border-gray-700">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-white text-lg truncate">${p.name}</h4>
+                        <div class="flex flex-wrap gap-2 text-xs text-gray-400 mt-2">
+                            <span class="text-neonBlue font-bold bg-neonBlue/10 px-2 py-1 rounded">${p.price} ج.م</span>
+                            <span class="bg-gray-800 px-2 py-1 rounded border border-gray-700">${p.category} <i class="fas fa-angle-left text-[10px] mx-1"></i> ${p.subCategory||'-'}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded-full bg-blue-900/20 text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded-full bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join(''); 
+            document.getElementById('p-count').innerText=allProducts.length; 
+        }
 
         // --- Categories (Management) ---
-        function renderCatsList() { document.getElementById('cats-list').innerHTML = mainCats.map(c => `<div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg border border-gray-700"><div class="flex items-center gap-3"><i class="fas ${c.icon} text-neonGreen"></i> <span>${c.name}</span></div><div class="flex gap-2"><button onclick="editCat('${c.id}')" class="text-blue-400"><i class="fas fa-edit"></i></button><button onclick="delDoc('categories', '${c.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></div></div>`).join(''); }
-        function renderSubCatsList() { document.getElementById('sub-cats-list').innerHTML = subCats.map(s => { const pName = mainCats.find(m => m.slug === s.parentSlug)?.name || '?'; return `<div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg border border-gray-700"><div class="flex flex-col"><span class="font-bold">${s.name}</span><span class="text-[10px] text-gray-500">تبع: ${pName}</span></div><div class="flex gap-2"><button onclick="editSub('${s.id}')" class="text-blue-400"><i class="fas fa-edit"></i></button><button onclick="delDoc('subCategories', '${s.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></div></div>`; }).join(''); }
+        function renderCatsList() { 
+            document.getElementById('cats-list').innerHTML = mainCats.map(c => `
+                <div class="flex justify-between items-center bg-[#151515] p-4 rounded-xl border border-gray-800 hover:border-neonGreen/30 transition">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
+                            <i class="fas ${c.icon} text-neonGreen"></i>
+                        </div>
+                        <span class="font-bold text-lg">${c.name}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editCat('${c.id}')" class="p-2 text-blue-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                        <button onclick="delDoc('categories', '${c.id}')" class="p-2 text-red-500 hover:text-white"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join(''); 
+        }
+        function renderSubCatsList() { 
+            document.getElementById('sub-cats-list').innerHTML = subCats.map(s => { 
+                const pName = mainCats.find(m => m.slug === s.parentSlug)?.name || '?'; 
+                return `
+                <div class="flex justify-between items-center bg-[#151515] p-4 rounded-xl border border-gray-800 hover:border-purple-500/30 transition">
+                    <div class="flex flex-col">
+                        <span class="font-bold text-lg text-white">${s.name}</span>
+                        <span class="text-xs text-gray-500 font-bold bg-gray-900 px-2 py-0.5 rounded w-fit mt-1 border border-gray-800">تابع لـ: ${pName}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editSub('${s.id}')" class="p-2 text-blue-400 hover:text-white"><i class="fas fa-pen"></i></button>
+                        <button onclick="delDoc('subCategories', '${s.id}')" class="p-2 text-red-500 hover:text-white"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`; 
+            }).join(''); 
+        }
         
         window.saveCategory = async () => { const id=document.getElementById('cat-id').value; const n=document.getElementById('cat-name').value; const i=document.getElementById('cat-icon').value||'fa-tag'; if(n){ const d={name:n, slug:n.replace(/\s/g,'-'), icon:i}; if(id) await updateDoc(doc(db,"categories",id),d); else await addDoc(collection(db,"categories"),d); resetCatForm(); } };
         window.saveSubCategory = async () => { const id=document.getElementById('sub-id').value; const p=document.getElementById('sub-parent').value; const n=document.getElementById('sub-name').value; if(p&&n){ const d={name:n, slug:n, parentSlug:p}; if(id) await updateDoc(doc(db,"subCategories",id),d); else await addDoc(collection(db,"subCategories"),d); resetSubForm(); } };
         
-        window.editCat = (id) => { const c=mainCats.find(x=>x.id===id); document.getElementById('cat-id').value=id; document.getElementById('cat-name').value=c.name; document.getElementById('cat-icon').value=c.icon; document.getElementById('cat-btn').innerText="تحديث 🔄"; document.getElementById('cat-cancel').classList.remove('hidden'); };
-        window.editSub = (id) => { const s=subCats.find(x=>x.id===id); document.getElementById('sub-id').value=id; document.getElementById('sub-name').value=s.name; document.getElementById('sub-parent').value=s.parentSlug; document.getElementById('sub-btn').innerText="تحديث 🔄"; document.getElementById('sub-cancel').classList.remove('hidden'); };
+        window.editCat = (id) => { const c=mainCats.find(x=>x.id===id); document.getElementById('cat-id').value=id; document.getElementById('cat-name').value=c.name; document.getElementById('cat-icon').value=c.icon; document.getElementById('cat-btn').innerText="تحديث البيانات 🔄"; document.getElementById('cat-cancel').classList.remove('hidden'); };
+        window.editSub = (id) => { const s=subCats.find(x=>x.id===id); document.getElementById('sub-id').value=id; document.getElementById('sub-name').value=s.name; document.getElementById('sub-parent').value=s.parentSlug; document.getElementById('sub-btn').innerText="تحديث البيانات 🔄"; document.getElementById('sub-cancel').classList.remove('hidden'); };
         
         window.resetCatForm = () => { document.getElementById('cat-id').value=''; document.getElementById('cat-name').value=''; document.getElementById('cat-icon').value=''; document.getElementById('cat-btn').innerText="حفظ القسم ✅"; document.getElementById('cat-cancel').classList.add('hidden'); };
         window.resetSubForm = () => { document.getElementById('sub-id').value=''; document.getElementById('sub-name').value=''; document.getElementById('sub-parent').value=''; document.getElementById('sub-btn').innerText="حفظ الفرعي ➕"; document.getElementById('sub-cancel').classList.add('hidden'); };
-        window.delDoc = async (col, id) => { if(confirm("مسح؟")) await deleteDoc(doc(db, col, id)); };
+        window.delDoc = async (col, id) => { if(confirm("هل أنت متأكد من الحذف؟")) await deleteDoc(doc(db, col, id)); };
     </script>
 </body>
 </html>
