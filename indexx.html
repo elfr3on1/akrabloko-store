@@ -162,12 +162,9 @@
         </div>
 
         <div class="sticky top-[60px] z-40 bg-[#050505]/95 backdrop-blur-sm py-2 mb-2 -mx-4 px-4 border-b border-white/5">
-            <div class="flex overflow-x-auto gap-2 no-scrollbar pb-1">
-                <button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all">الكل</button>
-                <button onclick="filterProducts('grocery')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all"><i class="fas fa-shopping-basket mr-1"></i> البقالة</button>
-                <button onclick="filterProducts('snacks')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all"><i class="fas fa-cookie-bite mr-1"></i> نقنقة</button>
-                <button onclick="filterProducts('drinks')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all"><i class="fas fa-wine-bottle mr-1"></i> مشروبات</button>
-                <button onclick="filterProducts('mood')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all"><i class="fas fa-smoking mr-1"></i> المزاج</button>
+            <div id="categories-container" class="flex overflow-x-auto gap-2 no-scrollbar pb-1">
+                <button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap">الكل</button>
+                <div class="flex items-center justify-center px-4 text-gray-500 text-xs animate-pulse">جاري تحميل الأقسام...</div>
             </div>
         </div>
 
@@ -323,6 +320,7 @@
 
       // --- Init ---
       window.addEventListener('DOMContentLoaded', () => {
+          fetchCategories(); // تم إضافة دالة جلب الأقسام
           fetchProducts();
           updateCartUI();
           checkAppContext();
@@ -334,6 +332,35 @@
               document.getElementById('customer-address').value = savedData.address || '';
           }
       });
+
+      // --- 1. دالة جلب الأقسام الديناميكية (الجديدة) ---
+      window.fetchCategories = async function() {
+          const container = document.getElementById('categories-container');
+          
+          // نبدأ بزرار "الكل" الثابت عشان التصميم ميبوظش
+          let html = `<button onclick="filterProducts('all')" class="category-btn active px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap">الكل</button>`;
+
+          try {
+              const q = query(collection(db, "categories"), orderBy("name"));
+              const snapshot = await getDocs(q);
+              
+              if (!snapshot.empty) {
+                  snapshot.forEach(doc => {
+                      const c = doc.data();
+                      // استخدام نفس كلاسات التصميم بالظبط للحفاظ على الشكل
+                      html += `<button onclick="filterProducts('${c.slug}')" class="category-btn px-4 py-2 rounded-xl border border-gray-700 bg-gray-800 text-xs font-bold transition-all whitespace-nowrap"><i class="fas ${c.icon} mr-1"></i> ${c.name}</button>`;
+                  });
+              } else {
+                 // لو مفيش أقسام لسه، ممكن نعرض رسالة صغيرة أو نكتفي بزر الكل
+                 html += `<span class="text-xs text-gray-500 px-2 py-2">لا توجد أقسام</span>`;
+              }
+              container.innerHTML = html;
+          } catch(e) {
+              console.error("Error loading categories:", e);
+              // في حالة الخطأ، يظل زر "الكل" موجود
+              container.innerHTML = html; 
+          }
+      };
 
       // --- دالة الجلب الذكية (الموفرة) ---
       window.fetchProducts = async function() {
@@ -407,7 +434,9 @@
       // --- Functions (Global) ---
       window.filterProducts = (cat) => {
           document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-          event.target.classList.add('active');
+          // إضافة كلاس active للزر اللي تم الضغط عليه (سواء كان الكل أو قسم ديناميكي)
+          if(event && event.currentTarget) event.currentTarget.classList.add('active');
+          
           if(cat === 'all') renderProducts(products);
           else renderProducts(products.filter(p => p.category === cat));
       };
@@ -544,7 +573,7 @@
                       const order = doc.data();
                       let statusMsg = order.status === 'new' ? 'جاري التجهيز 👨‍🍳' : 'تم التوصيل ✅';
                       let color = order.status === 'new' ? 'text-yellow-400' : 'text-green-500';
-                      resultDiv.innerHTML = `<div class="text-center"><p class="text-gray-400 text-sm mb-1">حالة الطلب ${order.orderNum}</p><h3 class="text-2xl font-black ${color} mb-2">${statusMsg}</h3></div>`;
+                      resultDiv.innerHTML = `<div class="text-center"><p class="text-gray-400 text-sm mb-1">حالة الطلب ${order.orderNum}</p><h3 class=\"text-2xl font-black ${color} mb-2\">${statusMsg}</h3></div>`;
                   });
               }
           } catch (error) { resultDiv.innerHTML = '<p class="text-red-500 text-xs">خطأ نت</p>'; }
