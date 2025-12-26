@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | Akrabloko Admin</title>
+    <title>لوحة القيادة | Akrabloko Admin</title>
     <link rel="icon" href="images/logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,30 +24,28 @@
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; overflow-x: hidden; }
         
-        /* --- 1. التصميم النيون القديم (Inputs & Cards) --- */
-        
-        /* تصميم الخانات (Edit Text) - اسود ولما تضغط ينور */
-        .neon-input {
-            background-color: #111;
+        /* --- 1. استرجاع تصميم الخانات (Edit Box) الأصلي --- */
+        .custom-input {
+            background-color: #000; /* أسود صريح */
             border: 1px solid #333;
             color: #fff;
             padding: 12px 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             width: 100%;
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease-in-out;
             font-size: 14px;
+            font-weight: 600;
         }
         
-        /* الـ Glow Effect لما تلمس الخانة */
-        .neon-input:focus {
+        /* التوهج عند الكتابة */
+        .custom-input:focus {
             border-color: #bc13fe;
-            box-shadow: 0 0 12px rgba(188, 19, 254, 0.4);
-            background-color: #000;
+            box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
         }
 
-        /* تصميم القوائم المنسدلة */
-        select.neon-input {
+        /* القوائم المنسدلة */
+        select.custom-input {
             cursor: pointer;
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bc13fe' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -56,35 +54,48 @@
             background-size: 1em;
         }
 
-        /* كارت الطلب النيون القديم */
-        .order-card {
-            background-color: #0a0a0a;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-right: 4px solid #bc13fe; /* Default neon accent */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-            transition: transform 0.2s;
+        /* --- 2. استرجاع الأزرار (Buttons) الأصلية --- */
+        .solid-btn {
+            background-color: #bc13fe; /* بنفسجي مسمط */
+            color: white;
+            font-weight: 800;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.1s;
+            box-shadow: 0 4px 0px #8a0cba; /* تأثير زرار ضاغط */
         }
-        .order-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px rgba(188,19,254,0.15);
+        .solid-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #8a0cba;
         }
+        .solid-btn:hover { background-color: #d946ff; }
 
         /* Tabs Styles */
         .active-tab { background-color: #bc13fe; color: white; border-color: #bc13fe; box-shadow: 0 0 15px rgba(188,19,254,0.4); }
         .active-sub-tab { background-color: #00f3ff; color: black; font-weight: bold; box-shadow: 0 0 10px rgba(0,243,255,0.4); }
         
-        #login-screen { backdrop-filter: blur(15px); }
+        /* Login Screen */
+        #login-screen { backdrop-filter: blur(20px); }
+        
+        /* كارت الطلب */
+        .order-card { background: #111; border: 1px solid #333; border-right: 4px solid #bc13fe; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body class="p-4 md:p-8 pb-32">
 
     <div id="login-screen" class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4">
-        <div class="bg-[#111] p-8 rounded-2xl border border-neonPink/50 shadow-[0_0_40px_rgba(188,19,254,0.2)] w-full max-w-sm text-center">
-            <h2 class="text-2xl font-black text-white mb-6">أهلاً يا <span class="text-neonBlue">باشا</span> 👮‍♂️</h2>
+        <div class="bg-black p-8 rounded-2xl border border-gray-800 shadow-[0_0_50px_rgba(188,19,254,0.2)] w-full max-w-sm text-center">
+            <div class="w-20 h-20 rounded-full border-2 border-neonPink flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(188,19,254,0.3)]">
+                <i class="fas fa-fingerprint text-4xl text-neonPink"></i>
+            </div>
+            <div class="bg-blue-900/30 text-blue-400 px-4 py-1 rounded inline-block mb-6 font-bold text-sm border border-blue-800">منطقة الإدارة 🛡️</div>
+            
             <form onsubmit="event.preventDefault(); login();">
-                <input type="email" id="admin-email" autocomplete="username" placeholder="البريد الإلكتروني" class="neon-input mb-3 text-center" required>
-                <input type="password" id="admin-pass" autocomplete="current-password" placeholder="كلمة المرور" class="neon-input mb-6 text-center" required>
-                <button type="submit" id="login-btn" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-lg shadow-lg">دخول 🚀</button>
+                <input type="email" id="admin-email" autocomplete="username" placeholder="البريد الإلكتروني" class="custom-input mb-4 text-center" required>
+                <input type="password" id="admin-pass" autocomplete="current-password" placeholder="كلمة المرور" class="custom-input mb-6 text-center" required>
+                <button type="submit" id="login-btn" class="solid-btn"><i class="fas fa-lock-open mr-2"></i> فتح السيستم</button>
             </form>
             <p id="login-msg" class="text-red-500 text-xs mt-4 hidden font-bold"></p>
         </div>
@@ -92,10 +103,10 @@
 
     <header class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-black text-white">لوحة القيادة <span class="text-neonPink">أقربلوكو</span></h1>
-        <button onclick="logout()" class="bg-red-900/20 text-red-500 border border-red-900 px-4 py-2 rounded-lg text-xs font-bold">خروج</button>
+        <button onclick="logout()" class="bg-red-900/20 text-red-500 border border-red-900 px-4 py-2 rounded-lg text-xs font-bold transition hover:bg-red-900 hover:text-white">خروج</button>
     </header>
 
-    <div class="flex justify-center gap-2 mb-6 border-b border-gray-800 pb-4 sticky top-0 bg-black/95 z-20 pt-2 backdrop-blur-md">
+    <div class="flex justify-center gap-2 mb-6 border-b border-gray-800 pb-4 sticky top-0 bg-black/95 z-20 pt-2">
         <button onclick="switchTab('orders-tab')" id="btn-orders" class="tab-btn active-tab px-4 py-2 rounded-lg border border-gray-700 transition text-sm font-bold flex-1">📦 الطلبات</button>
         <button onclick="switchTab('products-tab')" id="btn-products" class="tab-btn px-4 py-2 rounded-lg border border-gray-700 transition text-sm font-bold flex-1">👕 المنتجات</button>
         <button onclick="switchTab('cats-tab')" id="btn-cats" class="tab-btn px-4 py-2 rounded-lg border border-gray-700 transition text-sm font-bold flex-1">🏷️ الأقسام</button>
@@ -115,41 +126,49 @@
     </section>
 
     <section id="products-tab" class="tab-content hidden max-w-3xl mx-auto">
-        <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 mb-8 shadow-lg">
-            <h2 class="text-xl font-bold mb-4 text-white flex justify-between">
-                <span id="form-title"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</span>
-                <button onclick="resetForm()" id="cancel-edit" class="hidden text-xs text-red-400 border border-red-900 px-2 py-1 rounded">إلغاء ❌</button>
+        
+        <div class="bg-black p-6 rounded-2xl border border-gray-800 shadow-lg mb-8 relative">
+            <h2 class="text-xl font-bold mb-4 text-white flex justify-between items-center">
+                <span id="form-title" class="flex items-center gap-2"><i class="fas fa-plus-circle text-neonBlue"></i> إضافة منتج جديد</span>
+                <button onclick="resetForm()" id="cancel-edit" class="hidden text-xs text-red-400 border border-red-900 px-3 py-1 rounded hover:bg-red-900/20">إلغاء التعديل ❌</button>
             </h2>
-            <div class="space-y-3">
+            
+            <div class="space-y-4">
                 <input type="hidden" id="p-id">
-                <input type="text" id="p-name" placeholder="اسم المنتج" class="neon-input">
+                <input type="text" id="p-name" placeholder="اسم المنتج" class="custom-input">
                 
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="number" id="p-price" placeholder="السعر" class="neon-input">
-                    <div class="space-y-2">
-                        <select id="p-category" onchange="updateSubCatsDropdown()" class="neon-input text-neonBlue font-bold">
-                            <option value="" disabled selected>القسم الرئيسي</option>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <input type="number" id="p-price" placeholder="السعر" class="custom-input">
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="p-category" onchange="updateSubCatsDropdown()" class="custom-input text-neonBlue font-bold">
+                            <option value="" disabled selected>الرئيسي</option>
                         </select>
-                        <select id="p-sub-category" class="neon-input text-gray-400 text-xs">
-                            <option value="" disabled selected>القسم الفرعي (اختر الرئيسي)</option>
+                        <select id="p-sub-category" class="custom-input text-gray-400 text-xs">
+                            <option value="" disabled selected>الفرعي</option>
                         </select>
                     </div>
                 </div>
                 
-                <input type="text" id="p-desc" placeholder="وصف المنتج" class="neon-input">
-                <div class="bg-black/40 p-4 rounded-lg border border-gray-700">
-                    <input type="text" id="p-cover" placeholder="رابط الغلاف (https://...)" class="neon-input mb-2 text-left font-mono text-xs text-neonBlue" dir="ltr">
-                    <textarea id="p-gallery" placeholder="روابط إضافية (مفصول بفاصلة)" class="neon-input h-16 text-left font-mono text-xs" dir="ltr"></textarea>
+                <input type="text" id="p-desc" placeholder="وصف المنتج" class="custom-input">
+
+                <div class="bg-[#111] p-4 rounded-xl border border-gray-800">
+                    <label class="text-xs text-neonPink font-bold block mb-2">رابط صورة الغلاف:</label>
+                    <input type="text" id="p-cover" placeholder="https://..." class="custom-input mb-3 text-left font-mono text-neonBlue" dir="ltr">
+                    <label class="text-xs text-gray-400 font-bold block mb-2">روابط إضافية:</label>
+                    <textarea id="p-gallery" placeholder="Link1, Link2" class="custom-input h-20 text-left font-mono" dir="ltr"></textarea>
                 </div>
+
                 <div class="flex gap-2">
-                    <input type="text" id="p-sizes" value="S, M, L, XL" class="neon-input text-center text-neonPink">
-                    <input type="text" id="p-colors" value="أحمر, أسود" class="neon-input text-center text-neonBlue">
+                    <div class="w-1/2"><label class="text-xs text-gray-400 mb-1 block">المقاسات:</label><input type="text" id="p-sizes" value="S, M, L, XL, XXL" class="custom-input text-center text-neonPink"></div>
+                    <div class="w-1/2"><label class="text-xs text-gray-400 mb-1 block">الألوان:</label><input type="text" id="p-colors" value="أحمر, أسود, أبيض" class="custom-input text-center text-neonBlue"></div>
                 </div>
-                <button onclick="saveProduct()" id="save-btn" class="w-full bg-neonPink hover:bg-purple-600 text-white font-bold py-3 rounded-lg shadow-lg">نشر المنتج 🚀</button>
+
+                <button onclick="saveProduct()" id="save-btn" class="solid-btn">نشر المنتج 🚀</button>
             </div>
         </div>
+
         <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-800 pb-2">📦 المنتجات (<span id="p-count">0</span>)</h3>
-        <div id="products-list" class="space-y-3"></div>
+        <div id="products-list" class="space-y-3"><p class="text-center text-gray-500">جاري التحميل...</p></div>
     </section>
 
     <section id="cats-tab" class="tab-content hidden max-w-2xl mx-auto">
@@ -159,35 +178,35 @@
         </div>
 
         <div id="cat-main-section" class="cat-sub-section">
-            <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 mb-6">
+            <div class="bg-black p-6 rounded-2xl border border-gray-800 mb-6 shadow-lg">
                 <h2 class="text-lg font-bold mb-3 text-white flex justify-between">
-                    <span id="cat-title">إضافة قسم رئيسي</span>
+                    <span>إضافة قسم رئيسي</span>
                     <button onclick="resetCatForm()" id="cat-cancel" class="hidden text-xs text-red-500">إلغاء</button>
                 </h2>
                 <input type="hidden" id="cat-id">
                 <div class="flex gap-2 mb-3">
-                    <input type="text" id="cat-name" placeholder="الاسم (مثال: رجالي)" class="neon-input">
-                    <input type="text" id="cat-icon" placeholder="fa-tag" class="neon-input w-1/3 text-left" dir="ltr">
+                    <input type="text" id="cat-name" placeholder="الاسم (مثال: رجالي)" class="custom-input">
+                    <input type="text" id="cat-icon" placeholder="fa-tag" class="custom-input w-1/3 text-left" dir="ltr">
                 </div>
-                <button onclick="saveCategory()" id="cat-btn" class="w-full bg-neonGreen hover:bg-green-500 text-black font-bold py-2 rounded-lg">حفظ القسم ✅</button>
+                <button onclick="saveCategory()" id="cat-btn" class="solid-btn bg-neonGreen hover:bg-green-600 text-black">حفظ القسم ✅</button>
             </div>
             <div id="cats-list" class="space-y-2"></div>
         </div>
 
         <div id="cat-sub-section" class="cat-sub-section hidden">
-            <div class="bg-gray-900/50 p-6 rounded-2xl border border-gray-800 mb-6">
+            <div class="bg-black p-6 rounded-2xl border border-gray-800 mb-6 shadow-lg">
                 <h2 class="text-lg font-bold mb-3 text-white flex justify-between">
-                    <span id="sub-title">إضافة قسم فرعي</span>
+                    <span>إضافة قسم فرعي</span>
                     <button onclick="resetSubForm()" id="sub-cancel" class="hidden text-xs text-red-500">إلغاء</button>
                 </h2>
                 <input type="hidden" id="sub-id">
                 <div class="space-y-3 mb-3">
-                    <select id="sub-parent" class="neon-input text-neonBlue font-bold">
+                    <select id="sub-parent" class="custom-input text-neonBlue font-bold">
                         <option value="" disabled selected>تابع لأي قسم رئيسي؟</option>
                         </select>
-                    <input type="text" id="sub-name" placeholder="الاسم الفرعي (مثال: تيشرتات)" class="neon-input">
+                    <input type="text" id="sub-name" placeholder="الاسم الفرعي (مثال: تيشرتات)" class="custom-input">
                 </div>
-                <button onclick="saveSubCategory()" id="sub-btn" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 rounded-lg">حفظ الفرعي ➕</button>
+                <button onclick="saveSubCategory()" id="sub-btn" class="solid-btn bg-purple-600 hover:bg-purple-500">حفظ الفرعي ➕</button>
             </div>
             <div id="sub-cats-list" class="space-y-2"></div>
         </div>
@@ -205,39 +224,35 @@
 
         // Auth
         onAuthStateChanged(auth, u => document.getElementById('login-screen').classList.toggle('hidden', !!u));
-        window.login = () => signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value).catch(e => {document.getElementById('login-msg').innerText='خطأ في الدخول'; document.getElementById('login-msg').classList.remove('hidden')});
+        window.login = () => {
+            const btn = document.getElementById('login-btn'); btn.innerHTML = '...'; btn.disabled = true;
+            signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value)
+            .then(() => btn.innerHTML = 'تم ✅').catch(e => { document.getElementById('login-msg').innerText = 'خطأ!'; document.getElementById('login-msg').classList.remove('hidden'); btn.innerHTML = 'دخول 🚀'; btn.disabled = false; });
+        };
         window.logout = () => confirm("خروج؟") && signOut(auth);
 
         // Global Data
         let mainCats = [], subCats = [];
 
-        // --- Data Fetching (Realtime) ---
+        // Data Fetching
         onSnapshot(query(collection(db, "categories"), orderBy("name")), (snap) => {
-            mainCats = []; 
-            snap.forEach(d => mainCats.push({id: d.id, ...d.data()}));
-            renderCatsList(); 
-            updateDropdowns(); // تحديث القوائم المنسدلة في صفحة المنتج والفرعي
+            mainCats = []; snap.forEach(d => mainCats.push({id: d.id, ...d.data()}));
+            renderCatsList(); updateDropdowns();
         });
-
         onSnapshot(query(collection(db, "subCategories"), orderBy("name")), (snap) => {
-            subCats = []; 
-            snap.forEach(d => subCats.push({id: d.id, ...d.data()}));
+            subCats = []; snap.forEach(d => subCats.push({id: d.id, ...d.data()}));
             renderSubCatsList();
         });
 
         function updateDropdowns() {
-            // تحديث قائمة "القسم الرئيسي" في صفحة المنتجات
             const pSel = document.getElementById('p-category');
-            // تحديث قائمة "تابع لأي قسم" في صفحة الأقسام الفرعية
             const subParentSel = document.getElementById('sub-parent');
-            
             let opts = '<option value="" disabled selected>اختر القسم</option>' + mainCats.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
-            
             if(pSel) pSel.innerHTML = opts;
             if(subParentSel) subParentSel.innerHTML = '<option value="" disabled selected>تابع للقسم...</option>' + mainCats.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
         }
 
-        // --- Tabs Logic ---
+        // Tabs
         window.switchTab = (id) => {
             document.querySelectorAll('.tab-content').forEach(e => e.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active-tab'));
@@ -250,7 +265,6 @@
         window.showCatSection = (type) => {
             document.querySelectorAll('.cat-sub-section').forEach(e => e.classList.add('hidden'));
             document.getElementById(`cat-${type}-section`).classList.remove('hidden');
-            // تبديل ستايل الأزرار
             if(type === 'main') {
                 document.getElementById('btn-cat-main').className = "px-4 py-2 rounded-lg bg-neonBlue text-black font-bold text-xs shadow-[0_0_10px_cyan]";
                 document.getElementById('btn-cat-sub').className = "px-4 py-2 rounded-lg bg-gray-800 text-gray-400 font-bold text-xs border border-gray-700";
@@ -260,7 +274,7 @@
             }
         };
 
-        // --- Orders Logic (Restored Design) ---
+        // --- Orders Logic (Cards Restored) ---
         let allOrders = [], currentFilter = 'new';
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
             allOrders = [];
@@ -300,7 +314,7 @@
                     </div>
                     <div class="text-gray-300 text-sm mb-2">
                         <p class="mb-2 text-xs"><i class="fas fa-map-marker-alt text-gray-500 ml-1"></i> ${o.customer.address}</p>
-                        <div class="bg-black/40 p-2 rounded border border-gray-700 space-y-2">
+                        <div class="bg-[#222] p-2 rounded border border-gray-700 space-y-2">
                             ${(o.items || []).map(i => `
                                 <div class="flex items-center gap-3 border-b border-gray-800 pb-2 last:border-0 last:pb-0">
                                     <img src="${i.image || 'https://placehold.co/50'}" class="w-12 h-12 rounded object-cover border border-gray-600 bg-gray-800">
@@ -327,18 +341,15 @@
         window.setStatus = async (id, s) => { if(confirm("تغيير الحالة؟")) await updateDoc(doc(db, "orders", id), {status: s}); };
         window.deleteAllCompleted = async () => { if(confirm("حذف كل المكتمل؟")) { const q = query(collection(db, "orders"), where("status", "==", "done")); const s = await getDocs(q); const b = writeBatch(db); s.forEach(d => b.delete(d.ref)); await b.commit(); alert("تم!"); } };
 
-        // --- Products Logic (Fixed Sub-Category Dropdown) ---
+        // --- Products Logic ---
         let allProducts = [];
         onSnapshot(query(collection(db, "products"), orderBy("timestamp", "desc")), (snap) => {
             allProducts = []; snap.forEach(doc => allProducts.push({id: doc.id, ...doc.data()})); renderProductsList();
         });
 
-        // ⭐ الدالة المسؤولة عن فلترة الأقسام الفرعية في صفحة المنتج ⭐
         window.updateSubCatsDropdown = () => {
             const parentSlug = document.getElementById('p-category').value;
             const subSel = document.getElementById('p-sub-category');
-            
-            // فلترة: هاتلي بس الأقسام الفرعية اللي الـ parentSlug بتاعها هو القسم اللي اخترته
             const relevantSubs = subCats.filter(s => s.parentSlug === parentSlug);
             
             if(relevantSubs.length > 0) {
@@ -360,9 +371,8 @@
             if (!name || !price || !cat || !cover) return alert("❌ بيانات ناقصة");
             const data = { name, price, category: cat, subCategory: subCat, desc: document.getElementById('p-desc').value, coverImage: cover, extraImages: document.getElementById('p-gallery').value.split(',').map(s=>s.trim()).filter(s=>s), sizes: document.getElementById('p-sizes').value.split(',').map(s=>s.trim()), colors: document.getElementById('p-colors').value.split(',').map(s=>s.trim()), timestamp: serverTimestamp() };
             const btn = document.getElementById('save-btn'); btn.innerHTML = '⏳...'; btn.disabled = true;
-            try { if(id) { await updateDoc(doc(db, "products", id), data); alert("✅ تم التعديل!"); resetForm(); } else { await addDoc(collection(db, "products"), data); alert("✅ تم النشر!"); resetForm(); } } catch (e) { alert("⛔ خطأ"); } finally { btn.innerHTML = 'نشر 🚀'; btn.disabled = false; }
+            try { if(id) { await updateDoc(doc(db, "products", id), data); alert("✅ تم التعديل!"); resetForm(); } else { await addDoc(collection(db, "products"), data); alert("✅ تم النشر!"); resetForm(); } } catch (e) { alert("⛔ خطأ"); } finally { btn.innerHTML = 'نشر المنتج 🚀'; btn.disabled = false; }
         };
-        
         window.editProduct = (id) => {
             const p = allProducts.find(x => x.id === id); if(!p) return;
             document.getElementById('p-id').value = id; document.getElementById('p-name').value = p.name; document.getElementById('p-price').value = p.price; document.getElementById('p-category').value = p.category; 
@@ -377,66 +387,18 @@
         window.deleteProduct = async (id) => { if(confirm("مسح؟")) await deleteDoc(doc(db, "products", id)); };
         function renderProductsList() { document.getElementById('products-list').innerHTML = allProducts.map(p => `<div class="flex gap-3 bg-gray-900 border border-gray-800 p-3 rounded-lg items-center"><img src="${p.coverImage}" class="w-16 h-16 rounded-lg object-cover bg-gray-800"><div class="flex-1"><h4 class="font-bold text-white line-clamp-1">${p.name}</h4><div class="flex gap-2 text-xs text-gray-400 mt-1"><span class="text-neonBlue font-bold">${p.price} ج.م</span><span class="bg-gray-800 px-2 rounded">${p.category} > ${p.subCategory||'-'}</span></div></div><div class="flex flex-col gap-2"><button onclick="editProduct('${p.id}')" class="text-blue-400"><i class="fas fa-edit"></i></button><button onclick="deleteProduct('${p.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></div></div>`).join(''); document.getElementById('p-count').innerText=allProducts.length; }
 
-        // --- Logic: Main Categories CRUD (Edit Added) ---
-        function renderCatsList() {
-            document.getElementById('cats-list').innerHTML = mainCats.map(c => `
-                <div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg border border-gray-700">
-                    <div class="flex items-center gap-3"><i class="fas ${c.icon} text-neonGreen"></i> <span>${c.name}</span></div>
-                    <div class="flex gap-2">
-                        <button onclick="editCat('${c.id}')" class="text-blue-400"><i class="fas fa-edit"></i></button>
-                        <button onclick="delDoc('categories', '${c.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`).join('');
-        }
-        window.saveCategory = async () => {
-            const id = document.getElementById('cat-id').value;
-            const name = document.getElementById('cat-name').value;
-            const icon = document.getElementById('cat-icon').value || 'fa-tag';
-            if(!name) return;
-            const data = { name, slug: name.replace(/\s/g,'-'), icon };
-            if(id) await updateDoc(doc(db, "categories", id), data);
-            else await addDoc(collection(db, "categories"), data);
-            resetCatForm();
-        };
-        window.editCat = (id) => {
-            const c = mainCats.find(x => x.id === id);
-            document.getElementById('cat-id').value = id; document.getElementById('cat-name').value = c.name; document.getElementById('cat-icon').value = c.icon;
-            document.getElementById('cat-btn').innerText = "تحديث 🔄"; document.getElementById('cat-cancel').classList.remove('hidden');
-        };
-        window.resetCatForm = () => {
-            document.getElementById('cat-id').value=''; document.getElementById('cat-name').value=''; document.getElementById('cat-icon').value='';
-            document.getElementById('cat-btn').innerText = "حفظ القسم ✅"; document.getElementById('cat-cancel').classList.add('hidden');
-        };
-
-        // --- Logic: Sub Categories CRUD (Edit Added) ---
-        function renderSubCatsList() {
-            document.getElementById('sub-cats-list').innerHTML = subCats.map(s => {
-                const pName = mainCats.find(m => m.slug === s.parentSlug)?.name || '?';
-                return `<div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg border border-gray-700">
-                    <div class="flex flex-col"><span class="font-bold">${s.name}</span><span class="text-[10px] text-gray-500">تبع: ${pName}</span></div>
-                    <div class="flex gap-2"><button onclick="editSub('${s.id}')" class="text-blue-400"><i class="fas fa-edit"></i></button><button onclick="delDoc('subCategories', '${s.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></div>
-                </div>`;
-            }).join('');
-        }
-        window.saveSubCategory = async () => {
-            const id = document.getElementById('sub-id').value;
-            const parent = document.getElementById('sub-parent').value;
-            const name = document.getElementById('sub-name').value;
-            if(!name || !parent) return alert("اختار الرئيسي واكتب الاسم");
-            const data = { name, slug: name, parentSlug: parent };
-            if(id) await updateDoc(doc(db, "subCategories", id), data);
-            else await addDoc(collection(db, "subCategories"), data);
-            resetSubForm();
-        };
-        window.editSub = (id) => {
-            const s = subCats.find(x => x.id === id);
-            document.getElementById('sub-id').value = id; document.getElementById('sub-name').value = s.name; document.getElementById('sub-parent').value = s.parentSlug;
-            document.getElementById('sub-btn').innerText = "تحديث 🔄"; document.getElementById('sub-cancel').classList.remove('hidden');
-        };
-        window.resetSubForm = () => {
-            document.getElementById('sub-id').value=''; document.getElementById('sub-name').value=''; document.getElementById('sub-parent').value='';
-            document.getElementById('sub-btn').innerText = "حفظ الفرعي ➕"; document.getElementById('sub-cancel').classList.add('hidden');
-        };
+        // --- Categories (Management) ---
+        function renderCatsList() { document.getElementById('cats-list').innerHTML = mainCats.map(c => `<div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg border border-gray-700"><div class="flex items-center gap-3"><i class="fas ${c.icon} text-neonGreen"></i> <span>${c.name}</span></div><div class="flex gap-2"><button onclick="editCat('${c.id}')" class="text-blue-400"><i class="fas fa-edit"></i></button><button onclick="delDoc('categories', '${c.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></div></div>`).join(''); }
+        function renderSubCatsList() { document.getElementById('sub-cats-list').innerHTML = subCats.map(s => { const pName = mainCats.find(m => m.slug === s.parentSlug)?.name || '?'; return `<div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg border border-gray-700"><div class="flex flex-col"><span class="font-bold">${s.name}</span><span class="text-[10px] text-gray-500">تبع: ${pName}</span></div><div class="flex gap-2"><button onclick="editSub('${s.id}')" class="text-blue-400"><i class="fas fa-edit"></i></button><button onclick="delDoc('subCategories', '${s.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></div></div>`; }).join(''); }
+        
+        window.saveCategory = async () => { const id=document.getElementById('cat-id').value; const n=document.getElementById('cat-name').value; const i=document.getElementById('cat-icon').value||'fa-tag'; if(n){ const d={name:n, slug:n.replace(/\s/g,'-'), icon:i}; if(id) await updateDoc(doc(db,"categories",id),d); else await addDoc(collection(db,"categories"),d); resetCatForm(); } };
+        window.saveSubCategory = async () => { const id=document.getElementById('sub-id').value; const p=document.getElementById('sub-parent').value; const n=document.getElementById('sub-name').value; if(p&&n){ const d={name:n, slug:n, parentSlug:p}; if(id) await updateDoc(doc(db,"subCategories",id),d); else await addDoc(collection(db,"subCategories"),d); resetSubForm(); } };
+        
+        window.editCat = (id) => { const c=mainCats.find(x=>x.id===id); document.getElementById('cat-id').value=id; document.getElementById('cat-name').value=c.name; document.getElementById('cat-icon').value=c.icon; document.getElementById('cat-btn').innerText="تحديث 🔄"; document.getElementById('cat-cancel').classList.remove('hidden'); };
+        window.editSub = (id) => { const s=subCats.find(x=>x.id===id); document.getElementById('sub-id').value=id; document.getElementById('sub-name').value=s.name; document.getElementById('sub-parent').value=s.parentSlug; document.getElementById('sub-btn').innerText="تحديث 🔄"; document.getElementById('sub-cancel').classList.remove('hidden'); };
+        
+        window.resetCatForm = () => { document.getElementById('cat-id').value=''; document.getElementById('cat-name').value=''; document.getElementById('cat-icon').value=''; document.getElementById('cat-btn').innerText="حفظ القسم ✅"; document.getElementById('cat-cancel').classList.add('hidden'); };
+        window.resetSubForm = () => { document.getElementById('sub-id').value=''; document.getElementById('sub-name').value=''; document.getElementById('sub-parent').value=''; document.getElementById('sub-btn').innerText="حفظ الفرعي ➕"; document.getElementById('sub-cancel').classList.add('hidden'); };
         window.delDoc = async (col, id) => { if(confirm("مسح؟")) await deleteDoc(doc(db, col, id)); };
     </script>
 </body>
