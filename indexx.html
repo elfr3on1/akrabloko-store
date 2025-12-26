@@ -152,7 +152,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Try offline persistence
         try { enableIndexedDbPersistence(db).catch(err => console.log('Persistence error:', err.code)); } catch(e){}
 
         let products=[], cart=JSON.parse(localStorage.getItem('akrabloko_cart'))||[], selectedProduct=null, selectedSize=null, selectedColor=null;
@@ -253,7 +252,7 @@
         window.openCheckoutModal = () => { if(cart.length === 0) return alert('السلة فارغة!'); toggleCart(); document.getElementById('checkout-modal').classList.remove('hidden'); };
         window.closeCheckoutModal = () => document.getElementById('checkout-modal').classList.add('hidden');
         
-        // --- Order Sending (Sanitized) ---
+        // --- Order Sending (Safe Mode) ---
         window.submitOrder = async () => {
             const name = document.getElementById('customer-name').value;
             const phone = document.getElementById('customer-phone').value;
@@ -268,6 +267,7 @@
                 const safeItems = cart.map(i => ({ name: i.name, qty: i.qty, price: i.price, cartItemId: i.cartItemId }));
                 const orderNum = Math.floor(100000 + Math.random() * 900000);
                 
+                // Saving with consistent customer structure
                 await addDoc(collection(db, "orders"), {
                     orderNum, 
                     customer: { name, phone, address }, 
