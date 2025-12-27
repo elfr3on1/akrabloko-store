@@ -1,13 +1,15 @@
-const CACHE_NAME = 'akrabloko-v2'; // قمنا بتغيير الرقم لتحديث الكاش
+const CACHE_NAME = 'akrabloko-v3'; // تحديث الإصدار لتنشيط التغييرات
 const FILES_TO_CACHE = [
-    './', 
-    // يمكنك إضافة مسار اللوجو هنا لضمان ظهوره أوفلاين
-    // './images/logo.png', 
+    './',
+    './index.html',
+    './admin.html',
+    'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
-// 1. التثبيت (Install)
+// 1. التثبيت
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); // تفعيل التحديث فوراً
+    self.skipWaiting(); 
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(FILES_TO_CACHE);
@@ -15,14 +17,14 @@ self.addEventListener('install', (event) => {
     );
 });
 
-// 2. التفعيل وتنظيف القديم (Activate)
+// 2. التفعيل وتنظيف القديم
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cache) => {
                     if (cache !== CACHE_NAME) {
-                        return caches.delete(cache); // مسح الكاش القديم
+                        return caches.delete(cache);
                     }
                 })
             );
@@ -30,15 +32,26 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// 3. التشغيل (Fetch) - استراتيجية الشبكة أولاً (Network First)
+// 3. التشغيل (Fetch) - النسخة المحسنة والمصلحة
 self.addEventListener('fetch', (event) => {
-    // نتجاهل طلبات الإضافات الخارجية
-    if (!event.request.url.startsWith('http')) return;
+    // حل المشكلة الأساسية: تجاهل أي طلب ليس من نوع GET (مثل طلبات Firebase POST)
+    if (event.request.method !== 'GET') return;
+
+    // تجاهل روابط الـ Chrome Extensions والـ Firebase Auth/Firestore لضمان عدم حدوث تعارض
+    if (event.request.url.includes('firestore.googleapis.com') || 
+        event.request.url.includes('identitytoolkit.googleapis.com') ||
+        !event.request.url.startsWith('http')) {
+        return;
+    }
 
     event.respondWith(
         fetch(event.request)
             .then((response) => {
-                // لو فيه نت: انسخ البيانات للكاش واعرضها
+                // التأكد من أن الرد صالح قبل محاولة تخزينه
+                if (!response || response.status !== 200 || response.type !== 'basic') {
+                    return response;
+                }
+
                 const responseClone = response.clone();
                 caches.open(CACHE_NAME).then((cache) => {
                     cache.put(event.request, responseClone);
@@ -46,10 +59,9 @@ self.addEventListener('fetch', (event) => {
                 return response;
             })
             .catch(() => {
-                // لو النت قاطع: هات من الكاش
+                // في حالة عدم وجود إنترنت، ابحث في الكاش
                 return caches.match(event.request).then((response) => {
                     if (response) return response;
-                    // لو الصفحة مش في الكاش، رجعه للصفحة الرئيسية
                     if (event.request.mode === 'navigate') {
                         return caches.match('./');
                     }
