@@ -1,11 +1,13 @@
 {
-  "name": "أقربلوكو ماركت",
+  "name": "أقربلوكو ستور | Akrabloko Store",
   "short_name": "Akrabloko",
-  "start_url": "./index.html",
+  "description": "وجهتك الأولى لأحدث صيحات الموضة الشبابية. تسوق الآن أروع الهوديز والتيشرتات.",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#bc13fe",
   "orientation": "portrait",
+  "categories": ["shopping", "fashion", "lifestyle"],
   "icons": [
     {
       "src": "images/logo.png",
