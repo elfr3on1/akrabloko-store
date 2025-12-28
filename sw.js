@@ -1,71 +1,30 @@
-const CACHE_NAME = 'akrabloko-v3'; // تحديث الإصدار لتنشيط التغييرات
-const FILES_TO_CACHE = [
-    './',
-    './index.html',
-    './admin.html',
-    'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
-];
+const CACHE_NAME = 'akrabloko-final-v1'; // غيرنا الاسم تماماً لإجبار المتصفح على التحديث
 
-// 1. التثبيت
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); 
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(FILES_TO_CACHE);
-        })
-    );
+    self.skipWaiting(); // إجبار النسخة الجديدة على العمل فوراً
 });
 
-// 2. التفعيل وتنظيف القديم
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cache) => {
-                    if (cache !== CACHE_NAME) {
-                        return caches.delete(cache);
-                    }
+                    return caches.delete(cache); // مسح كل الكاش القديم فور تفعيل الكود الجديد
                 })
             );
-        })
+        }).then(() => self.clients.claim()) // السيطرة على المتصفح فوراً
     );
 });
 
-// 3. التشغيل (Fetch) - النسخة المحسنة والمصلحة
 self.addEventListener('fetch', (event) => {
-    // حل المشكلة الأساسية: تجاهل أي طلب ليس من نوع GET (مثل طلبات Firebase POST)
-    if (event.request.method !== 'GET') return;
-
-    // تجاهل روابط الـ Chrome Extensions والـ Firebase Auth/Firestore لضمان عدم حدوث تعارض
-    if (event.request.url.includes('firestore.googleapis.com') || 
-        event.request.url.includes('identitytoolkit.googleapis.com') ||
-        !event.request.url.startsWith('http')) {
+    // تجاهل طلبات Firebase والطلبات التي ليست GET لضمان السرعة
+    if (event.request.method !== 'GET' || 
+        event.request.url.includes('firestore.googleapis.com') ||
+        event.request.url.includes('identitytoolkit.googleapis.com')) {
         return;
     }
 
     event.respondWith(
-        fetch(event.request)
-            .then((response) => {
-                // التأكد من أن الرد صالح قبل محاولة تخزينه
-                if (!response || response.status !== 200 || response.type !== 'basic') {
-                    return response;
-                }
-
-                const responseClone = response.clone();
-                caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(event.request, responseClone);
-                });
-                return response;
-            })
-            .catch(() => {
-                // في حالة عدم وجود إنترنت، ابحث في الكاش
-                return caches.match(event.request).then((response) => {
-                    if (response) return response;
-                    if (event.request.mode === 'navigate') {
-                        return caches.match('./');
-                    }
-                });
-            })
+        fetch(event.request).catch(() => caches.match(event.request))
     );
 });
