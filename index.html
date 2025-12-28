@@ -460,7 +460,7 @@
         // --- Categories Logic ---
         window.fetchCategories = async function() {
             const cachedCats = localStorage.getItem('akrabloko_cats');
-            if (cachedCats && (Date.now() - localStorage.getItem('akrabloko_cats_time') < 3600000)) { renderCats(JSON.parse(cachedCats)); return; }
+            if (cachedCats && (Date.now() - localStorage.getItem('akrabloko_cats_time') < 1800000)) { renderCats(JSON.parse(cachedCats)); return; }
             try {
                 const q = query(collection(db, "categories"), orderBy("name"));
                 const snapshot = await getDocs(q);
