@@ -418,16 +418,28 @@
 
     </main>
 
-    <script type="module">
+   // 1. استيراد المكتبات مع الإضافات الجديدة (Persistence)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, writeBatch, getDocs, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, writeBatch, getDocs, where, enableMultiTabIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // نفس إعدادات Firebase
         const firebaseConfig = { apiKey: "AIzaSyCUgMCQPD3LqQHhiJqGUykCvi4GkqIxBDg", authDomain: "akrabloko.firebaseapp.com", projectId: "akrabloko", storageBucket: "akrabloko.firebasestorage.app", messagingSenderId: "846428093028", appId: "1:846428093028:web:29f31599b90125c2673d71" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
+        // 2. تفعيل الكاش المتعدد (لحل مشكلة البطء في الكمبيوتر)
+        try {
+            enableMultiTabIndexedDbPersistence(db).catch((err) => {
+                if (err.code == 'failed-precondition') console.log('يجب إغلاق التبويبات الأخرى لتفعيل الكاش');
+                else if (err.code == 'unimplemented') console.log('المتصفح لا يدعم هذه الخاصية');
+            });
+        } catch(e) { console.log(e); }
+
+        // 3. تفعيل حفظ تسجيل الدخول (لحل مشكلة الخروج التلقائي)
+        setPersistence(auth, browserLocalPersistence)
+            .then(() => console.log("تم حفظ جلسة الدخول بنجاح"))
+            .catch((error) => console.error("خطأ في حفظ الجلسة", error));
 
         // Auth Logic
         onAuthStateChanged(auth, u => {
