@@ -722,7 +722,18 @@
             }
         });
     
-   
+// الكود ده بيتحط جوة الـ DOMContentLoaded event
+const downloadSection = document.getElementById('download-section');
+
+// هنا بنتأكد لو المستخدم مش فاتح من التطبيق بتاعنا
+// ملحوظة: لازم تكون مبرمج التطبيق إنه يبعت كلمة "AkrablokoApp" في الـ User Agent
+if (!navigator.userAgent.includes("AkrablokoApp")) {
+    if (downloadSection) {
+        // لو هو مش في التطبيق (يعني فاتح متصفح)، أظهر الزرار
+        downloadSection.style.display = 'flex';
+    }
+}
+        
     </script>
 </body>
 
