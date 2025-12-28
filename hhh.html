@@ -202,6 +202,15 @@
                 <p class="text-gray-400 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">
                     أشيك البراندات بجودة عالمية.. اطلب دلوقتي وقيس في بيتك والدفع عند الاستلام.
                 </p>
+
+<div id="download-section" style="display: none;" class="mt-5 justify-center">
+    <a href="Akrabloko.apk" download="Akrabloko.apk" class="bg-neonGreen/20 hover:bg-neonGreen/40 text-neonGreen font-bold px-6 py-3 rounded-2xl border border-neonGreen/50 shadow-[0_0_15px_rgba(57,255,20,0.2)] flex items-center gap-3 transition-all transform active:scale-95 group">
+        <i class="fab fa-android text-2xl group-hover:scale-110 transition"></i>
+        <div class="text-right">
+            <p class="text-[9px] uppercase tracking-widest opacity-70 leading-none mb-1">Download App</p>
+            <p class="text-sm leading-none">تحميل تطبيق الأندرويد</p>
+        </div>
+                
             </div>
         </div>
     </header>
@@ -709,6 +718,11 @@
                     .catch(() => console.log('SW Failed'));
             }
         });
+    
+    window.checkAppContext = () => {
+          const downloadSection = document.getElementById('download-section');
+          if (!navigator.userAgent.includes("AkrablokoApp")) { if (downloadSection) downloadSection.style.display = 'flex'; }
+    
     </script>
 </body>
 
