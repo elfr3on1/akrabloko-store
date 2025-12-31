@@ -32,7 +32,8 @@ export default async function handler(req, res) {
   <link rel="canonical" href="https://your-domain.com/product/${id}">
   <meta property="og:title" content="${p.title}">
   <meta property="og:description" content="${p.description}">
-  <meta property="og:image" content="${p.image}">
+  <meta property="og:image" content="${p.image || 'https://akrabloko.vercel.app/images/default-product.jpg'}">
+
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
