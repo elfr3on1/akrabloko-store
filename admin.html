@@ -714,9 +714,19 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded-full bg-blue-900/20 text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded-full bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash"></i></button>
-                    </div>
+    
+    <button onclick="copySmartLink('${p.id}')" class="w-8 h-8 rounded-full bg-green-900/20 text-green-400 flex items-center justify-center hover:bg-green-600 hover:text-white transition" title="نسخ الرابط">
+        <i class="fas fa-share-alt"></i>
+    </button>
+
+    <button onclick="editProduct('${p.id}')" class="w-8 h-8 rounded-full bg-blue-900/20 text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition">
+        <i class="fas fa-edit"></i>
+    </button>
+
+    <button onclick="deleteProduct('${p.id}')" class="w-8 h-8 rounded-full bg-red-900/20 text-red-500 flex items-center justify-center hover:bg-red-600 hover:text-white transition">
+        <i class="fas fa-trash"></i>
+    </button>
+</div>
                 </div>
             `).join(''); 
             document.getElementById('p-count').innerText=allProducts.length; 
@@ -765,6 +775,20 @@
         window.resetCatForm = () => { document.getElementById('cat-id').value=''; document.getElementById('cat-name').value=''; document.getElementById('cat-icon').value=''; document.getElementById('cat-btn').innerText="حفظ القسم ✅"; document.getElementById('cat-cancel').classList.add('hidden'); };
         window.resetSubForm = () => { document.getElementById('sub-id').value=''; document.getElementById('sub-name').value=''; document.getElementById('sub-parent').value=''; document.getElementById('sub-btn').innerText="حفظ الفرعي ➕"; document.getElementById('sub-cancel').classList.add('hidden'); };
         window.delDoc = async (col, id) => { if(confirm("هل أنت متأكد من الحذف؟")) await deleteDoc(doc(db, col, id)); };
+    
+    // --- كود نسخ رابط المنتج (فيسبوك وواتساب) ---
+window.copySmartLink = (id) => {
+    // الكود ده بيعمل الرابط بالشكل الجديد: yoursite.com/product/123
+    const smartLink = `${window.location.origin}/product/${id}`;
+    
+    navigator.clipboard.writeText(smartLink).then(() => {
+        alert("✅ تم نسخ رابط المنتج (جاهز للنشر)!");
+    }).catch(err => {
+        // لو النسخ التلقائي فشل، طلع رسالة فيها الرابط
+        prompt("انسخ الرابط يدوياً:", smartLink);
+    });
+};
+    
     </script>
 </body>
 </html>
