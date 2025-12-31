@@ -47,14 +47,19 @@
 
 <script>
     function goBack() {
-        // إذا كان المستخدم قادماً من داخل الموقع، نستخدم العودة للخلف
-        if (document.referrer.includes(window.location.host)) {
-            history.back();
-        } else {
-            // إذا جاء من رابط خارجي (واتساب مثلاً)، نوجهه للرئيسية
-            window.location.href = 'index.html';
-        }
+    // 1. التحقق هل يوجد مصدر (Referrer) وهل هذا المصدر هو موقعنا الحالي؟
+    // استخدام hostname أدق من host للتعامل مع البورتات المختلفة
+    const isInternal = document.referrer && document.referrer.includes(window.location.hostname);
+
+    if (isInternal) {
+        // إذا كان الزائر قادماً من داخل الموقع، نرجعه للصفحة السابقة
+        history.back();
+    } else {
+        // في جميع الحالات الأخرى (واتساب، فيسبوك، رابط مباشر، أو المتصفح منع معرفة المصدر)
+        // نوجهه فوراً للصفحة الرئيسية
+        window.location.href = 'index.html';
     }
+}
 </script>
 
     <div id="loading" class="text-center mt-40 text-gray-500 animate-pulse">
