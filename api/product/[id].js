@@ -13,11 +13,11 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 export default async function handler(req, res) {
-  const { id } = req.query;
+  const id = req.query.id;
 
   const doc = await db.collection("products").doc(id).get();
   if (!doc.exists) {
-    return res.status(404).send("Not Found");
+    return res.status(404).send("Not found");
   }
 
   const p = doc.data();
@@ -29,29 +29,16 @@ export default async function handler(req, res) {
 <head>
   <title>${p.title}</title>
   <meta name="description" content="${p.description}">
-  <link rel="canonical" href="https://your-domain.com/product/${id}">
+  <link rel="canonical" href="https://akrab loko.vercel.app/product/${id}">
+  <meta property="og:type" content="product">
   <meta property="og:title" content="${p.title}">
   <meta property="og:description" content="${p.description}">
-  <meta property="og:image" content="${p.image || 'https://akrabloko.vercel.app/images/default-product.jpg'}">
-
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": "${p.title}",
-      "image": "${p.image}",
-      "description": "${p.description}",
-      "offers": {
-        "@type": "Offer",
-        "price": "${p.price}",
-        "priceCurrency": "EGP"
-      }
-    }
-  </script>
+  <meta property="og:image" content="${p.image}">
 </head>
 <body>
-  <div id="app"></div>
-  <script src="/details.js"></script>
+<script>
+  location.href = "/details.html?id=${id}";
+</script>
 </body>
 </html>
 `);
