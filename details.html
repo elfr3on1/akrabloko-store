@@ -313,24 +313,6 @@
             
             setTimeout(() => { window.location.href = 'index.html'; }, 400); 
         };
-
-// ربط الدالة بالنافذة مباشرة لتكون مرئية لزر HTML
-window.goBack = function() {
-    // 1. هل يوجد "مصدر" للزيارة (Referrer)؟ وهل هو نفس موقعنا؟
-    const hasReferrer = document.referrer !== "";
-    const isFromMySite = document.referrer.includes(window.location.hostname);
-    
-    // ملاحظة: window.location.hostname يكون فارغاً إذا كنت تفتح الملف محلياً (File)
-    // لذلك نضيف شرطاً إضافياً لضمان العمل
-    
-    if (hasReferrer && isFromMySite && window.location.hostname !== "") {
-        // الحالة الأولى: الزائر يتصفح داخل الموقع -> نعود للخلف للحفاظ على السكرول
-        history.back();
-    } else {
-        // الحالة الثانية: الزائر قادم من واتساب، فيسبوك، أو رابط مباشر -> نوجهه للرئيسية
-        window.location.href = 'index.html';
-    }
-};
         
     </script>
 </body>
