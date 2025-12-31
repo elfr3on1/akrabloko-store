@@ -524,7 +524,7 @@
 
     // هنا التعديل: تحويل الكارت لرابط يذهب لصفحة details.html مع رقم المنتج
     grid.innerHTML = items.map((p, index) => `
-        <a href="details.html?id=${p.id}" style="animation-delay: ${index * 50}ms" class="product-card block rounded-2xl p-2 cursor-pointer relative group animate-slide-up opacity-0">
+        <a href="/product/${p.id}" style="animation-delay: ${index * 50}ms" class="product-card block rounded-2xl p-2 cursor-pointer relative group animate-slide-up opacity-0">
             <div class="w-full aspect-[4/5] rounded-xl bg-[#111] mb-3 overflow-hidden relative">
                 <img src="${p.coverImage || 'https://placehold.co/400?text=No+Image'}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                 <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg text-[10px] font-bold text-white border border-white/10">${p.subCategory || 'جديد'}</div>
