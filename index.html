@@ -504,7 +504,7 @@
 
         window.fetchProducts = async function() {
             const cachedData = localStorage.getItem('akrabloko_products');
-            if (cachedData && (Date.now() - localStorage.getItem('akrabloko_time') < 3600000)) { products = JSON.parse(cachedData); renderProducts(products); return; }
+            if (cachedData && (Date.now() - localStorage.getItem('akrabloko_time') < 1800000)) { products = JSON.parse(cachedData); renderProducts(products); return; }
             try {
                 const q = query(collection(db, "products"), orderBy("category"));
                 const snapshot = await getDocs(q);
