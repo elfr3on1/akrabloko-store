@@ -152,47 +152,6 @@
 
                     // --- بداية كود تحسين جوجل (SEO) ---
 
-// 1. تغيير عنوان الصفحة في المتصفح باسم المنتج
-document.title = `${p.name} | Akrabloko Store`;
-
-// 2. إضافة وصف للصفحة عشان يظهر تحت الرابط في جوجل
-let metaDesc = document.querySelector('meta[name="description"]');
-if (!metaDesc) {
-    metaDesc = document.createElement('meta');
-    metaDesc.name = "description";
-    document.head.appendChild(metaDesc);
-}
-metaDesc.content = `اشتري ${p.name} بسعر ${p.price} جنيه. ${p.desc ? p.desc.substring(0, 100) : ''}... تسوق الآن من أقربلوكو.`;
-
-// 3. إضافة بيانات (Schema) عشان السعر والصورة يظهروا في جوجل
-const schemaId = 'product-schema';
-let scriptSchema = document.getElementById(schemaId);
-if (scriptSchema) scriptSchema.remove(); // مسح القديم لو موجود
-
-const schemaData = {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    "name": p.name,
-    "image": [p.coverImage],
-    "description": p.desc,
-    "sku": p.id,
-    "offers": {
-        "@type": "Offer",
-        "url": window.location.href,
-        "priceCurrency": "EGP",
-        "price": p.price,
-        "availability": "https://schema.org/InStock"
-    }
-};
-
-scriptSchema = document.createElement('script');
-scriptSchema.id = schemaId;
-scriptSchema.type = "application/ld+json";
-scriptSchema.textContent = JSON.stringify(schemaData);
-document.head.appendChild(scriptSchema);
-
-// --- نهاية كود تحسين جوجل ---
-
                     
                     // --- [إضافات SEO: تحسين محركات البحث] ---
                     // أ. تغيير عنوان الصفحة
