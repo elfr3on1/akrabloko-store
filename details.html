@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="تسوق أحدث صيحات الموضة من أقربلوكو ستور. جودة عالية وأسعار تنافسية.">
-    <title>تحميل المنتج... | Akrabloko Store</title>
+    <meta name="description" content="تسوق أفضل المنتجات من أقربلوكو ستور">
+    <title>جاري التحميل... | Akrabloko Store</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,15 +26,9 @@
         body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; min-height: 100vh; padding-bottom: 20px; touch-action: manipulation; }
         .glass-panel { background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .option-input:checked + div { background: #bc13fe; color: white; border-color: #bc13fe; box-shadow: 0 0 15px rgba(188, 19, 254, 0.4); transform: scale(1.05); }
-        
-        /* ستايل الصور المصغرة النشطة */
         .thumb-active { border-color: #00f3ff !important; opacity: 1 !important; box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); transform: scale(1.05); }
-        
-        /* مؤشرات التمرير (Dots) */
         .dot { height: 8px; width: 8px; background-color: rgba(255,255,255,0.3); border-radius: 50%; display: inline-block; transition: all 0.3s; }
         .dot.active { background-color: #00f3ff; width: 20px; border-radius: 4px; }
-
-        /* إخفاء شريط التمرير */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -58,22 +52,12 @@
             
             <div class="w-full relative select-none">
                 <div id="swipe-area" class="aspect-[4/5] w-full rounded-3xl overflow-hidden bg-[#111] border border-white/10 relative shadow-2xl mb-4 touch-pan-y">
-                    <img id="main-img" src="" class="w-full h-full object-cover transition duration-500" alt="صورة المنتج">
-                    
-                    <div class="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-black/50 to-transparent flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 md:opacity-0 pointer-events-none">
-                        <i class="fas fa-chevron-left text-white/70"></i>
-                    </div>
-                    <div class="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-black/50 to-transparent flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 md:opacity-0 pointer-events-none">
-                        <i class="fas fa-chevron-right text-white/70"></i>
-                    </div>
-
+                    <img id="main-img" src="" class="w-full h-full object-cover transition duration-500">
                     <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur px-3 py-1 rounded-full text-xs font-bold border border-white/10">
                         <span id="img-counter">1/1</span> <i class="fas fa-images ml-1 text-gray-400"></i>
                     </div>
                 </div>
-                
                 <div id="dots-container" class="flex justify-center gap-2 mb-4 h-3"></div>
-
                 <div id="thumbnails-container" class="flex gap-3 overflow-x-auto pb-2 px-1 justify-center scrollbar-hide"></div>
             </div>
 
@@ -83,7 +67,6 @@
                 <span id="p-cat" class="text-neonBlue text-xs font-bold bg-neonBlue/10 px-3 py-1 rounded-full mb-3 inline-block border border-neonBlue/20"></span>
                 <h1 id="p-name" class="text-2xl md:text-4xl font-black mb-3 leading-tight tracking-wide"></h1>
                 <p id="p-price" class="text-4xl font-black text-white mb-6 flex items-end gap-2"><span class="text-neonPink text-lg font-bold mb-1">ج.م</span></p>
-                
                 <p id="p-desc" class="text-gray-400 text-sm leading-relaxed mb-8 border-b border-white/5 pb-6"></p>
 
                 <div class="mb-6">
@@ -123,19 +106,17 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let currentProduct = null;
-        let selectedSize = null;
-        let selectedColor = null;
-        let qty = 1;
-        let currentImgIndex = 0;
-        let allImages = [];
-        let touchStartX = 0;
-        let touchEndX = 0;
+        let currentProduct = null, selectedSize = null, selectedColor = null, qty = 1;
+        let currentImgIndex = 0, allImages = [], touchStartX = 0, touchEndX = 0;
 
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('id');
-        if (!productId) window.location.href = 'index.html';
-        else loadProduct(productId);
+        
+        if (!productId) {
+            window.location.href = 'index.html';
+        } else {
+            loadProduct(productId);
+        }
 
         async function loadProduct(id) {
             try {
@@ -144,24 +125,29 @@
                     const p = docSnap.data();
                     currentProduct = { id: docSnap.id, ...p };
 
-                    // 1. تعبئة البيانات الأساسية
+                    // 1. عرض البيانات
                     document.getElementById('p-name').innerText = p.name;
                     document.getElementById('p-price').innerHTML = `${p.price} <span class="text-neonPink text-lg font-bold">ج.م</span>`;
                     document.getElementById('p-desc').innerText = p.desc;
                     document.getElementById('p-cat').innerText = p.category || 'عام';
 
-                    // --- بداية كود تحسين جوجل (SEO) ---
-
+                    // ==========================================
+                    // بداية كود SEO (تم دمجه هنا بشكل صحيح ليعمل فوراً)
+                    // ==========================================
                     
-                    // --- [إضافات SEO: تحسين محركات البحث] ---
-                    // أ. تغيير عنوان الصفحة
+                    // أ. العنوان
                     document.title = `${p.name} | Akrabloko Store`;
 
-                    // ب. تحديث وصف الميتا
-                    const metaDesc = document.querySelector('meta[name="description"]');
-                    if (metaDesc) metaDesc.content = `اشتري الآن ${p.name} بسعر ${p.price} جنيه. ${p.desc.substring(0, 100)}...`;
+                    // ب. الميتا تاج (الوصف)
+                    let metaDesc = document.querySelector('meta[name="description"]');
+                    if (!metaDesc) {
+                        metaDesc = document.createElement('meta');
+                        metaDesc.name = "description";
+                        document.head.appendChild(metaDesc);
+                    }
+                    metaDesc.content = `اشتري ${p.name} بسعر ${p.price} جنيه. ${p.desc ? p.desc.substring(0, 100) : ''}...`;
 
-                    // ج. إضافة بيانات Schema.org (ليعرف جوجل أنه منتج)
+                    // ج. السكيما (Schema)
                     const schemaData = {
                         "@context": "https://schema.org/",
                         "@type": "Product",
@@ -181,121 +167,54 @@
                     scriptSchema.type = "application/ld+json";
                     scriptSchema.textContent = JSON.stringify(schemaData);
                     document.head.appendChild(scriptSchema);
-                    // ------------------------------------------
+                    // ==========================================
+                    // نهاية كود SEO
+                    // ==========================================
 
-                    // 2. إعداد الصور والسحب
+                    // 2. الصور
                     allImages = [p.coverImage, ...(p.extraImages || [])];
                     updateGalleryUI();
 
+                    // إعداد اللمس
                     const swipeArea = document.getElementById('swipe-area');
                     swipeArea.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-                    swipeArea.addEventListener('touchend', e => {
-                        touchEndX = e.changedTouches[0].screenX;
-                        handleSwipe();
-                    }, {passive: true});
+                    swipeArea.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, {passive: true});
 
-                    // 3. المقاسات والألوان
+                    // 3. الأزرار
                     const sizes = p.sizes || ['Free Size'];
                     document.getElementById('sizes-container').innerHTML = sizes.map(s => `
-                        <label class="cursor-pointer group">
-                            <input type="radio" name="size" value="${s}" class="option-input sr-only" onchange="setSize('${s}')">
-                            <div class="bg-black border border-gray-700 px-5 py-3 rounded-xl text-sm font-bold text-gray-300 transition group-hover:border-white select-none">${s}</div>
-                        </label>`).join('');
+                        <label class="cursor-pointer group"><input type="radio" name="size" value="${s}" class="option-input sr-only" onchange="setSize('${s}')"><div class="bg-black border border-gray-700 px-5 py-3 rounded-xl text-sm font-bold text-gray-300 transition group-hover:border-white select-none">${s}</div></label>`).join('');
 
                     const colors = p.colors || ['Standard'];
                     document.getElementById('colors-container').innerHTML = colors.map(c => `
-                        <label class="cursor-pointer group">
-                            <input type="radio" name="color" value="${c}" class="option-input sr-only" onchange="setColor('${c}')">
-                            <div class="bg-black border border-gray-700 px-5 py-3 rounded-xl text-sm font-bold text-gray-300 transition group-hover:border-white select-none">${c}</div>
-                        </label>`).join('');
+                        <label class="cursor-pointer group"><input type="radio" name="color" value="${c}" class="option-input sr-only" onchange="setColor('${c}')"><div class="bg-black border border-gray-700 px-5 py-3 rounded-xl text-sm font-bold text-gray-300 transition group-hover:border-white select-none">${c}</div></label>`).join('');
 
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('product-container').classList.remove('hidden');
                 } else {
                     window.location.href = 'index.html';
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+                alert('حدث خطأ في تحميل المنتج');
+            }
         }
 
-        // --- دوال الصور ---
+        // باقي الدوال (الصور - السلة - الاختيار)
         function updateGalleryUI() {
             const mainImg = document.getElementById('main-img');
             const thumbsContainer = document.getElementById('thumbnails-container');
             const dotsContainer = document.getElementById('dots-container');
-            const counter = document.getElementById('img-counter');
-
+            
             mainImg.style.opacity = '0.5';
-            setTimeout(() => {
-                mainImg.src = allImages[currentImgIndex];
-                mainImg.style.opacity = '1';
-            }, 150);
-
-            counter.innerText = `${currentImgIndex + 1}/${allImages.length}`;
+            setTimeout(() => { mainImg.src = allImages[currentImgIndex]; mainImg.style.opacity = '1'; }, 150);
+            
+            document.getElementById('img-counter').innerText = `${currentImgIndex + 1}/${allImages.length}`;
 
             if (allImages.length > 1) {
                 dotsContainer.innerHTML = allImages.map((_, idx) => `<span class="dot ${idx === currentImgIndex ? 'active' : ''}"></span>`).join('');
                 thumbsContainer.innerHTML = allImages.map((imgUrl, idx) => `
-                    <img src="${imgUrl}" onclick="goToImage(${idx})" 
-                    class="w-16 h-20 object-cover rounded-xl border-2 border-transparent cursor-pointer transition ${idx === currentImgIndex ? 'thumb-active' : 'opacity-60 hover:opacity-100'}">
-                `).join('');
-                thumbsContainer.style.display = 'flex';
-                dotsContainer.style.display = 'flex';
+                    <img src="${imgUrl}" onclick="goToImage(${idx})" class="w-16 h-20 object-cover rounded-xl border-2 border-transparent cursor-pointer transition ${idx === currentImgIndex ? 'thumb-active' : 'opacity-60 hover:opacity-100'}">`).join('');
+                thumbsContainer.style.display = 'flex'; dotsContainer.style.display = 'flex';
             } else {
-                thumbsContainer.style.display = 'none';
-                dotsContainer.style.display = 'none';
-            }
-        }
-
-        window.goToImage = (index) => { currentImgIndex = index; updateGalleryUI(); };
-
-        function handleSwipe() {
-            const threshold = 50;
-            if (touchEndX < touchStartX - threshold) {
-                if (currentImgIndex < allImages.length - 1) { currentImgIndex++; updateGalleryUI(); }
-            }
-            if (touchEndX > touchStartX + threshold) {
-                if (currentImgIndex > 0) { currentImgIndex--; updateGalleryUI(); }
-            }
-        }
-
-        // --- دوال التحكم ---
-        window.setSize = (s) => { selectedSize = s; checkBtn(); };
-        window.setColor = (c) => { selectedColor = c; checkBtn(); };
-        window.updateQty = (n) => { qty += n; if(qty < 1) qty = 1; document.getElementById('qty-display').innerText = qty; };
-
-        function checkBtn() {
-            const btn = document.getElementById('add-btn');
-            if (selectedSize && selectedColor) {
-                btn.disabled = false;
-                btn.className = "w-full bg-gradient-to-r from-neonPink to-purple-600 text-white font-bold py-5 rounded-2xl shadow-[0_0_30px_rgba(188,19,254,0.4)] hover:scale-[1.02] transition cursor-pointer flex items-center justify-center gap-3";
-                btn.innerHTML = `<span class="text-lg">إضافة للسلة والعودة</span> <i class="fas fa-cart-plus text-xl"></i>`;
-            }
-        }
-
-        window.addToCartAndReturn = () => {
-            let cart = JSON.parse(localStorage.getItem('akrabloko_cart')) || [];
-            const cartId = `${currentProduct.id}-${selectedSize}-${selectedColor}`;
-            const exists = cart.find(i => i.cartItemId === cartId);
-            
-            if (exists) exists.qty += qty;
-            else cart.push({
-                cartItemId: cartId,
-                id: currentProduct.id,
-                name: `${currentProduct.name} (${selectedSize}|${selectedColor})`,
-                price: currentProduct.price,
-                qty: qty,
-                image: currentProduct.coverImage
-            });
-
-            localStorage.setItem('akrabloko_cart', JSON.stringify(cart));
-            
-            const btn = document.getElementById('add-btn');
-            btn.innerHTML = `<i class="fas fa-check-circle text-2xl animate-bounce"></i> <span class="text-lg">تمت الإضافة!</span>`;
-            btn.classList.remove('from-neonPink', 'to-purple-600');
-            btn.classList.add('bg-green-500');
-            
-            setTimeout(() => { window.location.href = 'index.html'; }, 400); 
-        };
-    </script>
-</body>
-</html>
+                thumbsContainer.style.display = 'none'; dotsContainer.style.display = 'none';
