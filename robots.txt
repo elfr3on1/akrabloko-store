@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+Disallow: /admin.html
+Disallow: /sw.js
+
 Sitemap: https://akrabloko.vercel.app/sitemap.xml
