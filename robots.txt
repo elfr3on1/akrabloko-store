@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://akrabloko.netlify.app/sitemap.xml
+Sitemap: https://akrabloko.vercel.app/sitemap.xml
