@@ -2,22 +2,48 @@
   "name": "أقربلوكو ستور | Akrabloko Store",
   "short_name": "Akrabloko",
   "description": "وجهتك الأولى لأحدث صيحات الموضة الشبابية. تسوق الآن أروع الهوديز والتيشرتات.",
-  "start_url": "./",
+  "start_url": "./index.html",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#bc13fe",
   "orientation": "portrait",
-  "categories": ["shopping", "fashion", "lifestyle"],
+  "dir": "rtl",
+  "lang": "ar",
+  "categories": [
+    "shopping",
+    "fashion",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "images/logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "images/logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "images/banner.jpg",
+      "sizes": "1024x500",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "واجهة المتجر الرئيسية"
+    },
+    {
+      "src": "images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "شعار التطبيق"
     }
   ]
 }
