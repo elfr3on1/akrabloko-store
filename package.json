@@ -1,0 +1,10 @@
+{
+  "name": "akrabloko-store",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'No build step'"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.11.0"
+  }
+}
