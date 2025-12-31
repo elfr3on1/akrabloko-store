@@ -41,9 +41,21 @@
 </head>
 <body>
 
-    <a href="index.html" class="fixed top-4 right-4 z-50 bg-black/60 backdrop-blur-md p-3 rounded-full border border-white/10 hover:bg-neonBlue hover:text-black transition shadow-xl group">
-        <i class="fas fa-arrow-right text-xl group-hover:-translate-x-1 transition-transform"></i>
-    </a>
+    <button onclick="goBack()" class="fixed top-4 right-4 z-50 bg-black/60 backdrop-blur-md p-3 rounded-full border border-white/10 hover:bg-neonBlue hover:text-black transition shadow-xl group cursor-pointer">
+    <i class="fas fa-arrow-right text-xl group-hover:-translate-x-1 transition-transform"></i>
+</button>
+
+<script>
+    function goBack() {
+        // إذا كان المستخدم قادماً من داخل الموقع، نستخدم العودة للخلف
+        if (document.referrer.includes(window.location.host)) {
+            history.back();
+        } else {
+            // إذا جاء من رابط خارجي (واتساب مثلاً)، نوجهه للرئيسية
+            window.location.href = 'index.html';
+        }
+    }
+</script>
 
     <div id="loading" class="text-center mt-40 text-gray-500 animate-pulse">
         <div class="relative w-16 h-16 mx-auto mb-4">
