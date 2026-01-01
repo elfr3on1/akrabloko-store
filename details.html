@@ -77,12 +77,13 @@
                 <div id="swipe-area" class="aspect-[4/5] w-full rounded-3xl overflow-hidden bg-[#111] border border-white/10 relative shadow-2xl mb-4 touch-pan-y">
                     <img id="main-img" src="" class="w-full h-full object-cover transition duration-500" alt="صورة المنتج">
                     
-                    <div class="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-black/50 to-transparent flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 md:opacity-0 pointer-events-none">
-                        <i class="fas fa-chevron-left text-white/70"></i>
-                    </div>
-                    <div class="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-black/50 to-transparent flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 md:opacity-0 pointer-events-none">
-                        <i class="fas fa-chevron-right text-white/70"></i>
-                    </div>
+                    <button onclick="prevImage(event)" class="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black/50 to-transparent flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 cursor-pointer z-20 group">
+    <i class="fas fa-chevron-left text-white text-3xl drop-shadow-md group-hover:-translate-x-1 transition-transform"></i>
+</button>
+
+<button onclick="nextImage(event)" class="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black/50 to-transparent flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 cursor-pointer z-20 group">
+    <i class="fas fa-chevron-right text-white text-3xl drop-shadow-md group-hover:translate-x-1 transition-transform"></i>
+</button>
 
                     <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur px-3 py-1 rounded-full text-xs font-bold border border-white/10">
                         <span id="img-counter">1/1</span> <i class="fas fa-images ml-1 text-gray-400"></i>
@@ -314,6 +315,34 @@
             setTimeout(() => { window.location.href = 'index.html'; }, 400); 
         };
         
+    // --- دوال التنقل بالأسهم (كود جديد) ---
+        
+        // الانتقال للصورة التالية
+        window.nextImage = (e) => {
+            if(e) e.stopPropagation(); // لمنع تفعيل السحب بالخطأ
+            
+            // إذا لم نكن في آخر صورة، انتقل للتالية
+            if (currentImgIndex < allImages.length - 1) {
+                currentImgIndex++;
+            } else {
+                currentImgIndex = 0; // إذا وصلنا للنهاية، عد للأولى (دوران)
+            }
+            updateGalleryUI(); // تحديث الشاشة
+        };
+
+        // الانتقال للصورة السابقة
+        window.prevImage = (e) => {
+            if(e) e.stopPropagation();
+
+            // إذا لم نكن في أول صورة، ارجع للسابقة
+            if (currentImgIndex > 0) {
+                currentImgIndex--;
+            } else {
+                currentImgIndex = allImages.length - 1; // إذا كنا في البداية، اذهب للأخيرة
+            }
+            updateGalleryUI(); // تحديث الشاشة
+        };
+    
     </script>
 </body>
 </html>
