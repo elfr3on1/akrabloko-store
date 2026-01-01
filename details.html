@@ -316,7 +316,7 @@
             btn.classList.remove('from-neonPink', 'to-purple-600');
             btn.classList.add('bg-green-500');
             
-            setTimeout(() => { goBack(); }, 400); 
+            setTimeout(() => { window.location.href = 'index.html'; }, 400); 
         };
         
     // --- دوال التنقل بالأسهم (كود جديد) ---
@@ -346,16 +346,7 @@
             }
             updateGalleryUI(); // تحديث الشاشة
         };
-    
-    // 🔄 كود تحديث السلة عند الرجوع للصفحة
-        // هذا الكود يعمل في كل مرة تظهر فيها الصفحة، حتى لو من الذاكرة
-        window.addEventListener('pageshow', (event) => {
-            // التحقق: هل يوجد دالة لتحديث السلة؟
-            if (typeof updateCartUI === 'function') {
-                updateCartUI(); // نعم، قم بتحديث الرقم فوراً
-            }
-        });
-    
+        
     </script>
 </body>
 </html>
