@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تحميل غلاف أقربلوكو</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة تحويل الكود لصورة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neonBlue: '#00f3ff',
+                        neonPink: '#bc13fe',
+                        darkBg: '#050505',
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #111; color: white; font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 20px; }
+        
+        /* منطقة الغلاف - أبعاد فيسبوك عالية الجودة (ضعف الحجم القياسي للدقة) */
+        #capture-area {
+            width: 1640px; /* 820 * 2 */
+            height: 624px; /* 312 * 2 */
+            background-color: #050505;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 80px;
+            /* تصغير العرض فقط للمعاينة على الشاشة، لكن التحميل سيكون بالحجم الكامل */
+            transform: scale(0.5); 
+            transform-origin: top center;
+            margin-bottom: -312px; /* تعويض الفراغ الناتج عن التصغير */
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border: 1px solid #333;
+        }
+
+        .bg-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .neon-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(188,19,254,0.15) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 0;
+        }
+
+        .text-glow { text-shadow: 0 0 30px rgba(188,19,254,0.6); }
+        .border-glow { box-shadow: 0 0 20px rgba(0,243,255,0.3); }
+
+        .app-btn {
+            background: linear-gradient(90deg, #bc13fe 0%, #7c3aed 100%);
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 0 20px rgba(188,19,254,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+        .app-btn:hover { transform: scale(1.05); }
+        .app-btn:active { transform: scale(0.95); }
+
+    </style>
+</head>
+<body>
+
+    <div class="text-center z-50 mt-10">
+        <h2 class="text-2xl mb-2 text-gray-300">هذا هو تصميم الغلاف الخاص بك 👇</h2>
+        <button onclick="downloadCover()" class="app-btn">
+            <i class="fas fa-download"></i> تحميل الغلاف بجودة عالية
+        </button>
+        <p class="text-gray-500 text-sm mt-2">اضغط الزر وسيتم تحميل الصورة (PNG) فوراً</p>
+    </div>
+
+    <!-- هذا الجزء هو الذي سيتم تحويله لصورة -->
+    <div id="capture-area">
+        <!-- خلفيات -->
+        <div class="bg-pattern"></div>
+        <div class="neon-glow" style="top: -200px; left: -100px; background: radial-gradient(circle, rgba(0,243,255,0.15) 0%, rgba(0,0,0,0) 70%);"></div>
+        <div class="neon-glow" style="bottom: -200px; right: -100px;"></div>
+
+        <!-- محتوى اليمين -->
+        <div class="relative z-10">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-neonPink rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(188,19,254,0.6)]">
+                    <i class="fas fa-bolt text-4xl text-white"></i>
+                </div>
+                <div class="h-10 w-1 bg-gray-700"></div>
+                <span class="text-neonBlue text-2xl font-bold tracking-widest uppercase font-mono">EST. 2025</span>
+            </div>
+
+            <h1 class="text-9xl font-black text-white leading-none mb-2" style="text-shadow: 5px 5px 0px rgba(188,19,254,0.3);">
+                أقرب<span class="text-transparent bg-clip-text bg-gradient-to-r from-neonPink to-neonBlue">لوكو</span>
+            </h1>
+            <p class="text-4xl text-gray-300 font-bold mt-2 flex items-center gap-3">
+                <i class="fas fa-quote-right text-neonBlue text-2xl"></i>
+                استايلك.. على مزاجك
+                <i class="fas fa-quote-left text-neonBlue text-2xl"></i>
+            </p>
+
+            <div class="mt-12 flex gap-6">
+                <div class="flex items-center gap-3 bg-white/5 px-6 py-3 rounded-full border border-white/10">
+                    <i class="fas fa-tshirt text-neonPink text-2xl"></i>
+                    <span class="text-xl font-bold">أحدث صيحات الموضة</span>
+                </div>
+                <div class="flex items-center gap-3 bg-white/5 px-6 py-3 rounded-full border border-white/10">
+                    <i class="fas fa-shipping-fast text-neonBlue text-2xl"></i>
+                    <span class="text-xl font-bold">توصيل سريع</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- محتوى اليسار (الجرافيك) -->
+        <div class="relative z-10 flex items-center justify-center h-full mr-10">
+            <!-- شكل تجريدي يعبر عن الستايل -->
+            <div class="relative w-[500px] h-[500px]">
+                <div class="absolute inset-0 border-[30px] border-white/5 rounded-full animate-[spin_20s_linear_infinite]"></div>
+                <div class="absolute inset-10 border-[2px] border-neonBlue rounded-full opacity-50" style="border-style: dashed;"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                   <!-- محاكاة شكل منتج -->
+                   <div class="relative z-10 bg-gradient-to-br from-gray-800 to-black p-10 rounded-3xl border border-white/10 shadow-2xl transform rotate-[-10deg]">
+                        <i class="fas fa-user-astronaut text-[200px] text-gray-200 opacity-90 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"></i>
+                        <div class="absolute -bottom-6 -right-6 bg-neonBlue text-black font-black text-2xl px-6 py-3 rounded-xl shadow-lg border-4 border-black">
+                            New Collection
+                        </div>
+                   </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- رابط الموقع في الأسفل -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 px-8 py-2 rounded-full border border-white/20 backdrop-blur-md">
+            <span class="text-2xl font-mono font-bold text-gray-300 tracking-wider">WWW.AKRABLOKO.COM</span>
+        </div>
+    </div>
+
+    <script>
+        function downloadCover() {
+            const btn = document.querySelector('.app-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحضير...';
+            
+            const element = document.getElementById("capture-area");
+            
+            // إعدادات لضمان جودة عالية
+            html2canvas(element, {
+                scale: 1, // لأننا كبرنا العنصر أصلاً بالأبعاد 1640
+                useCORS: true,
+                backgroundColor: "#050505"
+            }).then(canvas => {
+                // إنشاء رابط تحميل وهمي
+                const link = document.createElement('a');
+                link.download = 'akrabloko-facebook-cover.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                btn.innerHTML = '<i class="fas fa-check"></i> تم التحميل!';
+                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+            }).catch(err => {
+                console.error(err);
+                alert("حدث خطأ أثناء تحميل الصورة، حاول مرة أخرى.");
+                btn.innerHTML = originalText;
+            });
+        }
+    </script>
+</body>
+</html>
+
