@@ -721,6 +721,16 @@
                     .catch(() => console.log('SW Failed'));
             }
         });
+
+// 🔄 كود تحديث السلة عند الرجوع للصفحة
+        // هذا الكود يعمل في كل مرة تظهر فيها الصفحة، حتى لو من الذاكرة
+        window.addEventListener('pageshow', (event) => {
+            // التحقق: هل يوجد دالة لتحديث السلة؟
+            if (typeof updateCartUI === 'function') {
+                updateCartUI(); // نعم، قم بتحديث الرقم فوراً
+            }
+        });
+        
     </script>
 
     <a href="https://wa.me/201xxxxxxxxx" target="_blank" class="fixed bottom-24 right-4 z-50 group">
