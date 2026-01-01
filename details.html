@@ -77,12 +77,16 @@
                 <div id="swipe-area" class="aspect-[4/5] w-full rounded-3xl overflow-hidden bg-[#111] border border-white/10 relative shadow-2xl mb-4 touch-pan-y">
                     <img id="main-img" src="" class="w-full h-full object-cover transition duration-500" alt="صورة المنتج">
                     
-                    <button onclick="prevImage(event)" class="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-black/50 to-transparent flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 cursor-pointer z-20 group">
-    <i class="fas fa-chevron-left text-white text-3xl drop-shadow-md group-hover:-translate-x-1 transition-transform"></i>
+                    <button onclick="prevImage(event)" class="absolute inset-y-0 left-0 w-16 flex items-center justify-center cursor-pointer z-20 transition-all duration-300 opacity-0 md:opacity-40 group-hover:opacity-100">
+    <div class="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-neonPink hover:border-neonPink hover:shadow-[0_0_15px_#bc13fe] transition-all transform hover:scale-110">
+        <i class="fas fa-chevron-left text-lg"></i>
+    </div>
 </button>
 
-<button onclick="nextImage(event)" class="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-black/50 to-transparent flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 cursor-pointer z-20 group">
-    <i class="fas fa-chevron-right text-white text-3xl drop-shadow-md group-hover:translate-x-1 transition-transform"></i>
+<button onclick="nextImage(event)" class="absolute inset-y-0 right-0 w-16 flex items-center justify-center cursor-pointer z-20 transition-all duration-300 opacity-0 md:opacity-40 group-hover:opacity-100">
+    <div class="w-10 h-10 rounded-full bg-black/30 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-neonBlue hover:border-neonBlue hover:shadow-[0_0_15px_#00f3ff] transition-all transform hover:scale-110">
+        <i class="fas fa-chevron-right text-lg"></i>
+    </div>
 </button>
 
                     <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur px-3 py-1 rounded-full text-xs font-bold border border-white/10">
