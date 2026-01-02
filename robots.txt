@@ -1,7 +1,16 @@
 User-agent: *
 Allow: /
 
+# منع أرشفة لوحة التحكم (بالاسمين لضمان الأمان مع الروابط النظيفة)
+Disallow: /admin
 Disallow: /admin.html
-Disallow: /sw.js
 
+# منع أرشفة الملفات الجزئية والبرمجية (العميل مش محتاج يشوفها في جوجل)
+Disallow: /footer.html
+Disallow: /sw.js
+Disallow: /package.json
+Disallow: /vercel.json
+Disallow: /api/
+
+# رابط خريطة الموقع (مهم جداً لجوجل)
 Sitemap: https://akrabloko.vercel.app/sitemap.xml
