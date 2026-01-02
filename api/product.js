@@ -1,15 +1,13 @@
 import admin from "firebase-admin";
 
-// دالة لتنظيف المفتاح السري من أي شوائب
+// دالة لتنظيف المفتاح السري
 const getPrivateKey = () => {
   const key = process.env.FIREBASE_PRIVATE_KEY;
   if (!key) return undefined;
-  
-  // 1. استبدال الـ \n المكتوبة كحروف بـ سطر جديد حقيقي
-  // 2. إزالة أي علامات تنصيص مزدوجة في الأول أو الآخر قد يضيفها فيرسل
   return key.replace(/\\n/g, "\n").replace(/^"|"$/g, "");
 };
 
+// تهيئة فايربيس مرة واحدة فقط
 if (!admin.apps.length) {
   try {
     admin.initializeApp({
@@ -19,65 +17,75 @@ if (!admin.apps.length) {
         privateKey: getPrivateKey(),
       }),
     });
-    console.log("Firebase initialized successfully");
   } catch (error) {
-    console.error("Firebase initialization failed:", error);
+    console.error("Firebase init error:", error);
   }
 }
 
 const db = admin.firestore();
 
 export default async function handler(req, res) {
+  // الحصول على رقم المنتج من الرابط
   const { id } = req.query;
 
+  if (!id) {
+    return res.status(400).send("Product ID is missing");
+  }
+
   try {
-    // محاولة جلب المنتج
+    // جلب بيانات المنتج من قاعدة البيانات
     const doc = await db.collection("products").doc(id).get();
     
-    if (!doc.exists) {
-      return res.status(404).send("Product not found - تأكد من رقم المنتج");
+    // قيم افتراضية في حالة عدم وجود المنتج
+    let title = "أقربلوكو ستور";
+    let desc = "تسوق أحدث صيحات الموضة";
+    let image = "https://akrabloko.vercel.app/images/logo.png"; // تأكد من وجود صورة افتراضية
+
+    if (doc.exists) {
+      const data = doc.data();
+      title = data.name || title;
+      desc = data.desc || desc;
+      image = data.coverImage || image;
     }
 
-    const p = doc.data();
-
-    // تجهيز البيانات
-    const title = p.name || "منتج من أقربلوكو";
-    const description = p.desc || "تسوق أفضل المنتجات";
-    const image = p.coverImage || ""; 
-    const url = `https://akrabloko.vercel.app/product/{id}`;
-
-    // إرسال الرد
-    res.setHeader("Content-Type", "text/html; charset=utf-8");
-    res.setHeader("Cache-Control", "s-maxage=1, stale-while-revalidate=59");
-    
-    res.status(200).send(`
-      <!doctype html>
+    // تجهيز صفحة HTML بسيطة جداً لواتساب (لن يراها المستخدم العادي طويلاً)
+    const html = `
+      <!DOCTYPE html>
       <html lang="ar">
       <head>
-        <meta charset="utf-8">
-        <title>${title} | Akrabloko</title>
-        <meta name="description" content="${description}">
-        <meta property="og:type" content="product">
-        <meta property="og:url" content="${url}">
-        <meta property="og:title" content="${title}">
-        <meta property="og:description" content="${description}">
-        <meta property="og:image" content="${image}">
+        <meta charset="UTF-8">
+        <title>${title}</title>
+        
+        <meta property="og:type" content="product" />
+        <meta property="og:title" content="${title}" />
+        <meta property="og:description" content="${desc}" />
+        <meta property="og:image" content="${image}" />
+        <meta property="og:url" content="https://akrabloko.vercel.app/product/${id}" />
+        <meta property="og:site_name" content="Akrabloko Store" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="${title}" />
+        <meta name="twitter:description" content="${desc}" />
+        <meta name="twitter:image" content="${image}" />
+        
       </head>
       <body>
-        <script>window.location.href = "/product/{id}";</script>
+        <script>
+            // التوجيه إلى صفحة التفاصيل الفعلية مع تمرير رقم المنتج
+            window.location.replace("/details.html?id=${id}");
+        </script>
       </body>
       </html>
-    `);
+    `;
+
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    // تخزين الكاش لمدة قصيرة (ساعة واحدة) لتحديث الصور بسرعة عند التغيير
+    res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate");
+    res.status(200).send(html);
+
   } catch (error) {
-    // طباعة الخطأ الحقيقي في الـ Logs عشان نعرف السبب لو فشل تاني
-    console.error("Detailed Error:", error);
-    
-    // إرسال تفاصيل الخطأ للشاشة عشان تشوفها (مؤقتاً عشان التصليح)
-    res.status(500).send(`
-      <h1>Error 500</h1>
-      <p>حدث خطأ في الاتصال بقاعدة البيانات.</p>
-      <pre>${error.message}</pre>
-      <p>Check Vercel Logs for more details.</p>
-    `);
+    console.error("Server Error:", error);
+    // في حالة الخطأ، حول المستخدم للصفحة الرئيسية
+    res.status(500).send('<script>window.location.replace("/");</script>');
   }
 }
