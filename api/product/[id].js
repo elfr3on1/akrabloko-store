@@ -64,7 +64,7 @@ export default async function handler(req, res) {
         <meta property="og:image" content="${image}">
       </head>
       <body>
-        <script>window.location.href = "/details.html?id=${id}";</script>
+        <script>window.location.href = "/product/{id}";</script>
       </body>
       </html>
     `);
