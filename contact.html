@@ -25,7 +25,7 @@
                     },
                     keyframes: {
                         slideUp: { '0%': { transform: 'translateY(30px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
-                        pulseGlow: { '0%, 100%': { boxShadow: '0 0 5px rgba(0, 243, 255, 0.2)' }, '50%': { boxShadow: '0 0 20px rgba(0, 243, 255, 0.5)' } }
+                        pulseGlow: { '0%, 100%': { boxShadow: '0 0 5px rgba(188, 19, 254, 0.2)' }, '50%': { boxShadow: '0 0 20px rgba(188, 19, 254, 0.5)' } }
                     }
                 } 
             } 
@@ -36,7 +36,8 @@
             font-family: 'Cairo', sans-serif; 
             background-color: #050505; 
             color: #fff; 
-            background-image: radial-gradient(circle at 90% 10%, rgba(0,243,255,0.05), transparent 30%);
+            /* خلفية بينك خفيفة */
+            background-image: radial-gradient(circle at 90% 10%, rgba(188,19,254,0.05), transparent 30%);
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
@@ -55,7 +56,7 @@
         }
         .custom-input:focus {
             background: rgba(0, 0, 0, 0.8);
-            border-color: #bc13fe;
+            border-color: #bc13fe; /* حدود بينك عند الكتابة */
             box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
             outline: none;
         }
@@ -77,12 +78,12 @@
     <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="/" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neonBlue to-blue-800 flex items-center justify-center shadow-[0_0_15px_rgba(0,243,255,0.4)] group-hover:scale-105 transition">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neonPink to-purple-800 flex items-center justify-center shadow-[0_0_15px_rgba(188,19,254,0.4)] group-hover:scale-105 transition">
                     <i class="fas fa-headset text-white text-xl"></i>
                 </div>
                 <div class="text-xl font-black leading-none">
                     <span class="block text-white">أقرب</span>
-                    <span class="block text-neonBlue text-sm tracking-widest">LOCO</span>
+                    <span class="block text-neonPink text-sm tracking-widest">LOCO</span>
                 </div>
             </a>
             <button onclick="smartReturn()" class="text-gray-400 hover:text-white transition">
@@ -95,7 +96,7 @@
         
         <div class="text-center mb-10 animate-slide-up">
             <h1 class="text-3xl md:text-5xl font-black mb-4 text-white">
-                إحنا هنا <span class="text-neonBlue">عشانك</span>
+                إحنا هنا <span class="text-neonPink">عشانك</span>
             </h1>
             <p class="text-gray-400 text-sm md:text-base">
                 عندك استفسار؟ مشكلة في الطلب؟ ولا يهمك.. املأ البيانات وهنرد عليك فوراً.
@@ -143,7 +144,7 @@
                     <textarea name="message" id="c-msg" class="custom-input w-full p-3 rounded-xl text-sm font-bold h-32 resize-none validate" placeholder="اكتب استفسارك هنا..." oninput="checkForm()" required></textarea>
                 </div>
 
-                <button id="send-btn" type="submit" disabled class="w-full bg-neonBlue text-black font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2">
+                <button id="send-btn" type="submit" disabled class="w-full bg-neonPink text-black font-black py-4 rounded-xl shadow-[0_0_20px_rgba(188,19,254,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2">
                     <span>إرسال الرسالة</span>
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -213,22 +214,23 @@
             })
             .then(response => response.json())
             .then(data => {
-                // تعديل: إجبار اللون الأخضر للظهور باستخدام ! (important)
-                btn.classList.add('success-mode'); // كلاس عشان الـ CSS
-                btn.classList.remove('bg-neonBlue', 'text-black');
-                btn.classList.add('!bg-green-500', '!text-white', '!opacity-100'); // إجبار اللون الأخضر
+                // إجبار اللون الأخضر للظهور
+                btn.classList.add('success-mode'); 
+                btn.classList.remove('bg-neonPink', 'text-black'); // شيلنا البينك مؤقتاً
+                btn.classList.add('!bg-green-500', '!text-white', '!opacity-100');
                 
                 btn.innerHTML = '<i class="fas fa-check-circle"></i> تم الإرسال بنجاح';
                 
                 document.querySelectorAll('.validate').forEach(i => i.value = '');
                 
+                // هنا التعديل المهم: إرجاع الزر للون البينك الأصلي
                 setTimeout(() => {
                     btn.classList.remove('success-mode');
                     btn.classList.remove('!bg-green-500', '!text-white', '!opacity-100');
-                    btn.classList.add('bg-neonBlue', 'text-black');
+                    btn.classList.add('bg-neonPink', 'text-black'); // رجعنا البينك
                     
-                    btn.innerHTML = originalContent;
-                    btn.disabled = true; 
+                    btn.innerHTML = originalContent; // رجعنا النص الأصلي (إرسال)
+                    btn.disabled = true; // ورجعناه مطفي عشان الحقول فضيت
                 }, 3000);
             })
             .catch(error => {
