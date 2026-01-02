@@ -154,10 +154,25 @@
         let touchStartX = 0;
         let touchEndX = 0;
 
-        const params = new URLSearchParams(window.location.search);
-        const productId = params.get('id');
-        if (!productId) window.location.href = 'index.html';
-        else loadProduct(productId);
+        // 1. نجيب رابط الصفحة ونقطعه عند كل علامة "/"
+const pathSegments = window.location.pathname.split('/');
+
+// 2. ناخد آخر حتة في الرابط (اللي المفروض تكون الـ ID)
+let productId = pathSegments[pathSegments.length - 1];
+
+// 3. (احتياطي) لو الرابط كان بالشكل القديم أو المستخدم فتح الملف مباشرة
+// نتأكد إن الـ ID مش كلمة 'details.html' أو فاضي
+if (!productId || productId === 'details.html') {
+    const params = new URLSearchParams(window.location.search);
+    productId = params.get('id');
+}
+
+// 4. لو ملقناش ID خالص، نرجع للرئيسية، ولو لقيناه نحمل المنتج
+if (!productId) {
+    window.location.href = 'index.html';
+} else {
+    loadProduct(productId);
+}
 
         async function loadProduct(id) {
             try {
