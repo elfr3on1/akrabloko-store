@@ -62,7 +62,8 @@
         #c-phone::placeholder {
             text-align: right;
         }
-        button:disabled {
+        /* تعديل: الزرار يبقى رصاصي بس لو مش واخد كلاس النجاح */
+        button:disabled:not(.success-mode) {
             background-color: #333;
             color: #777;
             cursor: not-allowed;
@@ -122,7 +123,7 @@
                     <div class="relative">
                         <i class="fas fa-phone absolute right-4 top-4 text-gray-500 text-xs"></i>
                         <input type="tel" name="phone" id="c-phone" 
-                               class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold font-mono validate text-right" 
+                               class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold validate text-right" 
                                placeholder="اكتب رقم الهاتف" 
                                maxlength="11" 
                                oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkForm()" required>
@@ -212,15 +213,20 @@
             })
             .then(response => response.json())
             .then(data => {
+                // تعديل: إجبار اللون الأخضر للظهور باستخدام ! (important)
+                btn.classList.add('success-mode'); // كلاس عشان الـ CSS
                 btn.classList.remove('bg-neonBlue', 'text-black');
-                btn.classList.add('bg-green-500', 'text-white');
+                btn.classList.add('!bg-green-500', '!text-white', '!opacity-100'); // إجبار اللون الأخضر
+                
                 btn.innerHTML = '<i class="fas fa-check-circle"></i> تم الإرسال بنجاح';
                 
                 document.querySelectorAll('.validate').forEach(i => i.value = '');
                 
                 setTimeout(() => {
+                    btn.classList.remove('success-mode');
+                    btn.classList.remove('!bg-green-500', '!text-white', '!opacity-100');
                     btn.classList.add('bg-neonBlue', 'text-black');
-                    btn.classList.remove('bg-green-500', 'text-white');
+                    
                     btn.innerHTML = originalContent;
                     btn.disabled = true; 
                 }, 3000);
