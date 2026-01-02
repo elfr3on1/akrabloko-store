@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>من نحن | Akrabloko Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        neonBlue: '#00f3ff', 
+                        neonPink: '#bc13fe', 
+                        neonGreen: '#39ff14', 
+                        darkBg: '#050505'
+                    }, 
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: {
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'float': 'float 3s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        slideUp: { '0%': { transform: 'translateY(30px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } }
+                    }
+                } 
+            } 
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #050505; 
+            color: #fff; 
+            background-image: radial-gradient(circle at 10% 10%, rgba(188,19,254,0.05), transparent 30%);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #bc13fe, #00f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neonPink to-purple-800 flex items-center justify-center shadow-[0_0_15px_rgba(188,19,254,0.4)] group-hover:scale-105 transition">
+                    <i class="fas fa-bolt text-white text-xl"></i>
+                </div>
+                <div class="text-xl font-black leading-none">
+                    <span class="block text-white">أقرب</span>
+                    <span class="block text-neonPink text-sm tracking-widest">LOCO</span>
+                </div>
+            </a>
+            <a href="index.html" class="text-sm font-bold text-gray-400 hover:text-white transition flex items-center gap-2">
+                الرئيسية <i class="fas fa-arrow-left bg-white/10 p-2 rounded-full"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 pt-28 pb-12 flex-grow">
+        
+        <div class="text-center mb-16 animate-slide-up">
+            <span class="inline-block py-1 px-4 rounded-full bg-neonPink/10 text-neonPink text-xs font-bold border border-neonPink/20 mb-4 animate-float">
+                ✨ حكايتنا
+            </span>
+            <h1 class="text-4xl md:text-6xl font-black mb-4">
+                مش مجرد ستور، ده <span class="text-gradient">أسلوب حياة</span>
+            </h1>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
+                في "أقربلوكو"، إحنا مؤمنين إن اللبس مش بس قماش وخيط.. اللبس هو اللي بيعبر عن شخصيتك من غير ما تتكلم.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 px-2">
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group hover:-translate-y-2 transition duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-neonBlue/10 rounded-full blur-2xl -z-10 group-hover:bg-neonBlue/20 transition"></div>
+                <i class="fas fa-gem text-4xl text-neonBlue mb-6"></i>
+                <h3 class="text-xl font-bold mb-3 text-white">جودة مافيهاش هزار</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    بنختار الخامات بالقطعة عشان نضمن إن التيشيرت يفضل جديد حتى بعد 100 غسلة. تقفيل عالمي وسعر مصري.
+                </p>
+            </div>
+
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group hover:-translate-y-2 transition duration-300 border-neonPink/30">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-neonPink/10 rounded-full blur-2xl -z-10 group-hover:bg-neonPink/20 transition"></div>
+                <i class="fas fa-fire text-4xl text-neonPink mb-6"></i>
+                <h3 class="text-xl font-bold mb-3 text-white">تريندات سابقة وقتها</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    مش بنقلد حد. ديزايناتنا معمولة مخصوص للشباب اللي عايز يبان مختلف ومميز وسط الكل.
+                </p>
+            </div>
+
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group hover:-translate-y-2 transition duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-neonGreen/10 rounded-full blur-2xl -z-10 group-hover:bg-neonGreen/20 transition"></div>
+                <i class="fas fa-rocket text-4xl text-neonGreen mb-6"></i>
+                <h3 class="text-xl font-bold mb-3 text-white">خدمة عملاء طيارة</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    اطلب وقيس في بيتك، ولو فيه أي حاجة مش عجباك، الاستبدال والاسترجاع عندنا أسهل مما تتخيل.
+                </p>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden animate-slide-up" style="animation-delay: 0.2s;">
+            <div class="absolute inset-0 bg-gradient-to-r from-neonPink/10 to-transparent opacity-50"></div>
+            <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 text-center md:text-right">
+                <div class="w-20 h-20 md:w-32 md:h-32 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+                    <i class="fas fa-crown text-4xl md:text-5xl text-yellow-400"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-black text-white mb-3">هدفنا ورؤيتنا</h2>
+                    <p class="text-gray-300 leading-loose">
+                        هدفنا نكون "البراند رقم 1" للشباب في مصر. بنسعى نغير فكرة إن "المستورد بس هو الحلو"، وبنثبت كل يوم إننا نقدر نعمل منتج محلي ينافس أقوى البراندات العالمية، بسعر يناسب جيبك وستايل يناسب دماغك.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12 flex flex-col items-center gap-4">
+            <a href="index.html" class="inline-flex items-center gap-3 bg-white text-black font-black py-4 px-10 rounded-xl hover:bg-gray-200 hover:scale-105 transition shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                يلا نتسوق
+                <i class="fas fa-shopping-bag"></i>
+            </a>
+
+            <button onclick="window.history.back()" class="text-gray-500 hover:text-neonBlue font-bold text-sm py-2 px-4 rounded-lg transition flex items-center gap-2 mt-2 group">
+                <i class="fas fa-arrow-right group-hover:-translate-x-1 transition-transform"></i>
+                رجوع للصفحة السابقة
+            </button>
+        </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+    <script>
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading footer:', error));
+    </script>
+</body>
+</html>
