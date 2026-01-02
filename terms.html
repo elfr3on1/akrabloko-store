@@ -46,29 +46,37 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .term-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
+        /* تصميم الكروت الجديد (بدون أيقونات) */
+        .term-row {
+            border-right: 4px solid #333;
+            background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px 0 0 12px;
             transition: all 0.3s ease;
         }
-        .term-card:hover {
-            border-color: rgba(188,19,254,0.3);
-            background: rgba(255,255,255,0.04);
-            transform: translateY(-2px);
+        .term-row:hover {
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            padding-right: 2rem; /* حركة بسيطة عند الهوفر */
         }
-        .term-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-        h2 { font-weight: 900; color: #fff; margin-bottom: 0.5rem; }
-        p, li { color: #aaa; font-size: 0.9rem; line-height: 1.7; }
+        /* ألوان الحدود الجانبية */
+        .border-green { border-right-color: #39ff14; }
+        .border-blue { border-right-color: #00f3ff; }
+        .border-pink { border-right-color: #bc13fe; }
+        .border-red { border-right-color: #ef4444; }
+
+        h2 { font-weight: 900; color: #fff; margin-bottom: 0.5rem; font-size: 1.2rem; }
+        p, li { color: #bbb; font-size: 0.95rem; line-height: 1.8; }
         ul { list-style: disc; padding-right: 1.2rem; margin-top: 0.5rem; }
+        .number-badge {
+            font-size: 3rem;
+            font-weight: 900;
+            opacity: 0.1;
+            position: absolute;
+            left: 20px;
+            top: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -90,61 +98,52 @@
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 pt-28 pb-12 flex-grow max-w-4xl">
+    <main class="container mx-auto px-4 pt-28 pb-12 flex-grow max-w-3xl">
         
         <div class="text-center mb-12 animate-slide-up">
             <span class="inline-block py-1 px-4 rounded-full bg-neonPink/10 text-neonPink text-xs font-bold border border-neonPink/20 mb-4">
-                ⚖️ حقك وحقنا محفوظ
+                📝 قواعدنا بسيطة وواضحة
             </span>
             <h1 class="text-3xl md:text-5xl font-black mb-4 text-white">الشروط والأحكام</h1>
             <p class="text-gray-400 max-w-2xl mx-auto">
-                عشان نضمنلك تجربة تسوق مريحة وعادلة، دي القواعد اللي بتنظم التعامل بينا وبينك. استخدامك للموقع يعني موافقتك عليها.
+                عشان نضمنلك تجربة تسوق مريحة وعادلة، دي شوية نقاط بسيطة بتنظم التعامل بينا وبينك.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style="animation-delay: 0.1s;">
+        <div class="animate-slide-up" style="animation-delay: 0.1s;">
 
-            <div class="term-card p-6 rounded-2xl md:col-span-2 border-r-4 border-r-neonGreen">
-                <div class="term-icon bg-neonGreen/10 text-neonGreen"><i class="fas fa-sync-alt"></i></div>
-                <h2>1. سياسة الاستبدال والاسترجاع</h2>
+            <div class="term-row border-green relative overflow-hidden">
+                <span class="number-badge text-neonGreen">01</span>
+                <h2>سياسة الاستبدال والاسترجاع</h2>
                 <p>نحن نحرص على رضاك التام، لذلك يمكنك طلب استبدال أو استرجاع المنتج وفق الشروط التالية:</p>
-                <ul class="text-gray-300">
-                    <li><strong class="text-white">المدة الزمنية:</strong> يحق لك طلب الاسترجاع أو الاستبدال خلال <span class="text-neonGreen font-bold">7 أيام فقط</span> من تاريخ استلام الطلب.</li>
-                    <li><strong class="text-white">حالة المنتج:</strong> يجب أن يكون المنتج في حالته الأصلية تماماً (غير ملبوس، غير مغسول، وبالتغليف الأصلي والعلامات "Tags" موجودة).</li>
-                    <li><strong class="text-white">مصاريف الشحن:</strong> في حالة وجود عيب صناعة، نتحمل نحن مصاريف الشحن بالكامل. أما في حالة الاستبدال لتغيير المقاس أو الرأي، يتحمل العميل مصاريف الشحن (ذهاباً وإياباً).</li>
+                <ul class="text-gray-400">
+                    <li><strong class="text-white">المدة الزمنية:</strong> معاك <span class="text-neonGreen font-bold border-b border-neonGreen">7 أيام</span> كاملة من تاريخ استلام الطلب لو حبيت ترجعه أو تبدله.</li>
+                    <li><strong class="text-white">حالة المنتج:</strong> أهم حاجة المنتج يكون زي ما وصلك (غير ملبوس، غير مغسول، وبالتغليف الأصلي).</li>
+                    <li><strong class="text-white">مصاريف الشحن:</strong> لو فيه عيب من عندنا، الشحن علينا بالكامل. لو حابب تبدل لمقاس تاني أو غيرت رأيك، الشحن بيكون على العميل.</li>
                 </ul>
             </div>
 
-            <div class="term-card p-6 rounded-2xl">
-                <div class="term-icon bg-neonBlue/10 text-neonBlue"><i class="fas fa-money-bill-wave"></i></div>
-                <h2>2. الطلب والدفع</h2>
+            <div class="term-row border-blue relative overflow-hidden">
+                <span class="number-badge text-neonBlue">02</span>
+                <h2>طريقة الطلب والدفع</h2>
                 <p>
-                    وسيلة الدفع المتاحة حالياً هي <strong>"الدفع عند الاستلام"</strong>. بمجرد تأكيدك للطلب، نلتزم بتجهيزه وشحنه إليك.
-                    يجب التأكد من كتابة رقم هاتف صحيح لضمان تواصل المندوب معك.
+                    حالياً، إحنا بنوفرلك أسهل وسيلة دفع وهي <strong>"الدفع عند الاستلام"</strong>. يعني تطلب الأوردر، يوصلك لحد باب البيت، وبعدين تدفع للمندوب.
                 </p>
             </div>
 
-            <div class="term-card p-6 rounded-2xl">
-                <div class="term-icon bg-red-500/10 text-red-500"><i class="fas fa-ban"></i></div>
-                <h2>3. إلغاء الطلبات ورفض الاستلام</h2>
+            <div class="term-row border-red relative overflow-hidden">
+                <span class="number-badge text-red-500">03</span>
+                <h2>الجدية في التعامل</h2>
                 <p>
-                    نقدر وقتك ومجهودنا. في حالة طلب منتج ورفض استلامه من المندوب بدون سبب قهري أو عيب في المنتج، يحق للمتجر <strong>حظر الحساب</strong> ورقم الهاتف من إجراء أي طلبات مستقبلية، وقد يتم اتخاذ إجراءات قانونية لتعويض خسائر الشحن.
+                    إحنا بنقدر وقتك ومجهودنا. عشان كدة في حالة طلب منتج ورفض استلامه من المندوب بدون سبب قهري، بنضطر آسفين <strong>لحظر الحساب</strong> من عمل أي طلبات مستقبلية، لضمان استمرارية الخدمة للعملاء الجادين.
                 </p>
             </div>
 
-            <div class="term-card p-6 rounded-2xl">
-                <div class="term-icon bg-purple-500/10 text-purple-500"><i class="fas fa-truck"></i></div>
-                <h2>4. الشحن والتوصيل</h2>
+            <div class="term-row border-pink relative overflow-hidden">
+                <span class="number-badge text-neonPink">04</span>
+                <h2>الشحن ومواعيد التوصيل</h2>
                 <p>
-                    مدة التوصيل تتراوح عادة بين 2 إلى 5 أيام عمل حسب المحافظة. أي تأخير من شركة الشحن هو خارج عن إرادتنا، لكننا سنقوم بمتابعة الشحنة معك حتى تصلك.
-                </p>
-            </div>
-
-            <div class="term-card p-6 rounded-2xl md:col-span-2">
-                <div class="term-icon bg-yellow-500/10 text-yellow-500"><i class="fas fa-user-lock"></i></div>
-                <h2>5. أمان بياناتك</h2>
-                <p>
-                    نلتزم بحماية بياناتك الشخصية (الاسم، العنوان، الهاتف) واستخدامها فقط لغرض توصيل الطلب. لمزيد من التفاصيل، يرجى مراجعة <a href="privacy.html" class="text-neonBlue underline font-bold">سياسة الخصوصية</a>.
+                    الأوردر عادة بيوصلك خلال 2 إلى 5 أيام عمل حسب محافظتك. لو حصل أي تأخير من شركة الشحن، خدمة العملاء عندنا بتابع معاك خطوة بخطوة لحد ما تستلم شحنتك بسلام.
                 </p>
             </div>
 
