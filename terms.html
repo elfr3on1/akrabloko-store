@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>الشروط والأحكام | Akrabloko Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        neonBlue: '#00f3ff', 
+                        neonPink: '#bc13fe', 
+                        neonGreen: '#39ff14', 
+                        darkBg: '#050505',
+                        warning: '#ffcc00'
+                    }, 
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: {
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        slideUp: { '0%': { transform: 'translateY(30px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                } 
+            } 
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #050505; 
+            color: #fff; 
+            background-image: radial-gradient(circle at 50% 10%, rgba(188,19,254,0.05), transparent 40%);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .term-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        .term-card:hover {
+            border-color: rgba(188,19,254,0.3);
+            background: rgba(255,255,255,0.04);
+            transform: translateY(-2px);
+        }
+        .term-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        h2 { font-weight: 900; color: #fff; margin-bottom: 0.5rem; }
+        p, li { color: #aaa; font-size: 0.9rem; line-height: 1.7; }
+        ul { list-style: disc; padding-right: 1.2rem; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neonPink to-purple-800 flex items-center justify-center shadow-[0_0_15px_rgba(188,19,254,0.4)] group-hover:scale-105 transition">
+                    <i class="fas fa-file-contract text-white text-xl"></i>
+                </div>
+                <div class="text-xl font-black leading-none">
+                    <span class="block text-white">أقرب</span>
+                    <span class="block text-neonPink text-sm tracking-widest">LOCO</span>
+                </div>
+            </a>
+            <button onclick="smartReturn()" class="text-gray-400 hover:text-white transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 pt-28 pb-12 flex-grow max-w-4xl">
+        
+        <div class="text-center mb-12 animate-slide-up">
+            <span class="inline-block py-1 px-4 rounded-full bg-neonPink/10 text-neonPink text-xs font-bold border border-neonPink/20 mb-4">
+                ⚖️ حقك وحقنا محفوظ
+            </span>
+            <h1 class="text-3xl md:text-5xl font-black mb-4 text-white">الشروط والأحكام</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto">
+                عشان نضمنلك تجربة تسوق مريحة وعادلة، دي القواعد اللي بتنظم التعامل بينا وبينك. استخدامك للموقع يعني موافقتك عليها.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style="animation-delay: 0.1s;">
+
+            <div class="term-card p-6 rounded-2xl md:col-span-2 border-r-4 border-r-neonGreen">
+                <div class="term-icon bg-neonGreen/10 text-neonGreen"><i class="fas fa-sync-alt"></i></div>
+                <h2>1. سياسة الاستبدال والاسترجاع</h2>
+                <p>نحن نحرص على رضاك التام، لذلك يمكنك طلب استبدال أو استرجاع المنتج وفق الشروط التالية:</p>
+                <ul class="text-gray-300">
+                    <li><strong class="text-white">المدة الزمنية:</strong> يحق لك طلب الاسترجاع أو الاستبدال خلال <span class="text-neonGreen font-bold">7 أيام فقط</span> من تاريخ استلام الطلب.</li>
+                    <li><strong class="text-white">حالة المنتج:</strong> يجب أن يكون المنتج في حالته الأصلية تماماً (غير ملبوس، غير مغسول، وبالتغليف الأصلي والعلامات "Tags" موجودة).</li>
+                    <li><strong class="text-white">مصاريف الشحن:</strong> في حالة وجود عيب صناعة، نتحمل نحن مصاريف الشحن بالكامل. أما في حالة الاستبدال لتغيير المقاس أو الرأي، يتحمل العميل مصاريف الشحن (ذهاباً وإياباً).</li>
+                </ul>
+            </div>
+
+            <div class="term-card p-6 rounded-2xl">
+                <div class="term-icon bg-neonBlue/10 text-neonBlue"><i class="fas fa-money-bill-wave"></i></div>
+                <h2>2. الطلب والدفع</h2>
+                <p>
+                    وسيلة الدفع المتاحة حالياً هي <strong>"الدفع عند الاستلام"</strong>. بمجرد تأكيدك للطلب، نلتزم بتجهيزه وشحنه إليك.
+                    يجب التأكد من كتابة رقم هاتف صحيح لضمان تواصل المندوب معك.
+                </p>
+            </div>
+
+            <div class="term-card p-6 rounded-2xl">
+                <div class="term-icon bg-red-500/10 text-red-500"><i class="fas fa-ban"></i></div>
+                <h2>3. إلغاء الطلبات ورفض الاستلام</h2>
+                <p>
+                    نقدر وقتك ومجهودنا. في حالة طلب منتج ورفض استلامه من المندوب بدون سبب قهري أو عيب في المنتج، يحق للمتجر <strong>حظر الحساب</strong> ورقم الهاتف من إجراء أي طلبات مستقبلية، وقد يتم اتخاذ إجراءات قانونية لتعويض خسائر الشحن.
+                </p>
+            </div>
+
+            <div class="term-card p-6 rounded-2xl">
+                <div class="term-icon bg-purple-500/10 text-purple-500"><i class="fas fa-truck"></i></div>
+                <h2>4. الشحن والتوصيل</h2>
+                <p>
+                    مدة التوصيل تتراوح عادة بين 2 إلى 5 أيام عمل حسب المحافظة. أي تأخير من شركة الشحن هو خارج عن إرادتنا، لكننا سنقوم بمتابعة الشحنة معك حتى تصلك.
+                </p>
+            </div>
+
+            <div class="term-card p-6 rounded-2xl md:col-span-2">
+                <div class="term-icon bg-yellow-500/10 text-yellow-500"><i class="fas fa-user-lock"></i></div>
+                <h2>5. أمان بياناتك</h2>
+                <p>
+                    نلتزم بحماية بياناتك الشخصية (الاسم، العنوان، الهاتف) واستخدامها فقط لغرض توصيل الطلب. لمزيد من التفاصيل، يرجى مراجعة <a href="privacy.html" class="text-neonBlue underline font-bold">سياسة الخصوصية</a>.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-12 animate-slide-up" style="animation-delay: 0.2s;">
+            <button onclick="smartReturn()" class="text-gray-500 hover:text-white font-bold text-sm transition flex items-center gap-2 mx-auto group py-2 px-4 rounded-lg hover:bg-white/5">
+                <i class="fas fa-arrow-right group-hover:-translate-x-1 transition-transform"></i>
+                رجوع للصفحة السابقة
+            </button>
+        </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // 1. استدعاء الفوتر
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => { document.getElementById('footer-placeholder').innerHTML = data; })
+            .catch(error => console.error('Error loading footer:', error));
+
+        // 2. الزر الذكي (Smart Return)
+        function smartReturn() {
+            if (document.referrer && document.referrer.includes(window.location.hostname)) {
+                window.history.back();
+            } else {
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>
