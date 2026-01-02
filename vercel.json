@@ -2,11 +2,7 @@
   "rewrites": [
     {
       "source": "/product/:id",
-      "destination": "/api/product?id=:id"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "details.html"
     }
   ]
 }
