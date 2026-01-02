@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>سياسة الخصوصية | Akrabloko Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        neonBlue: '#00f3ff', 
+                        neonPink: '#bc13fe', 
+                        neonGreen: '#39ff14', 
+                        darkBg: '#050505'
+                    }, 
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: {
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        slideUp: { '0%': { transform: 'translateY(30px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+                    }
+                } 
+            } 
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #050505; 
+            color: #fff; 
+            background-image: radial-gradient(circle at 10% 10%, rgba(188,19,254,0.05), transparent 30%);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .policy-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .policy-section:last-child {
+            border-bottom: none;
+        }
+        h2 {
+            color: #fff;
+            font-weight: 900;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        p, li {
+            color: #aaa;
+            line-height: 1.8;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        ul {
+            list-style-type: disc;
+            padding-right: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .highlight {
+            color: #00f3ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neonPink to-purple-800 flex items-center justify-center shadow-[0_0_15px_rgba(188,19,254,0.4)] group-hover:scale-105 transition">
+                    <i class="fas fa-shield-alt text-white text-xl"></i>
+                </div>
+                <div class="text-xl font-black leading-none">
+                    <span class="block text-white">أقرب</span>
+                    <span class="block text-neonPink text-sm tracking-widest">LOCO</span>
+                </div>
+            </a>
+            <button onclick="smartReturn()" class="text-gray-400 hover:text-white transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 pt-28 pb-12 flex-grow max-w-4xl">
+        
+        <div class="text-center mb-12 animate-slide-up">
+            <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-neonBlue/10 text-neonBlue text-xs font-bold border border-neonBlue/20 mb-4">
+                <i class="fas fa-lock"></i> بياناتك في أمان
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black mb-4">سياسة الخصوصية</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto">
+                في "أقربلوكو"، بنحترم خصوصيتك جداً. الصفحة دي بتوضحلك إحنا بنجمع إيه، وليه، وإزاي بنحمي بياناتك.
+            </p>
+            <p class="text-xs text-gray-600 mt-2">آخر تحديث: يناير 2026</p>
+        </div>
+
+        <div class="glass-panel p-8 md:p-12 rounded-3xl animate-slide-up relative overflow-hidden" style="animation-delay: 0.1s;">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-neonPink/5 rounded-full blur-[80px] pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-neonBlue/5 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <div class="policy-section">
+                <h2><i class="fas fa-info-circle text-neonPink"></i> مقدمة</h2>
+                <p>
+                    مرحباً بك في موقع "أقربلوكو" (Akrabloko Store). إن ثقتك بنا هي أولويتنا القصوى. توضح هذه السياسة كيفية تعاملنا مع المعلومات الشخصية التي تقدمها لنا عند استخدام موقعنا لإتمام عمليات الشراء أو التصفح.
+                </p>
+            </div>
+
+            <div class="policy-section">
+                <h2><i class="fas fa-database text-neonBlue"></i> البيانات التي نجمعها</h2>
+                <p>نحن نجمع فقط البيانات الضرورية لإتمام طلبك وتوصيله إليك، وهي تشمل:</p>
+                <ul>
+                    <li><span class="highlight">بيانات الهوية:</span> الاسم بالكامل.</li>
+                    <li><span class="highlight">بيانات الاتصال:</span> رقم الهاتف المحمول، والبريد الإلكتروني (للتأكيد والتواصل).</li>
+                    <li><span class="highlight">بيانات التوصيل:</span> العنوان التفصيلي (المحافظة، المنطقة، الشارع) لضمان وصول الشحنة.</li>
+                    <li><span class="highlight">بيانات الطلب:</span> تفاصيل المنتجات التي اخترتها (المقاس، اللون، الكمية).</li>
+                </ul>
+                <p class="text-xs bg-gray-800 p-2 rounded border-r-2 border-neonGreen">
+                    * ملاحظة: نحن لا نقوم بتخزين أي بيانات بنكية أو أرقام بطاقات ائتمان، حيث أن الدفع يتم "عند الاستلام" (Cash on Delivery).
+                </p>
+            </div>
+
+            <div class="policy-section">
+                <h2><i class="fas fa-cogs text-neonGreen"></i> كيف نستخدم بياناتك؟</h2>
+                <p>نستخدم المعلومات التي قدمتها للأغراض التالية فقط:</p>
+                <ul>
+                    <li>تجهيز وشحن الطلبات الخاصة بك وتوصيلها لباب المنزل.</li>
+                    <li>التواصل معك لتأكيد الطلب أو في حالة وجود استفسار بخصوص الشحن.</li>
+                    <li>تحسين تجربة التسوق في المستقبل بناءً على تفضيلاتك.</li>
+                    <li>الرد على استفساراتك المرسلة عبر صفحة "تواصل معنا".</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2><i class="fas fa-cookie-bite text-yellow-400"></i> ملفات تعريف الارتباط (Cookies)</h2>
+                <p>
+                    موقعنا يستخدم تقنية "التخزين المحلي" (Local Storage) في متصفحك لغرض وحيد وهو:
+                </p>
+                <ul>
+                    <li>حفظ محتويات "عربة التسوق" الخاصة بك بشكل مؤقت، حتى لا تفقد المنتجات التي اخترتها عند إغلاق الصفحة أو التنقل بين المنتجات.</li>
+                </ul>
+                <p>هذه البيانات مخزنة على جهازك أنت، ولا يتم مشاركتها مع أي أطراف إعلانية خارجية.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2><i class="fas fa-share-alt text-purple-400"></i> مشاركة البيانات</h2>
+                <p>نحن نحافظ على سرية بياناتك تماماً، ولا نشاركها إلا في أضيق الحدود اللازمة لتشغيل الخدمة:</p>
+                <ul>
+                    <li><span class="highlight">شركات الشحن:</span> نشارك الاسم، العنوان، ورقم الهاتف مع مندوب التوصيل أو شركة الشحن لغرض تسليم الطلب فقط.</li>
+                    <li><span class="highlight">مزودو الخدمة التقنية:</span> يتم استضافة قاعدة بيانات المتجر على خوادم آمنة (مثل Google Firebase) لضمان عمل الموقع.</li>
+                </ul>
+                <p>نحن لا نقوم ببيع أو تأجير بياناتك لأي طرف ثالث لأغراض التسويق.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2><i class="fas fa-user-shield text-red-400"></i> حقوقك وأمن المعلومات</h2>
+                <p>
+                    نحن نتخذ كافة الإجراءات التقنية الممكنة لحماية بياناتك من الوصول غير المصرح به. كما يحق لك في أي وقت طلب تعديل أو حذف بياناتك المسجلة لدينا عن طريق التواصل معنا.
+                </p>
+            </div>
+
+            <div>
+                <h2><i class="fas fa-envelope-open-text text-neonBlue"></i> هل لديك استفسار؟</h2>
+                <p>
+                    إذا كان لديك أي سؤال بخصوص سياسة الخصوصية، يسعدنا تواصلك معنا عبر صفحة <a href="contact.html" class="text-neonBlue hover:underline font-bold">اتصل بنا</a>.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="text-center mt-8 animate-slide-up" style="animation-delay: 0.2s;">
+            <button onclick="smartReturn()" class="text-gray-500 hover:text-white font-bold text-sm transition flex items-center gap-2 mx-auto group py-2 px-4 rounded-lg hover:bg-white/5">
+                <i class="fas fa-arrow-right group-hover:-translate-x-1 transition-transform"></i>
+                رجوع للصفحة السابقة
+            </button>
+        </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // 1. استدعاء الفوتر
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => { document.getElementById('footer-placeholder').innerHTML = data; })
+            .catch(error => console.error('Error loading footer:', error));
+
+        // 2. الزر الذكي (Smart Return)
+        function smartReturn() {
+            if (document.referrer && document.referrer.includes(window.location.hostname)) {
+                window.history.back();
+            } else {
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>
