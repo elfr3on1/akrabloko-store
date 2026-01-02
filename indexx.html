@@ -245,14 +245,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="mt-auto border-t border-white/5 bg-black/50 backdrop-blur-lg py-8 text-center">
-        <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
-            <i class="fas fa-store text-gray-400"></i>
-        </div>
-        <p class="text-gray-500 text-sm">جميع الحقوق محفوظة لـ <span class="text-white font-bold">أقربلوكو</span> © 2025</p>
-    </footer>
-
     <!-- PRODUCT DETAIL MODAL -->
     <div id="variant-modal" class="fixed inset-0 z-[70] hidden flex items-end md:items-center justify-center sm:p-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-xl transition-opacity duration-300" onclick="closeVariantModal()"></div>
@@ -736,6 +728,18 @@
         </span>
     </a>
 
+    <!-- مكان ظهور الفوتر -->
+<div id="footer-placeholder"></div>
+
+<!-- سكريبت استدعاء ملف الفوتر -->
+<script>
+    fetch('footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-placeholder').innerHTML = data;
+        })
+        .catch(error => console.error('Error loading footer:', error));
+</script>
     
 </body>
 </html>
