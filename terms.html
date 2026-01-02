@@ -46,36 +46,44 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        /* تصميم الكروت الجديد (بدون أيقونات) */
+        
+        /* تصميم البنود */
         .term-row {
             border-right: 4px solid #333;
             background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, transparent 100%);
             padding: 1.5rem;
+            padding-right: 3.5rem; /* مساحة للرقم */
             margin-bottom: 1.5rem;
             border-radius: 12px 0 0 12px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         .term-row:hover {
             background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
-            padding-right: 2rem; /* حركة بسيطة عند الهوفر */
+            border-right-width: 6px;
         }
-        /* ألوان الحدود الجانبية */
-        .border-green { border-right-color: #39ff14; }
-        .border-blue { border-right-color: #00f3ff; }
-        .border-pink { border-right-color: #bc13fe; }
-        .border-red { border-right-color: #ef4444; }
 
-        h2 { font-weight: 900; color: #fff; margin-bottom: 0.5rem; font-size: 1.2rem; }
-        p, li { color: #bbb; font-size: 0.95rem; line-height: 1.8; }
+        /* ألوان الحدود */
+        .border-neon { border-right-color: #bc13fe; }
+        .border-blue { border-right-color: #00f3ff; }
+        .border-green { border-right-color: #39ff14; }
+        .border-red { border-right-color: #ef4444; }
+        .border-yellow { border-right-color: #fbbf24; }
+
+        h2 { font-weight: 900; color: #fff; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        p, li { color: #bbb; font-size: 0.9rem; line-height: 1.8; }
         ul { list-style: disc; padding-right: 1.2rem; margin-top: 0.5rem; }
+        
         .number-badge {
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: 900;
-            opacity: 0.1;
+            opacity: 0.05;
             position: absolute;
-            left: 20px;
-            top: 0;
+            left: 10px;
+            top: -10px;
             pointer-events: none;
+            font-family: sans-serif;
         }
     </style>
 </head>
@@ -102,48 +110,66 @@
         
         <div class="text-center mb-12 animate-slide-up">
             <span class="inline-block py-1 px-4 rounded-full bg-neonPink/10 text-neonPink text-xs font-bold border border-neonPink/20 mb-4">
-                📝 قواعدنا بسيطة وواضحة
+                📝 شروط الاستخدام
             </span>
             <h1 class="text-3xl md:text-5xl font-black mb-4 text-white">الشروط والأحكام</h1>
             <p class="text-gray-400 max-w-2xl mx-auto">
-                عشان نضمنلك تجربة تسوق مريحة وعادلة، دي شوية نقاط بسيطة بتنظم التعامل بينا وبينك.
+                استخدامك لموقع "أقربلوكو" يعني موافقتك الكاملة على القواعد التالية، والتي تهدف لحماية حقوق الجميع.
             </p>
         </div>
 
         <div class="animate-slide-up" style="animation-delay: 0.1s;">
 
-            <div class="term-row border-green relative overflow-hidden">
-                <span class="number-badge text-neonGreen">01</span>
+            <div class="term-row border-neon">
+                <span class="number-badge text-neonPink">01</span>
+                <h2>حقوق الملكية الفكرية والعلامة التجارية</h2>
+                <p>
+                    جميع المحتويات الموجودة على هذا الموقع بما في ذلك (اسم "أقربلوكو"، الشعار "Logo"، التصاميم، الصور، النصوص، والأكواد البرمجية) هي ملكية حصرية وخاصة بمتجر Akrabloko Store.
+                </p>
+                <p class="mt-2 text-red-400 font-bold text-xs">
+                    ⚠️ يُمنع منعاً باتاً نسخ، إعادة استخدام، أو تقليد أي جزء من الموقع أو استخدام اسمنا التجاري لأي غرض دون إذن كتابي مسبق. أي انتهاك لذلك يعرض الفاعل للمساءلة القانونية الكاملة.
+                </p>
+            </div>
+
+            <div class="term-row border-green">
+                <span class="number-badge text-neonGreen">02</span>
                 <h2>سياسة الاستبدال والاسترجاع</h2>
-                <p>نحن نحرص على رضاك التام، لذلك يمكنك طلب استبدال أو استرجاع المنتج وفق الشروط التالية:</p>
                 <ul class="text-gray-400">
-                    <li><strong class="text-white">المدة الزمنية:</strong> معاك <span class="text-neonGreen font-bold border-b border-neonGreen">7 أيام</span> كاملة من تاريخ استلام الطلب لو حبيت ترجعه أو تبدله.</li>
-                    <li><strong class="text-white">حالة المنتج:</strong> أهم حاجة المنتج يكون زي ما وصلك (غير ملبوس، غير مغسول، وبالتغليف الأصلي).</li>
-                    <li><strong class="text-white">مصاريف الشحن:</strong> لو فيه عيب من عندنا، الشحن علينا بالكامل. لو حابب تبدل لمقاس تاني أو غيرت رأيك، الشحن بيكون على العميل.</li>
+                    <li><strong class="text-white">المهلة:</strong> لديك <span class="text-neonGreen font-bold border-b border-neonGreen">7 أيام</span> من تاريخ الاستلام لطلب الإرجاع.</li>
+                    <li><strong class="text-white">الشرط:</strong> يجب أن يكون المنتج بحالته الأصلية تماماً (غير مستخدم، وبالتغليف الأصلي).</li>
+                    <li><strong class="text-white">التكلفة:</strong> في حال وجود عيب صناعة، الشحن مجاني. في حال تغيير الرأي أو المقاس، يتحمل العميل مصاريف الشحن.</li>
                 </ul>
             </div>
 
-            <div class="term-row border-blue relative overflow-hidden">
-                <span class="number-badge text-neonBlue">02</span>
-                <h2>طريقة الطلب والدفع</h2>
+            <div class="term-row border-yellow">
+                <span class="number-badge text-yellow-400">03</span>
+                <h2>تحديث الأسعار وأخطاء التسعير</h2>
                 <p>
-                    حالياً، إحنا بنوفرلك أسهل وسيلة دفع وهي <strong>"الدفع عند الاستلام"</strong>. يعني تطلب الأوردر، يوصلك لحد باب البيت، وبعدين تدفع للمندوب.
+                    نسعى دائماً لتقديم أدق الأسعار، لكن في حال حدوث خطأ تقني أدى لظهور منتج بسعر غير صحيح (أقل بكثير من قيمته الحقيقية)، يحتفظ المتجر بالحق في <strong>إلغاء الطلب</strong> وإبلاغ العميل بالسعر الصحيح، ولا يعتبر المتجر ملزماً بتنفيذ الطلب بالسعر الخاطئ.
                 </p>
             </div>
 
-            <div class="term-row border-red relative overflow-hidden">
-                <span class="number-badge text-red-500">03</span>
-                <h2>الجدية في التعامل</h2>
+            <div class="term-row border-red">
+                <span class="number-badge text-red-500">04</span>
+                <h2>الجدية في التعامل ورفض الاستلام</h2>
                 <p>
-                    إحنا بنقدر وقتك ومجهودنا. عشان كدة في حالة طلب منتج ورفض استلامه من المندوب بدون سبب قهري، بنضطر آسفين <strong>لحظر الحساب</strong> من عمل أي طلبات مستقبلية، لضمان استمرارية الخدمة للعملاء الجادين.
+                    توفير خدمة "الدفع عند الاستلام" هو ثقة نضعها في عملائنا. في حالة طلب أوردر ورفض استلامه من المندوب دون سبب وجيه، يتم <strong>حظر الحساب ورقم الهاتف</strong> نهائياً من التعامل مع المتجر مستقبلاً.
                 </p>
             </div>
 
-            <div class="term-row border-pink relative overflow-hidden">
-                <span class="number-badge text-neonPink">04</span>
-                <h2>الشحن ومواعيد التوصيل</h2>
+            <div class="term-row border-blue">
+                <span class="number-badge text-neonBlue">05</span>
+                <h2>الشحن والتوصيل</h2>
                 <p>
-                    الأوردر عادة بيوصلك خلال 2 إلى 5 أيام عمل حسب محافظتك. لو حصل أي تأخير من شركة الشحن، خدمة العملاء عندنا بتابع معاك خطوة بخطوة لحد ما تستلم شحنتك بسلام.
+                    نقوم بالشحن لجميع المحافظات خلال 2-5 أيام عمل. المتجر غير مسؤول عن أي تأخير ناتج عن ظروف قهرية لدى شركات الشحن، لكننا نلتزم بمتابعة شحنتك حتى وصولها.
+                </p>
+            </div>
+
+            <div class="term-row border-white border-opacity-20">
+                <span class="number-badge text-gray-500">06</span>
+                <h2>تعديل الشروط</h2>
+                <p>
+                    نحتفظ بالحق في تعديل هذه الشروط والأحكام في أي وقت لضمان جودة الخدمة. استمرارك في استخدام الموقع بعد التعديلات يعني موافقتك عليها.
                 </p>
             </div>
 
@@ -167,7 +193,7 @@
             .then(data => { document.getElementById('footer-placeholder').innerHTML = data; })
             .catch(error => console.error('Error loading footer:', error));
 
-        // 2. الزر الذكي (Smart Return)
+        // 2. الزر الذكي
         function smartReturn() {
             if (document.referrer && document.referrer.includes(window.location.hostname)) {
                 window.history.back();
