@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/product/:id",
-      "destination": "/api/product/[id"
+      "destination": "detalis.html"
     }
   ]
 }
