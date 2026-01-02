@@ -59,6 +59,10 @@
             box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
             outline: none;
         }
+        /* placeholder styling adjustment for RTL numbers */
+        #c-phone::placeholder {
+            text-align: right;
+        }
         button:disabled {
             background-color: #333;
             color: #777;
@@ -101,13 +105,16 @@
         <div class="glass-panel p-6 md:p-8 rounded-3xl animate-slide-up relative overflow-hidden" style="animation-delay: 0.1s;">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-neonPink/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <form onsubmit="event.preventDefault(); sendMessage();" class="space-y-5 relative z-10">
+            <form id="contactForm" onsubmit="event.preventDefault(); sendMessage();" class="space-y-5 relative z-10">
                 
+                <input type="hidden" name="_subject" value="رسالة جديدة من موقع أقربلوكو!">
+                <input type="hidden" name="_captcha" value="false">
+
                 <div>
                     <label class="text-xs text-gray-500 font-bold mb-2 block mr-1">الاسم بالكامل</label>
                     <div class="relative">
                         <i class="fas fa-user absolute right-4 top-4 text-gray-500 text-xs"></i>
-                        <input type="text" id="c-name" class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold validate" placeholder="اسمك الكريم" oninput="checkForm()">
+                        <input type="text" name="name" id="c-name" class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold validate" placeholder="اسمك الكريم" oninput="checkForm()" required>
                     </div>
                 </div>
 
@@ -115,10 +122,11 @@
                     <label class="text-xs text-gray-500 font-bold mb-2 block mr-1">رقم الموبايل</label>
                     <div class="relative">
                         <i class="fas fa-phone absolute right-4 top-4 text-gray-500 text-xs"></i>
-                        <input type="tel" id="c-phone" class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold font-mono validate" 
+                        <input type="tel" name="phone" id="c-phone" 
+                               class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold font-mono validate text-right" 
                                placeholder="اكتب رقم الهاتف" 
                                maxlength="11" 
-                               oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkForm()">
+                               oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkForm()" required>
                     </div>
                 </div>
 
@@ -126,19 +134,21 @@
                     <label class="text-xs text-gray-500 font-bold mb-2 block mr-1">البريد الإلكتروني</label>
                     <div class="relative">
                         <i class="fas fa-envelope absolute right-4 top-4 text-gray-500 text-xs"></i>
-                        <input type="email" id="c-email" class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold font-mono validate" placeholder="example@gmail.com" oninput="checkForm()">
+                        <input type="email" name="email" id="c-email" class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold font-mono validate" placeholder="example@gmail.com" oninput="checkForm()" required>
                     </div>
                 </div>
 
                 <div>
                     <label class="text-xs text-gray-500 font-bold mb-2 block mr-1">نص الرسالة</label>
-                    <textarea id="c-msg" class="custom-input w-full p-3 rounded-xl text-sm font-bold h-32 resize-none validate" placeholder="اكتب استفسارك هنا..." oninput="checkForm()"></textarea>
+                    <textarea name="message" id="c-msg" class="custom-input w-full p-3 rounded-xl text-sm font-bold h-32 resize-none validate" placeholder="اكتب استفسارك هنا..." oninput="checkForm()" required></textarea>
                 </div>
 
                 <button id="send-btn" type="submit" disabled class="w-full bg-neonBlue text-black font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2">
                     <span>إرسال الرسالة</span>
                     <i class="fas fa-paper-plane"></i>
                 </button>
+                
+                <p id="error-msg" class="text-red-500 text-xs text-center hidden mt-2">حدث خطأ في الإرسال، حاول مرة أخرى.</p>
 
             </form>
         </div>
@@ -177,36 +187,59 @@
             }
         }
 
-        // 3. محاكاة الإرسال
+        // 3. دالة الإرسال الحقيقية (لإيميلك)
         function sendMessage() {
             const btn = document.getElementById('send-btn');
+            const form = document.getElementById('contactForm');
+            const errorMsg = document.getElementById('error-msg');
             const originalContent = btn.innerHTML;
             
+            // قفل الزر وعرض التحميل
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
-            
-            setTimeout(() => {
+            errorMsg.classList.add('hidden');
+
+            // إعداد البيانات للإرسال
+            const formData = new FormData(form);
+
+            // Fetch API لإرسال البيانات لـ FormSubmit
+            fetch("https://formsubmit.co/ajax/mahmoudmhmed805@gmail.com", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // نجاح الإرسال
                 btn.classList.remove('bg-neonBlue', 'text-black');
                 btn.classList.add('bg-green-500', 'text-white');
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> تم الاستلام بنجاح';
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> تم الإرسال بنجاح';
                 
+                // تفريغ الحقول
                 document.querySelectorAll('.validate').forEach(i => i.value = '');
                 
+                // إعادة الزر بعد 3 ثواني
                 setTimeout(() => {
                     btn.classList.add('bg-neonBlue', 'text-black');
                     btn.classList.remove('bg-green-500', 'text-white');
                     btn.innerHTML = originalContent;
-                    btn.disabled = true;
+                    btn.disabled = true; 
                 }, 3000);
-            }, 1500);
+            })
+            .catch(error => {
+                // فشل الإرسال
+                console.error('Error:', error);
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                errorMsg.classList.remove('hidden');
+            });
         }
 
-        // 4. الزر الذكي
+        // 4. الزر الذكي (Smart Return)
         function smartReturn() {
             if (document.referrer && document.referrer.includes(window.location.hostname)) {
-                window.history.back();
+                window.history.back(); // لو جاي من جوه الموقع ارجع لورا
             } else {
-                window.location.href = '/';
+                window.location.href = '/'; // لو جاي من بره روح الرئيسية (/)
             }
         }
     </script>
