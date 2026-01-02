@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>تواصل معنا | Akrabloko Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        neonBlue: '#00f3ff', 
+                        neonPink: '#bc13fe', 
+                        neonGreen: '#39ff14', 
+                        darkBg: '#050505'
+                    }, 
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: {
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    },
+                    keyframes: {
+                        slideUp: { '0%': { transform: 'translateY(30px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        pulseGlow: { '0%, 100%': { boxShadow: '0 0 5px rgba(0, 243, 255, 0.2)' }, '50%': { boxShadow: '0 0 20px rgba(0, 243, 255, 0.5)' } }
+                    }
+                } 
+            } 
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #050505; 
+            color: #fff; 
+            background-image: radial-gradient(circle at 90% 10%, rgba(0,243,255,0.05), transparent 30%);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .custom-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .custom-input:focus {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: #bc13fe;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+            outline: none;
+        }
+        /* شكل الزر وهو مطفي */
+        button:disabled {
+            background-color: #333;
+            color: #777;
+            cursor: not-allowed;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neonBlue to-blue-800 flex items-center justify-center shadow-[0_0_15px_rgba(0,243,255,0.4)] group-hover:scale-105 transition">
+                    <i class="fas fa-headset text-white text-xl"></i>
+                </div>
+                <div class="text-xl font-black leading-none">
+                    <span class="block text-white">أقرب</span>
+                    <span class="block text-neonBlue text-sm tracking-widest">LOCO</span>
+                </div>
+            </a>
+            <button onclick="smartReturn()" class="text-gray-400 hover:text-white transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 pt-28 pb-12 flex-grow max-w-2xl">
+        
+        <div class="text-center mb-10 animate-slide-up">
+            <h1 class="text-3xl md:text-5xl font-black mb-4 text-white">
+                إحنا هنا <span class="text-neonBlue">عشانك</span>
+            </h1>
+            <p class="text-gray-400 text-sm md:text-base">
+                عندك استفسار؟ مشكلة في الطلب؟ ولا يهمك.. املأ البيانات وهنرد عليك فوراً.
+            </p>
+        </div>
+
+        <div class="glass-panel p-6 md:p-8 rounded-3xl animate-slide-up relative overflow-hidden" style="animation-delay: 0.1s;">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-neonPink/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <form onsubmit="event.preventDefault(); sendMessage();" class="space-y-5 relative z-10">
+                
+                <div>
+                    <label class="text-xs text-gray-500 font-bold mb-2 block mr-1">الاسم بالكامل</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute right-4 top-4 text-gray-500 text-xs"></i>
+                        <input type="text" id="c-name" class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold validate" placeholder="اسمك الكريم" oninput="checkForm()">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-gray-500 font-bold mb-2 block mr-1">رقم الموبايل</label>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute right-4 top-4 text-gray-500 text-xs"></i>
+                        <input type="tel" id="c-phone" class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold font-mono validate" placeholder="01xxxxxxxxx" maxlength="11" oninput="checkForm()">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-gray-500 font-bold mb-2 block mr-1">البريد الإلكتروني</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute right-4 top-4 text-gray-500 text-xs"></i>
+                        <input type="email" id="c-email" class="custom-input w-full p-3 pr-10 rounded-xl text-sm font-bold font-mono validate" placeholder="example@gmail.com" oninput="checkForm()">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-gray-500 font-bold mb-2 block mr-1">نص الرسالة</label>
+                    <textarea id="c-msg" class="custom-input w-full p-3 rounded-xl text-sm font-bold h-32 resize-none validate" placeholder="اكتب استفسارك هنا..." oninput="checkForm()"></textarea>
+                </div>
+
+                <button id="send-btn" type="submit" disabled class="w-full bg-neonBlue text-black font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2">
+                    <span>إرسال الرسالة</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+
+            </form>
+        </div>
+
+        <div class="mt-8 flex justify-center gap-6 animate-slide-up" style="animation-delay: 0.2s;">
+            <a href="https://wa.me/201xxxxxxxxx" target="_blank" class="text-gray-500 hover:text-green-500 transition text-2xl"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="text-gray-500 hover:text-blue-500 transition text-2xl"><i class="fab fa-facebook-messenger"></i></a>
+            <a href="mailto:info@akrabloko.com" class="text-gray-500 hover:text-red-500 transition text-2xl"><i class="fas fa-envelope"></i></a>
+        </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // 1. استدعاء الفوتر
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => { document.getElementById('footer-placeholder').innerHTML = data; })
+            .catch(error => console.error('Error loading footer:', error));
+
+        // 2. دالة التحقق من الحقول (Validation Logic)
+        function checkForm() {
+            const name = document.getElementById('c-name').value.trim();
+            const phone = document.getElementById('c-phone').value.trim();
+            const email = document.getElementById('c-email').value.trim();
+            const msg = document.getElementById('c-msg').value.trim();
+            const btn = document.getElementById('send-btn');
+
+            // الشرط: لازم الأربعة يكون فيهم كلام
+            if (name && phone && email && msg) {
+                btn.disabled = false; // شغل الزرار
+                btn.classList.remove('opacity-50');
+            } else {
+                btn.disabled = true; // اطفي الزرار
+                btn.classList.add('opacity-50');
+            }
+        }
+
+        // 3. محاكاة الإرسال (Simulation)
+        function sendMessage() {
+            const btn = document.getElementById('send-btn');
+            const originalContent = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            
+            // هنا تحط كود الباك اند مستقبلاً، حالياً هنعمل محاكاة نجاح
+            setTimeout(() => {
+                btn.classList.remove('bg-neonBlue', 'text-black');
+                btn.classList.add('bg-green-500', 'text-white');
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> تم الاستلام بنجاح';
+                
+                // تفريغ الحقول بعد الإرسال
+                document.querySelectorAll('.validate').forEach(i => i.value = '');
+                
+                // إعادة الزر لوضعه الطبيعي بعد ثانيتين
+                setTimeout(() => {
+                    btn.classList.add('bg-neonBlue', 'text-black');
+                    btn.classList.remove('bg-green-500', 'text-white');
+                    btn.innerHTML = originalContent;
+                    btn.disabled = true; // نطفيه تاني عشان الحقول فاضية
+                }, 3000);
+            }, 1500);
+        }
+
+        // 4. الزر الذكي (Smart Return)
+        function smartReturn() {
+            if (document.referrer && document.referrer.includes(window.location.hostname)) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
