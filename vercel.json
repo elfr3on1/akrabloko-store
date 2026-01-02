@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/product/:id",
-      "destination": "details.html"
-    }
-  ]
-}
