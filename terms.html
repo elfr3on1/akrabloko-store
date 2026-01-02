@@ -55,13 +55,16 @@
             padding-right: 3.5rem; /* مساحة للرقم */
             margin-bottom: 1.5rem;
             border-radius: 12px 0 0 12px;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; /* تنعيم الحركة */
             position: relative;
             overflow: hidden;
         }
+        
+        /* التعديل هنا: شلنا تغيير الـ border-width */
         .term-row:hover {
             background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
-            border-right-width: 6px;
+            transform: translateX(-5px); /* حركة انزلاق ناعمة لليسار بدون تأثير على النص */
+            box-shadow: -5px 5px 15px rgba(0,0,0,0.3); /* ظل خفيف */
         }
 
         /* ألوان الحدود */
