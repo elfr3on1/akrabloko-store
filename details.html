@@ -44,25 +44,31 @@
 </head>
 <body>
 
-    <button onclick="goBack()" class="fixed top-4 right-4 z-50 bg-black/60 backdrop-blur-md p-3 rounded-full border border-white/10 hover:bg-neonBlue hover:text-black transition shadow-xl group cursor-pointer">
+   <a id="smartBackBtn" href="/" class="fixed top-4 right-4 z-50 bg-black/60 backdrop-blur-md p-3 rounded-full border border-white/10 hover:bg-neonBlue hover:text-black transition shadow-xl group cursor-pointer flex items-center justify-center text-white">
     <i class="fas fa-arrow-right text-xl group-hover:-translate-x-1 transition-transform"></i>
-</button>
+</a>
 
 <script>
-    function goBack() {
-    // 1. التحقق هل يوجد مصدر (Referrer) وهل هذا المصدر هو موقعنا الحالي؟
-    // استخدام hostname أدق من host للتعامل مع البورتات المختلفة
-    const isInternal = document.referrer && document.referrer.includes(window.location.hostname);
+    (function() {
+        var btn = document.getElementById('smartBackBtn');
+        var ref = document.referrer; // الصفحة اللي جه منها
+        var host = window.location.hostname; // اسم موقعك
 
-    if (isInternal) {
-        // إذا كان الزائر قادماً من داخل الموقع، نرجعه للصفحة السابقة
-        history.back();
-    } else {
-        // في جميع الحالات الأخرى (واتساب، فيسبوك، رابط مباشر، أو المتصفح منع معرفة المصدر)
-        // نوجهه فوراً للصفحة الرئيسية
-        window.location.href = '/';
-    }
-}
+        // شرط التفعيل:
+        // 1. فيه صفحة سابقة (ref موجود)
+        // 2. الصفحة السابقة من نفس موقعنا (فيها نفس الـ hostname)
+        // 3. (إضافي) نتأكد إننا مش في "لوب" بسبب الروابط النظيفة (اختياري بس أمان)
+        if (ref && ref.includes(host) && !ref.includes('/product/')) {
+            
+            // لو الشروط اتحققت: غير وظيفة الرابط ليعمل كزر رجوع
+            btn.addEventListener('click', function(event) {
+                event.preventDefault(); // امنع الذهاب للرئيسية
+                history.back(); // ارجع للخلف خطوة
+            });
+            
+        } 
+        // غير كده؟ الرابط هيفضل شغال طبيعي (href="/") ويوديه الرئيسية
+    })();
 </script>
     
     <div id="loading" class="text-center mt-40 text-gray-500 animate-pulse">
