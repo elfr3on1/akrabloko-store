@@ -182,6 +182,12 @@ if (canonical && productId) {
     canonical.href = `${window.location.origin}/product/${productId}`;
 }
 
+// د. تنظيف الرابط في شريط المتصفح (عشان الزبون يشوف /product/ بدلاً من details)
+if (productId) {
+    window.history.replaceState(null, '', `/product/${productId}`);
+}
+                    
+
 
                     // --- بداية كود تحسين جوجل (SEO) ---
 
