@@ -158,9 +158,16 @@
         let touchEndX = 0;
 
         const params = new URLSearchParams(window.location.search);
-        const productId = params.get('id');
-        if (!productId) window.location.href = '/';
-        else loadProduct(productId);
+const productId = params.get('id');
+
+// --- الكود الجديد: تنظيف الرابط بصرياً ---
+if (productId) {
+    // هذه الحركة بتغير شكل الرابط في المتصفح لـ /product/123 بدون ما تعمل ريفريش
+    // فالزبون هيحس إنه لسه على الرابط النظيف
+    window.history.replaceState(null, '', '/product/' + productId);
+}
+// ------------------------------------------
+
 
         async function loadProduct(id) {
             try {
