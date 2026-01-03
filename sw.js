@@ -1,4 +1,4 @@
-const CACHE_NAME = 'akrabloko-v3'; // تحديث الإصدار لتنشيط التغييرات
+const CACHE_NAME = 'akrabloko-v4'; // تحديث الإصدار لتنشيط التغييرات
 const FILES_TO_CACHE = [
     './',
     './admin',
