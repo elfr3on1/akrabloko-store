@@ -156,7 +156,7 @@
 
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('id');
-        if (!productId) window.location.href = '/index';
+        if (!productId) window.location.href = '/';
         else loadProduct(productId);
 
         async function loadProduct(id) {
