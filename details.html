@@ -156,7 +156,7 @@
 
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('id');
-        if (!productId) window.location.href = 'index.html';
+        if (!productId) window.location.href = 'index';
         else loadProduct(productId);
 
         async function loadProduct(id) {
@@ -234,7 +234,7 @@
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('product-container').classList.remove('hidden');
                 } else {
-                    window.location.href = 'index.html';
+                    window.location.href = 'index';
                 }
             } catch (e) { console.error(e); }
         }
