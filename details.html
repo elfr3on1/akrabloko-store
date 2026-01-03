@@ -175,6 +175,13 @@
                     document.getElementById('p-desc').innerText = p.desc;
                     document.getElementById('p-cat').innerText = p.category || 'عام';
 
+                    // ج. تحديث رابط الكانونيكال (هام جداً للأرشفة)
+const canonical = document.getElementById('canonical-link');
+if (canonical) {
+    canonical.href = `${window.location.origin}/product/${p.id}`;
+}
+
+
                     // --- بداية كود تحسين جوجل (SEO) ---
 
                     
