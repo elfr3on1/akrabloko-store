@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     const title = p.name || "منتج من أقربلوكو";
     const description = p.desc || "تسوق أفضل المنتجات";
     const image = p.coverImage || ""; 
-    const url = `https://akrabloko.vercel.app/details.html?id=${id}`;
+    const url = `https://akrabloko.vercel.app/details?id=${id}`;
 
     // إرسال الرد
     res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
         <meta property="og:image" content="${image}">
       </head>
       <body>
-        <script>window.location.href = "/details.html?id=${id}";</script>
+        <script>window.location.href = "/details?id=${id}";</script>
       </body>
       </html>
     `);
