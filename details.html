@@ -50,19 +50,17 @@
 
 <script>
     function goBack() {
-    // 1. التحقق هل يوجد مصدر (Referrer) وهل هذا المصدر هو موقعنا الحالي؟
-    // استخدام hostname أدق من host للتعامل مع البورتات المختلفة
-    const isInternal = document.referrer && document.referrer.includes(window.location.hostname);
+        // نتحقق من "المرجع" (Referrer) - أي الصفحة التي جاء منها الزائر
+        var previousPage = document.referrer;
+        var myDomain = window.location.hostname; // اسم موقعك (akrabloko...)
 
-    if (isInternal) {
-        // إذا كان الزائر قادماً من داخل الموقع، نرجعه للصفحة السابقة
-        history.back();
-    } else {
-        // في جميع الحالات الأخرى (واتساب، فيسبوك، رابط مباشر، أو المتصفح منع معرفة المصدر)
-        // نوجهه فوراً للصفحة الرئيسية
-        window.location.href = '/';
+        // الشرط: لو الصفحة السابقة موجودة + تحتوي على اسم موقعنا
+        if (previousPage && previousPage.indexOf(myDomain) !== -1) {
+            window.history.back(); // ارجع للخلف
+        } else {
+            window.location.href = '/'; // روح الرئيسية
+        }
     }
-}
 </script>
     
     <div id="loading" class="text-center mt-40 text-gray-500 animate-pulse">
