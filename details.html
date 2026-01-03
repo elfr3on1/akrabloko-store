@@ -177,8 +177,9 @@
 
                     // ج. تحديث رابط الكانونيكال (هام جداً للأرشفة)
 const canonical = document.getElementById('canonical-link');
-if (canonical) {
-    canonical.href = `${window.location.origin}/product/${p.id}`;
+// نستخدم productId (من الرابط) بدلاً من p.id (من قاعدة البيانات) لأنه أسرع ومضمون
+if (canonical && productId) {
+    canonical.href = `${window.location.origin}/product/${productId}`;
 }
 
 
