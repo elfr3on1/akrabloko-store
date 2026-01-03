@@ -6,7 +6,6 @@ Disallow: /admin
 Disallow: /admin.html
 
 # منع أرشفة الملفات الجزئية والبرمجية (العميل مش محتاج يشوفها في جوجل)
-Disallow: /footer.html
 Disallow: /sw.js
 Disallow: /package.json
 Disallow: /vercel.json
