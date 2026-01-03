@@ -184,7 +184,7 @@
 
     <script>
         // 1. استدعاء الفوتر
-        fetch('footer.html')
+        fetch('/footer')
             .then(response => response.text())
             .then(data => { document.getElementById('footer-placeholder').innerHTML = data; })
             .catch(error => console.error('Error loading footer:', error));
